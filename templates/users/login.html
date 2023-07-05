@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+
+{% block content %}
+
+
+
+<div class="container wrapper flex-grow-1">
+ 
+
+
+    <h1 class="my-4">
+      
+        {% translate 'Вход' %}
+
+    </h1>
+    
+<form method="post">
+{% csrf_token %}
+<input type="hidden">
+{% for field in login_form %}
+    {{field.label_tag}}
+    {{field}}
+    {% if field.help_text %}
+        <small class="form-text text-muted">{{field.help_text}}</small>
+    {% endif %}
+
+{% endfor %}
+{% for error in login_form.errors %}
+<small class="form-text", style="color: red;">{{error}}</small>
+{% endfor %}
+<div class="form-group">
+  <input class="btn btn-primary" type="submit" value="Войти">
+</div>
+</form>
+
+  </div>
+  {% endblock %}
