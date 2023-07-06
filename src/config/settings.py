@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "apps.geology.apps.GeologyConfig",
+    "bootstrap4",
 ]
 
 MIDDLEWARE = [
