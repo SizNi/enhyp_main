@@ -18,7 +18,7 @@
       <div class="collapse navbar-collapse" id="navbarToggleExternalContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="#">{% trans 'Возможности' %}</a>
+            <a class="nav-link" href="{% url 'users_home' %}">{% trans 'Возможности' %}</a>
           </li>
           {% if request.user.is_authenticated %}
             <li class="nav-item">
@@ -41,7 +41,7 @@
         </ul>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="#">{% trans 'Вход' %}</a>
+          <a class="nav-link" href="{% url 'user_login' %}">{% trans 'Вход' %}</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">{% trans 'Регистрация' %}</a>
