@@ -31,13 +31,21 @@ class LoginView(TemplateView):
             if user:
                 login(request, user)
                 messages.info(request, _('Вы залогинены'))
-                return redirect('users_home')
+                return redirect('home')
         messages.error(request, _(
             'Пожалуйста, введите правильные имя пользователя и пароль.'
             'Оба поля могут быть чувствительны к регистру.')
         )
         context['login_form'] = form
         return render(request, 'users/login.html', context)
+
+
+class LogoutView(TemplateView):
+
+    def get(self, request, *args, **kwargs):
+        messages.info(request, _('Вы разлогинены'))
+        logout(request)
+        return redirect('home')
 
 
 class CreateView(CreateView):
@@ -53,10 +61,13 @@ class CreateView(CreateView):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
-            form.cleaned_data.get('username')
-            form.cleaned_data.get('password1')
-            messages.info(request, _('Пользователь успешно зарегистрирован'))
-            return redirect(reverse_lazy('login'))
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            if user:
+                login(request, user)
+                messages.info(request, _('Пользователь успешно зарегистрирован и залогинен'))
+                return redirect('users_home')
         else:
             context['registration_form'] = form
             return render(request, 'users/create.html', context)
