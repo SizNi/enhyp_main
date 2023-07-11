@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "apps.geology.apps.GeologyConfig",
+    "apps.users.apps.UsersConfig",
     "bootstrap4",
 ]
 
@@ -50,7 +51,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             BASE_DIR / "templates",
-            BASE_DIR / "templates" / "user",
+            BASE_DIR / "templates" / "users",
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -66,7 +67,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
+AUTH_USER_MODEL = 'users.CustomUser'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
