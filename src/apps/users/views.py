@@ -1,11 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import (TemplateView,
+                                  CreateView,
+                                  UpdateView,
+                                  DeleteView
+                                  )
 from django.http import HttpResponse
-from apps.users.forms import LoginUserForm, CreateUserForm
+from apps.users.models import CustomUser
+from apps.users.forms import LoginUserForm, CreateUserForm, UpdateUserForm
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 def index(request):
     return HttpResponse('users')
@@ -67,7 +74,45 @@ class CreateView(CreateView):
             if user:
                 login(request, user)
                 messages.info(request, _('Пользователь успешно зарегистрирован и залогинен'))
-                return redirect('users_home')
+                return redirect('home')
         else:
             context['registration_form'] = form
             return render(request, 'users/create.html', context)
+
+
+@method_decorator(login_required, name='dispatch')
+class UserUpdateView(UpdateView):
+
+    def get(self, request, *args, **kwargs):
+        current_user = request.user
+        user_id = kwargs.get('pk')
+        context = {}
+        if current_user.id == user_id:
+            user = CustomUser.objects.get(id=user_id)
+            form = UpdateUserForm(instance=user)
+            context['update_form'] = form
+            context['pk'] = user_id
+            return render(request, 'users/update.html', context)
+        else:
+            messages.error(request, _(
+                'У вас нет прав для изменения другого пользователя.'))
+            return redirect('home')
+
+    def post(self, request, *args, **kwargs):
+        context = {}
+        user_id = kwargs.get('pk')
+        user = CustomUser.objects.get(id=user_id)
+        form = UpdateUserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            messages.info(request, _('Профиль изменен'))
+            user = authenticate(username=username, password=password)
+            if user:
+                login(request, user)
+                return redirect('home')
+        else:
+            context['update_form'] = form
+            context['pk'] = user_id
+            return render(request, 'users/update.html', context)
