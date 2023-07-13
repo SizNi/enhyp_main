@@ -3,86 +3,79 @@ from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from apps.organizations.models import Organization
 
 
-class CreateOrganizationForm(forms.Form):
-    org_name = (
-        forms.CharField(
-            label=_("Наименование организации"),
-            max_length=100,
-            label_suffix="",
-            required=True,
-            validators=[
-                RegexValidator(
-                    regex=r"^(ООО|ИП|АО|ОАО|ЗАО)\s",
-                    message="Некорректное наименование организации",
-                    code="invalid_org_name",
-                )
-            ],
-            help_text=_("Обязательное поле"),
-            widget=forms.TextInput(
-                attrs={
-                    "placeholder": _("ООО 'Ромашка'"),
-                    "autofocus": True,
-                    "class": "form-control",
-                }
-            ),
-        ),
-    )
-
-    inn = (
-        forms.CharField(
-            label=_("ИНН"),
-            min_length=10,
-            max_length=12,
-            label_suffix="",
-            required=True,
-            validators=[
-                RegexValidator(
-                    regex=r"^\d{10,12}$",
-                    message="ИНН должен состоять из 10, 11 или 12 цифр.",
-                    code="invalid_inn",
-                )
-            ],
-            help_text=_("ИНН в формате 10-12 цифр"),
-            widget=forms.TextInput(
-                attrs={
-                    "placeholder": _("ИНН"),
-                    "autofocus": True,
-                    "class": "form-control",
-                }
-            ),
-        ),
-    )
-
-    adress = forms.CharField(
-        label=_("Адрес организации"),
+class CreateOrganizationForm(forms.ModelForm):
+    org_name = forms.CharField(
+        label=_("Наименование организации"),
         max_length=100,
+        label_suffix="",
         required=True,
+        validators=[
+            RegexValidator(
+                regex=r"^(ООО|ИП|АО|ОАО|ЗАО)\s",
+                message="Некорректное наименование организации",
+                code="invalid_org_name",
+            )
+        ],
+        help_text=_("Обязательное поле"),
         widget=forms.TextInput(
             attrs={
-                "placeholder": "г. Москва, ул. Лубянка, д. 10",
+                "placeholder": _("ООО 'Ромашка'"),
                 "autofocus": True,
                 "class": "form-control",
             }
         ),
     )
 
-    email = (
-        forms.EmailField(
-            label=_("Электронная почта организации"),
-            label_suffix="",
-            max_length=100,
-            required=True,
-            widget=forms.TextInput(
-                attrs={
-                    "placeholder": _("info@organization.ru"),
-                    "autofocus": True,
-                    "class": "form-control",
-                }
-            ),
+    inn = forms.CharField(
+        label=_("ИНН"),
+        min_length=10,
+        max_length=12,
+        label_suffix="",
+        required=True,
+        validators=[
+            RegexValidator(
+                regex=r"^\d{10,12}$",
+                message="ИНН должен состоять из 10, 11 или 12 цифр.",
+                code="invalid_inn",
+            )
+        ],
+        help_text=_("ИНН в формате 10-12 цифр"),
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": _("ИНН"),
+                "class": "form-control",
+            }
         ),
     )
+
+    address = forms.CharField(
+        label=_("Адрес организации"),
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": _("г. Москва, ул. Лубянка, д. 10"),
+                "class": "form-control",
+            }
+        ),
+    )
+
+    email = forms.EmailField(
+        label=_("Электронная почта организации"),
+        label_suffix="",
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": _("info@organization.ru"),
+                "class": "form-control",
+            }
+        ),
+    )
+
     # валидатор номера телефона
     phone_val = RegexValidator(
         regex=r"^\+?\d{9,15}$", message="Введите правильный номер телефона."
@@ -94,7 +87,6 @@ class CreateOrganizationForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "placeholder": "+71234567890",
-                "autofocus": True,
                 "class": "form-control",
             }
         ),
@@ -106,7 +98,6 @@ class CreateOrganizationForm(forms.Form):
         widget=forms.ClearableFileInput(
             attrs={
                 "multiple": False,
-                # "autofocus": True,
                 "class": "form-control",
             }
         ),
@@ -136,4 +127,5 @@ class CreateOrganizationForm(forms.Form):
         return logo
 
     class Meta:
-        fields = ("org_name", "inn", "adress", "email", "phone", "logo")
+        model = Organization
+        fields = ["org_name", "inn", "address", "email", "phone", "logo"]

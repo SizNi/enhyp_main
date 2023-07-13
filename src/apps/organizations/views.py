@@ -26,7 +26,9 @@ class CreateView(CreateView):
         context = {}
         form = CreateOrganizationForm(request.POST)
         if form.is_valid():
-            form.save()
+            organization = form.save(commit=False)
+            organization.user = request.user
+            organization.save()
             messages.info(request, _("Организация добавлена"))
             return redirect("home")
         else:

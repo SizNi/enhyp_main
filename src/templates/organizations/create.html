@@ -11,12 +11,13 @@
     <h1 class="my-4">{% translate 'Добавление организации' %}</h1>
     <form method="post">{% csrf_token %}
       {% for field in create_form %}
+      <div class="form-group">
           {{field.label_tag}}
           {{field}}
           {% if field.help_text %}
           <small class="form-text text-muted">{{field.help_text}}</small>
           {% endif %}
-
+      </div>
       {% endfor %}
       {% for error in create_form.errors %}
       <small class="form-text", style=" color: red;">{{error}}</small>
