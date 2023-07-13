@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from apps.organizations.models import Organization
 
 
 def index(request):
@@ -34,3 +35,16 @@ class CreateView(CreateView):
         else:
             context["create_form"] = form
             return render(request, "organizations/create.html", context)
+
+
+@method_decorator(login_required, name="dispatch")
+class MyOrganizationsView(TemplateView):
+    template_name = "organizations/list.html"
+
+    def get(self, request, *args, **kwargs):
+        user_organizations = request.user.organizations.all()
+        return render(
+            request,
+            template_name="organizations/list.html",
+            context={"organizations": user_organizations, "title": "Organizations"},
+        )

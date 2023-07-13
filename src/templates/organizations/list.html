@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% block content %}
+  <div class="container wrapper flex-grow-1">
+    <h1 class="my-4">{% translate 'Ваши организации' %}</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            {% translate 'Наименование организации' %}
+          </th>
+          <th>
+            {% translate 'ИНН' %}
+          </th>
+          <th>
+            {% translate 'Электронная почта' %}
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if organizations %}
+          {% for organization in organizations %}
+            <tr>
+              <td>{{ organization.org_name }}</td>
+              <td>{{ organization.inn }}</td>
+              <td>{{ organization.email }}</td>
+              <td>
+                <a href="#">{% translate 'Изменить' %}</a>
+                <br />
+                <a href="#">{% translate 'Удалить' %}</a>
+              </td>
+            </tr>
+          {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
