@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponse
-from apps.organizations.forms import CreateOrganizationForm
+from apps.organizations.forms import CreateOrganizationForm, UpdateOrganizationForm
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
@@ -48,3 +48,36 @@ class MyOrganizationsView(TemplateView):
             template_name="organizations/list.html",
             context={"organizations": user_organizations, "title": "Organizations"},
         )
+
+
+@method_decorator(login_required, name="dispatch")
+class UpdateView(UpdateView):
+
+    def get(self, request, *args, **kwargs):
+        org_id = kwargs.get('pk')
+        current_user = request.user
+        context = {}
+        organization = Organization.objects.get(id=org_id)
+        if current_user.id == organization.user_id:
+            form = UpdateOrganizationForm(instance=organization)
+            context["update_form"] = form
+            return render(request, "organizations/update.html", context)
+        else:
+            messages.error(request, _(
+                'Сюда не ходите.'))
+            return redirect('organizations_mine')
+
+    def post(self, request, *args, **kwargs):
+        org_id = kwargs.get('pk')
+        context = {}
+        organization = Organization.objects.get(id=org_id)
+        form = UpdateOrganizationForm(request.POST, instance=organization)
+        if form.is_valid():
+            organization = form.save(commit=False)
+            organization.user = request.user
+            organization.save()
+            messages.info(request, _("Информация обновлена"))
+            return redirect("home")
+        else:
+            context["update_form"] = form
+            return render(request, "organizations/update.html", context)
