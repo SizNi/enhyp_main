@@ -1,4 +1,6 @@
 from django import forms
+import os
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
@@ -55,6 +57,7 @@ class CreateOrganizationForm(forms.ModelForm):
         label=_("Адрес организации"),
         max_length=100,
         required=True,
+        help_text=_("Адрес нужен для отображения в контактах в паспорте скважины"),
         widget=forms.TextInput(
             attrs={
                 "placeholder": _("г. Москва, ул. Лубянка, д. 10"),
@@ -144,7 +147,9 @@ class UpdateOrganizationForm(forms.ModelForm):
                 code="invalid_org_name",
             )
         ],
-        help_text=_("Обязательное поле"),
+        help_text=_(
+            "Наименование организации с сокращенной организационно-правовой формой"
+        ),
         widget=forms.TextInput(
             attrs={
                 "placeholder": _("ООО 'Ромашка'"),
@@ -180,6 +185,7 @@ class UpdateOrganizationForm(forms.ModelForm):
         label=_("Адрес организации"),
         max_length=100,
         required=True,
+        help_text=_("Адрес нужен для отображения в контактах в паспорте скважины"),
         widget=forms.TextInput(
             attrs={
                 "placeholder": _("г. Москва, ул. Лубянка, д. 10"),
@@ -209,6 +215,7 @@ class UpdateOrganizationForm(forms.ModelForm):
     phone = forms.CharField(
         label=_("Номер телефона"),
         validators=[phone_val],
+        help_text=_("Телефон организации с кодом страны"),
         widget=forms.TextInput(
             attrs={
                 "placeholder": "+71234567890",
@@ -220,6 +227,9 @@ class UpdateOrganizationForm(forms.ModelForm):
     logo = forms.ImageField(
         label=_("Логотип"),
         required=False,
+        help_text=_(
+            "Необязательное поле. Будет отображаться на титуле паспорта скважины"
+        ),
         widget=forms.ClearableFileInput(
             attrs={
                 "multiple": False,
@@ -240,7 +250,7 @@ class UpdateOrganizationForm(forms.ModelForm):
                 )
 
             # Проверка расширения
-            allowed_extensions = [".png", ".jpg", ".jpeg"]
+            allowed_extensions = ["png", "jpg", "jpeg"]
             extension = str(logo.name).lower().split(".")[-1]
             if extension not in allowed_extensions:
                 raise ValidationError(
@@ -248,7 +258,14 @@ class UpdateOrganizationForm(forms.ModelForm):
                         "Недопустимое расширение файла. Допустимы только файлы с расширениями .png, .jpg, .jpeg."
                     )
                 )
+        organization = self.instance
+        if organization.logo:
+            # Получаем путь к файлу старого логотипа
+            old_logo_path = os.path.join(settings.MEDIA_ROOT, str(organization.logo))
 
+            # Проверяем, что файл существует, и удаляем его
+            if os.path.isfile(old_logo_path):
+                os.remove(old_logo_path)
         return logo
 
     class Meta:

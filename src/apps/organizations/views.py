@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+import uuid
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView
@@ -6,6 +7,8 @@ from django.http import HttpResponse
 from apps.organizations.forms import CreateOrganizationForm, UpdateOrganizationForm
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
+from django.utils.datastructures import MultiValueDictKeyError
+from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from apps.organizations.models import Organization
@@ -25,10 +28,18 @@ class CreateView(CreateView):
 
     def post(self, request, *args, **kwargs):
         context = {}
-        form = CreateOrganizationForm(request.POST)
+        form = CreateOrganizationForm(request.POST, request.FILES)
         if form.is_valid():
             organization = form.save(commit=False)
+            try:
+                logo = request.FILES["logo"]
+                filename = f"logos/{uuid.uuid4().hex}_{logo.name}"
+                filename = default_storage.save(filename, logo)
+                organization.logo = filename
+            except MultiValueDictKeyError:
+                pass
             organization.user = request.user
+
             organization.save()
             messages.info(request, _("Организация добавлена"))
             return redirect("home")
@@ -52,9 +63,8 @@ class MyOrganizationsView(TemplateView):
 
 @method_decorator(login_required, name="dispatch")
 class UpdateView(UpdateView):
-
     def get(self, request, *args, **kwargs):
-        org_id = kwargs.get('pk')
+        org_id = kwargs.get("pk")
         current_user = request.user
         context = {}
         organization = Organization.objects.get(id=org_id)
@@ -63,17 +73,25 @@ class UpdateView(UpdateView):
             context["update_form"] = form
             return render(request, "organizations/update.html", context)
         else:
-            messages.error(request, _(
-                'Сюда не ходите.'))
-            return redirect('organizations_mine')
+            messages.error(request, _("Сюда не ходите."))
+            return redirect("organizations_mine")
 
     def post(self, request, *args, **kwargs):
-        org_id = kwargs.get('pk')
+        org_id = kwargs.get("pk")
         context = {}
         organization = Organization.objects.get(id=org_id)
-        form = UpdateOrganizationForm(request.POST, instance=organization)
+        form = UpdateOrganizationForm(
+            request.POST, request.FILES, instance=organization
+        )
         if form.is_valid():
             organization = form.save(commit=False)
+            try:
+                logo = request.FILES["logo"]
+                filename = f"logos/{uuid.uuid4().hex}_{logo.name}"
+                filename = default_storage.save(filename, logo)
+                organization.logo = filename
+            except MultiValueDictKeyError:
+                pass
             organization.user = request.user
             organization.save()
             messages.info(request, _("Информация обновлена"))
