@@ -21,7 +21,7 @@
       </div>
       {% endfor %}
       {% for error in create_form.errors %}
-      <small class="form-text", style=" color: red;">{{error}}</small>
+      <small class="form-text" style=" color: red;">{{error}}</small>
       {% endfor %}
       <div class="form-group">
         {% csrf_token %}

@@ -19,7 +19,7 @@
           {% endif %}
       {% endfor %}
       {% if logo %}
-      <b class="form-text"> Текущий логотип:</b>
+      <b class="form-text"> {% translate 'Текущий логотип:' %}</b>
       <img src="{{ logo.url }}" style="max-height:200px">
       {% endif %}
       {% for error in update_form.errors %}
