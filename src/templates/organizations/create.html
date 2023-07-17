@@ -9,7 +9,7 @@
 
   <div class="container wrapper flex-grow-1">
     <h1 class="my-4">{% translate 'Добавление организации' %}</h1>
-    <form method="post", enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {% for field in create_form %}
       <div class="form-group">

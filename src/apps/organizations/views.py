@@ -71,6 +71,8 @@ class UpdateView(UpdateView):
         if current_user.id == organization.user_id:
             form = UpdateOrganizationForm(instance=organization)
             context["update_form"] = form
+            if organization.logo:
+                context["logo"] = organization.logo
             return render(request, "organizations/update.html", context)
         else:
             messages.error(request, _("Сюда не ходите."))

@@ -9,7 +9,7 @@
   <!-- Если профиль организации уже создан надо поменять кнопку на просто профиль организации-->
   <div class="container wrapper flex-grow-1">
     <h1 class="my-4">{% translate 'Обновление информации' %}</h1>
-    <form method="post", enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {% for field in update_form %}
           {{field.label_tag}}
@@ -18,6 +18,10 @@
           <small class="form-text text-muted">{{field.help_text}}</small>
           {% endif %}
       {% endfor %}
+      {% if logo %}
+      <b class="form-text"> Текущий логотип:</b>
+      <img src="{{ logo.url }}" style="max-height:200px">
+      {% endif %}
       {% for error in update_form.errors %}
       <small class="form-text", style=" color: red;">{{error}}</small>
       {% endfor %}
