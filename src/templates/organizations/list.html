@@ -31,7 +31,7 @@
       <td>
         <a href="{% url 'organization_update' organization.id %}">{% translate "Изменить"%}</a>
         <br>
-        <a href="#">{% translate "Удалить"%}</a>
+        <a href="{% url 'organization_delete' organization.id %}">{% translate "Удалить"%}</a>
       </td>
     </tr>
 {% endfor %}

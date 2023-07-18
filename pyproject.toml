@@ -9,6 +9,10 @@ readme = "README.md"
 python = "^3.8"
 django = "^4.2.3"
 black = "^23.3.0"
+python-dotenv = "^1.0.0"
+i18n = "^0.2"
+django-bootstrap4 = "^23.2"
+pillow = "^10.0.0"
 
 
 [build-system]

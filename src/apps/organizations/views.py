@@ -12,6 +12,7 @@ from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from apps.organizations.models import Organization
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def index(request):
@@ -101,3 +102,19 @@ class UpdateView(UpdateView):
         else:
             context["update_form"] = form
             return render(request, "organizations/update.html", context)
+
+
+@method_decorator(login_required, name='dispatch')
+class DeleteView(DeleteView):
+    model = Organization
+    template_name = 'organizations/delete.html'
+    success_url = reverse_lazy('organizations_mine')
+       
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user)
+
+    def delete(self, request, *args, **kwargs):
+        organization = self.get_object()
+        messages.info(request, _('Организация удалена'))
+        return super().delete(request, *args, **kwargs)
