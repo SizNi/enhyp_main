@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 import uuid
-from django.contrib.auth import authenticate, login, logout
+import os
 from django.contrib import messages
 from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponse
@@ -12,11 +12,22 @@ from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from apps.organizations.models import Organization
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def index(request):
     return HttpResponse("organizations")
+
+@method_decorator(login_required, name="dispatch")
+class MyOrganizationsView(TemplateView):
+    template_name = "organizations/list.html"
+
+    def get(self, request, *args, **kwargs):
+        user_organizations = request.user.organizations.all()
+        return render(
+            request,
+            template_name="organizations/list.html",
+            context={"organizations": user_organizations, "title": "Organizations"},
+        )
 
 
 @method_decorator(login_required, name="dispatch")
@@ -47,19 +58,6 @@ class CreateView(CreateView):
         else:
             context["create_form"] = form
             return render(request, "organizations/create.html", context)
-
-
-@method_decorator(login_required, name="dispatch")
-class MyOrganizationsView(TemplateView):
-    template_name = "organizations/list.html"
-
-    def get(self, request, *args, **kwargs):
-        user_organizations = request.user.organizations.all()
-        return render(
-            request,
-            template_name="organizations/list.html",
-            context={"organizations": user_organizations, "title": "Organizations"},
-        )
 
 
 @method_decorator(login_required, name="dispatch")
@@ -105,16 +103,23 @@ class UpdateView(UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class DeleteView(DeleteView):
+class OrganizationDeleteView(DeleteView):
     model = Organization
     template_name = 'organizations/delete.html'
     success_url = reverse_lazy('organizations_mine')
-       
+
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
 
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs): # не срабатывает (понять почему)
         organization = self.get_object()
+        # удаление логотипа
+        if organization.logo:
+            try:
+                logo_path = organization.logo.path
+                os.remove(logo_path)
+            except Exception as e:
+                print(f"Ошибка при удалении логотипа: {e}")
         messages.info(request, _('Организация удалена'))
         return super().delete(request, *args, **kwargs)

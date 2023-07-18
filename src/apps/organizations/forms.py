@@ -106,29 +106,6 @@ class CreateOrganizationForm(forms.ModelForm):
         ),
     )
 
-    # проверка логотипа
-    def clean_logo(self):
-        logo = self.cleaned_data.get("logo")
-        if logo:
-            # Проверка размера
-            max_size = 5 * 1024 * 1024  # 5 МБ
-            if logo.size > max_size:
-                raise ValidationError(
-                    _("Размер логотипа превышает максимально допустимый размер (5 МБ).")
-                )
-
-            # Проверка расширения
-            allowed_extensions = [".png", ".jpg", ".jpeg"]
-            extension = str(logo.name).lower().split(".")[-1]
-            if extension not in allowed_extensions:
-                raise ValidationError(
-                    _(
-                        "Недопустимое расширение файла. Допустимы только файлы с расширениями .png, .jpg, .jpeg."
-                    )
-                )
-
-        return logo
-
     class Meta:
         model = Organization
         fields = ["org_name", "inn", "address", "email", "phone", "logo"]
