@@ -8,11 +8,12 @@
 {% block content %}
   <!-- Если профиль организации уже создан надо поменять кнопку на просто профиль организации-->
   <div class="container wrapper flex-grow-1">
+
+    <h1 class="my-4">{% translate 'Обновление информации' %}</h1>
       <div class="form-group">
         <a href="{% url 'organization_create' %}" class="btn btn-info" role="button">Добавить профиль организации</a>
         <a href="{% url 'organizations_mine' %}" class="btn btn-info" role="button">Список организаций</a>
       </div>
-    <h1 class="my-4">{% translate 'Обновление информации' %}</h1>
     <form method="post">
       {% csrf_token %}
       {% for field in update_form %}

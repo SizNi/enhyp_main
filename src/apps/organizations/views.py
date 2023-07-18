@@ -31,7 +31,7 @@ class MyOrganizationsView(TemplateView):
 
 
 @method_decorator(login_required, name="dispatch")
-class CreateView(CreateView):
+class OrganizationCreateView(CreateView):
     def get(self, request, *args, **kwargs):
         context = {}
         form = CreateOrganizationForm()
@@ -54,14 +54,14 @@ class CreateView(CreateView):
 
             organization.save()
             messages.info(request, _("Организация добавлена"))
-            return redirect("home")
+            return redirect("organizations_mine")
         else:
             context["create_form"] = form
             return render(request, "organizations/create.html", context)
 
 
 @method_decorator(login_required, name="dispatch")
-class UpdateView(UpdateView):
+class OrganizationUpdateView(UpdateView):
     def get(self, request, *args, **kwargs):
         org_id = kwargs.get("pk")
         current_user = request.user
