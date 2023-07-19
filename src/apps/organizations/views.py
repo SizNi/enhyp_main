@@ -17,6 +17,7 @@ from apps.organizations.models import Organization
 def index(request):
     return HttpResponse("organizations")
 
+
 @method_decorator(login_required, name="dispatch")
 class MyOrganizationsView(TemplateView):
     template_name = "organizations/list.html"
@@ -102,17 +103,17 @@ class OrganizationUpdateView(UpdateView):
             return render(request, "organizations/update.html", context)
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class OrganizationDeleteView(DeleteView):
     model = Organization
-    template_name = 'organizations/delete.html'
-    success_url = reverse_lazy('organizations_mine')
+    template_name = "organizations/delete.html"
+    success_url = reverse_lazy("organizations_mine")
 
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
 
-    def post(self, request, *args, **kwargs): # не срабатывает (понять почему)
+    def post(self, request, *args, **kwargs):  # не срабатывает (понять почему)
         organization = self.get_object()
         # удаление логотипа
         if organization.logo:
@@ -121,5 +122,5 @@ class OrganizationDeleteView(DeleteView):
                 os.remove(logo_path)
             except Exception as e:
                 print(f"Ошибка при удалении логотипа: {e}")
-        messages.info(request, _('Организация удалена'))
+        messages.info(request, _("Организация удалена"))
         return super().delete(request, *args, **kwargs)

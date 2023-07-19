@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% block content %}
+<div class="container wrapper flex-grow-1">
+      
+
+
+    <h1 class="my-4">
+      {% translate "Ваши организации"%}
+    </h1>
+      <div class="form-group">
+        <a href="{% url 'organization_create' %}" class="btn btn-info" role="button">{% translate "Добавить профиль организации"%}</a>
+      </div>
+<table class="table table-striped">
+
+<thead> 
+  <tr>
+    <th>{% translate "Наименование организации"%}</th>
+    <th>{% translate "ИНН"%}</th>
+    <th>{% translate "Электронная почта"%}</th>
+    <th></th>
+  </tr>
+</thead>
+<tbody>
+  {% if organizations %}
+{% for organization in organizations %}
+    <tr>
+      <td>{{ organization.org_name }}</td>
+      <td>{{ organization.inn }}</td>
+      <td>{{ organization.email }}</td>
+      <td>
+        <a href="{% url 'organization_update' organization.id %}">{% translate "Изменить"%}</a>
+        <br>
+        <a href="{% url 'organization_delete' organization.id %}">{% translate "Удалить"%}</a>
+      </td>
+    </tr>
+{% endfor %}
+{% endif %}
+</tbody>
+</table>
+
+</div>
+{% endblock %}

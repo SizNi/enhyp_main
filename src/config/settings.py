@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "apps.geology.apps.GeologyConfig",
     "apps.users.apps.UsersConfig",
+    "apps.zso.apps.ZsoConfig",
     "apps.organizations.apps.OrganizationsConfig",
     "bootstrap4",
 ]
@@ -54,6 +55,8 @@ TEMPLATES = [
         "DIRS": [
             BASE_DIR / "templates",
             BASE_DIR / "templates" / "users",
+            BASE_DIR / "templates" / "organizations",
+            BASE_DIR / "templates" / "zso",
         ],
         "APP_DIRS": True,
         "OPTIONS": {

@@ -244,7 +244,7 @@ class UpdateOrganizationForm(forms.ModelForm):
             if os.path.isfile(old_logo_path):
                 os.remove(old_logo_path)
         return logo
-    
+
     class Meta:
         model = Organization
         fields = ["org_name", "inn", "address", "email", "phone", "logo"]
