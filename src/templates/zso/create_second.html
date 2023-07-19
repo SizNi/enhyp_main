@@ -10,17 +10,12 @@
     <h1 class="my-4">{% translate 'Рассчет ЗСО' %}</h1>
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      {% for field in create_form %}
+      {% for i in well_numbers %}
         <div class="form-group">
-          {{ field.label_tag }}
-          {{ field }}
-          {% if field.help_text %}
-            <small class="form-text text-muted">{{ field.help_text }}</small>
-          {% endif %}
+          Расход скважины № {{ i }}
+          <input type="float" name="debits_{{ i }}">
+            <small class="form-text text-muted">м.куб/сут</small>
         </div>
-      {% endfor %}
-      {% for error in create_form.errors %}
-        <small class="form-text" style=" color: red;">{{ error }}</small>
       {% endfor %}
       <div class="form-group">
         {% csrf_token %}

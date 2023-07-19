@@ -1,3 +1,3 @@
-from django.test import TestCase
-
-# Create your tests here.
+w = 3
+d = "".join([str(i) for i in range(1, w + 1)])
+print(d)
