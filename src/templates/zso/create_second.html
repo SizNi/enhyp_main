@@ -15,6 +15,12 @@
           Расход скважины № {{ i }}
           <input type="float" name="debits_{{ i }}">
             <small class="form-text text-muted">м.куб/сут</small>
+          Координата скважины по оси X
+          <input type="integer" name="x_{{ i }}">
+            <small class="form-text text-muted">Номер блока по оси X</small>
+          Координата скважины по оси Y
+          <input type="integer" name="y_{{ i }}">
+            <small class="form-text text-muted">Номер блока по оси Y</small>
         </div>
       {% endfor %}
       <div class="form-group">

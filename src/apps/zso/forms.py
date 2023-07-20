@@ -155,6 +155,107 @@ class ZsoFirstCreateForm(forms.ModelForm):
         ),
     )
 
+    iteration_count = forms.IntegerField(
+        label=_("Количество вероятностных итераций"),
+        label_suffix="",
+        required=True,
+        min_value=1,
+        max_value=200,
+        help_text=_("штука"),
+        widget=forms.NumberInput(
+            attrs={
+                "step": 1,
+                "placeholder": _("100"),
+                "class": "form-control",
+            }
+        ),
+    )
+    b_size = forms.FloatField(
+        label=_("Длина грани блока модели"),
+        label_suffix="",
+        required=True,
+        help_text=_("метры"),
+        widget=forms.NumberInput(
+            attrs={
+                "step": 1,
+                "placeholder": _("10.0"),
+                "class": "form-control",
+            }
+        ),
+    )
+    n_x = forms.IntegerField(
+        label=_("Размер модели по оси X в блоках"),
+        label_suffix="",
+        required=True,
+        min_value=1,
+        max_value=200,
+        help_text=_("блок"),
+        widget=forms.NumberInput(
+            attrs={
+                "step": 1,
+                "placeholder": _("40"),
+                "class": "form-control",
+            }
+        ),
+    )
+    n_y = forms.IntegerField(
+        label=_("Размер модели по оси Y в блоках"),
+        label_suffix="",
+        required=True,
+        min_value=1,
+        max_value=200,
+        help_text=_("блок"),
+        widget=forms.NumberInput(
+            attrs={
+                "step": 1,
+                "placeholder": _("40"),
+                "class": "form-control",
+            }
+        ),
+    )
+    d_t = forms.FloatField(
+        label=_("Размер временного шага"),
+        label_suffix="",
+        required=True,
+        help_text=_("сутки"),
+        widget=forms.NumberInput(
+            attrs={
+                "step": 0.1,
+                "placeholder": _("1.0"),
+                "class": "form-control",
+            }
+        ),
+    )
+    n_step = forms.IntegerField(
+        label=_("Количество временных шагов"),
+        label_suffix="",
+        required=True,
+        min_value=1,
+        max_value=400,
+        help_text=_(
+            "Штуки. Например для расчета ЗСО-II при временном шаге 1, параметр надо установить равный 200"
+        ),
+        widget=forms.NumberInput(
+            attrs={
+                "step": 1,
+                "placeholder": _("200"),
+                "class": "form-control",
+            }
+        ),
+    )
+    DISTRIBUTION_TYPE = (
+        ("random", "Случайное"),
+        ("normal", "Нормальное"),
+        ("lognormal", "Логнормальное"),
+        ("uniform", "Равномерное"),
+    )
+    type = forms.ChoiceField(
+        choices=DISTRIBUTION_TYPE,
+        initial="random",
+        label=_("Тип распределения параметров в интервале"),
+        required=True,
+    )
+
     class Meta:
         model = Zso
         fields = [
@@ -169,26 +270,11 @@ class ZsoFirstCreateForm(forms.ModelForm):
             "por_min",
             "por_max",
             "well_numbers",
-        ]
-
-
-class ZsoSecondCreateForm(forms.ModelForm):
-    debits = forms.FloatField(
-        label=_("расход скважины"),
-        label_suffix="",
-        required=True,
-        help_text=_("м.куб/сут"),
-        widget=forms.NumberInput(
-            attrs={
-                "step": 0.1,
-                "placeholder": _("36.6"),
-                "class": "form-control",
-            }
-        ),
-    )
-
-    class Meta:
-        model = Zso
-        fields = [
-            "debits",
+            "iteration_count",
+            "b_size",
+            "n_x",
+            "n_y",
+            "d_t",
+            "n_step",
+            "type",
         ]
