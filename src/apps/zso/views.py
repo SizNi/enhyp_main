@@ -50,13 +50,27 @@ class ZsoSecondCreateView(UpdateView):
         zso_id = kwargs.get("pk")
         zso = Zso.objects.get(id=zso_id)
         debit_list = []
+        x_list = []
+        y_list = []
         for i in range(1, len(form) + 1):
             field_name = f"debits_{i}"
             debits_value = form.get(field_name)
             if debits_value:
                 debit_list.append(float(debits_value[0]))
+            field_name = f"x_{i}"
+            x_value = form.get(field_name)
+            if debits_value:
+                x_list.append(float(x_value[0]))
+            field_name = f"y_{i}"
+            y_value = form.get(field_name)
+            if debits_value:
+                y_list.append(float(y_value[0]))
         # сериализация для записи в бд test = json.loads(debit_json)
         debit_json = json.dumps(debit_list)
+        x_json = json.dumps(x_list)
+        y_json = json.dumps(y_list)
+        zso.n_x_skv = x_json
+        zso.n_y_skv = y_json
         zso.debits = debit_json
         zso.save()
         # тут будет модуль расчета
