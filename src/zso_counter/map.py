@@ -2,11 +2,12 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import griddata
 import matplotlib.pyplot as plt
+from io import BytesIO
 
 
 def front_map(
     type,
-    data=pd.read_csv("maindir/src/zso_counter/main_dataset.csv"),
+    data=pd.read_csv("zso_counter/main_dataset.csv"),
     n_x_skv=np.array([20, 30, 25]),
     n_y_skv=np.array([20, 15, 20]),
     b_size=10,
@@ -69,7 +70,12 @@ def front_map(
     plt.title(f"Migration Front Contourmap, {type} distribution.")
     plt.legend()
     # Сохранение графика в файл
-    plt.savefig("zso_counter/result.png", dpi=600)
+    # plt.savefig("zso_counter/result.png", dpi=600)
+    # сохранение в байты
+    image = BytesIO()
+    plt.savefig(image, format="png")
+    image.seek(0)
+    return image
 
 
 if __name__ == "__main__":

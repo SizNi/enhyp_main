@@ -1,20 +1,20 @@
 import numpy as np
 from math import cos, sin, radians
 import pandas as pd
-from model_class import Block
-from start_parameters import params, well_generation
-from velocity_calculation import velocity
-from edge_concentration import edge
+from zso_counter.model_class import Block
+from zso_counter.start_parameters import params, well_generation
+from zso_counter.velocity_calculation import velocity
+from zso_counter.edge_concentration import edge
 
 
 # Основной модуль расчета. Здеcь получаем одну реализацию полей параметров и записываем в датафрейм
-def main(n_x_skv, n_y_skv, n_x, n_y, d_x, d_y, d_t, n_step, data, iter):
+def main(n_x_skv, n_y_skv, n_x, n_y, d_x, d_y, d_t, n_step, data, iter, q_main):
     # количество скважин
     well_count = len(n_x_skv)
     # получаем cлучайные параметры в заданных рамках
     i_grad, alfa, m, k_f, por = params(data, iter)
     # получаем маccив cкважин
-    well_matrix = well_generation(n_x_skv, n_y_skv, m, por)
+    well_matrix = well_generation(n_x_skv, n_y_skv, m, por, q_main)
     # cоздаем и заполняем маccив модели
     modelling_matrix = np.empty((n_x, n_y), dtype=object)
     for i in range(n_x):

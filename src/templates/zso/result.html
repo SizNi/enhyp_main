@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% bootstrap_css %}
+
+{% bootstrap_messages %}
+
+{% block content %}
+  <div class="container wrapper flex-grow-1">
+    <h1 class="my-4">{% translate 'Результат расчета' %}</h1>
+    <style>
+        /* Ограничение максимальной высоты рисунка до 200 пикселей */
+        #image {
+            max-height: 800px;
+        }
+    </style>
+    <img id="image" src="data:image/png;base64,{{ image }}" alt="Изображение">
+    <div class="form-group">
+        {% csrf_token %}
+        <a href="data:image/png;base64,{{ image }}" download="result.png" class="btn btn-primary" role="button">{% translate "Скачать изображение"%}</a>
+        <a href="data:image/png;base64,{{ image }}" download="result_image.png" class="btn btn-primary" role="button">{% translate "Скачать датасет"%}</a>
+    </div>
+  </div>
+{% endblock %}
