@@ -1,7 +1,5 @@
 {% load bootstrap4 %}
 {% load i18n %}
-{% bootstrap_css %}
-{% bootstrap_javascript jquery='full' %}
 <html lang="ru-ru"><head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% trans 'Геология' %}</title>
@@ -18,7 +16,7 @@
       <div class="collapse navbar-collapse" id="navbarToggleExternalContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'users_home' %}">{% trans 'Возможности' %}</a>
+            <a class="nav-link" href="#">{% trans 'Возможности' %}</a>
           </li>
           {% if request.user.is_authenticated %}
             <li class="nav-item">

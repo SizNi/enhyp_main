@@ -54,6 +54,7 @@ class ZsoSecondCreateView(UpdateView):
         debit_list = []
         x_list = []
         y_list = []
+        # получение данных из формы (надо бы добавить туда проверок)
         for i in range(1, len(form) + 1):
             field_name = f"debits_{i}"
             debits_value = form.get(field_name)
@@ -67,7 +68,7 @@ class ZsoSecondCreateView(UpdateView):
             y_value = form.get(field_name)
             if debits_value:
                 y_list.append(int(y_value[0]))
-        # сериализация для записи в бд test = json.loads(debit_json)
+        # сериализация для записи в бд и сохранение формы
         debit_json = json.dumps(debit_list)
         x_json = json.dumps(x_list)
         y_json = json.dumps(y_list)
@@ -75,9 +76,20 @@ class ZsoSecondCreateView(UpdateView):
         zso.n_y_skv = y_json
         zso.debits = debit_json
         zso.save()
-        # тут будет модуль расчета
-        image = counter(zso.id)
-        image_data = base64.b64encode(image.getvalue()).decode("utf-8")
-        context = {}
-        context["image"] = image_data
-        return render(request, "zso/result.html", context)
+        # получение результирующай картинки и датасета из обработчика
+        image, main_dataset = counter(zso.id)
+        # преобразование датасета (картинка преобразуется в обработчике)
+        main_df_bytes = main_dataset.to_csv(index=False).encode("utf-8")
+        main_df_base64 = base64.b64encode(main_df_bytes).decode("utf-8")
+        # отправка на фронт
+        if image is not False:
+            image_data = base64.b64encode(image.getvalue()).decode("utf-8")
+            context = {}
+            context["image"] = image_data
+            context["df"] = main_df_base64
+            messages.info(request, _("Расчет завершен!"))
+            return render(request, "zso/result.html", context)
+        else:
+            context = {}
+            context['warning'] = 'Что-то пошло не так'
+            return render(request, "zso/mistake.html", context)

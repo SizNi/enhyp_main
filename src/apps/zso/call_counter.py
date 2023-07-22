@@ -29,29 +29,31 @@ def counter(zso_id):
     q_main = np.array(json.loads(zso.debits))
     d_x = np.full(n_x, b_size)
     d_y = np.full(n_y, b_size)
-    image = app_start(
-        k_f_min,
-        k_f_max,
-        i_min,
-        i_max,
-        alfa_min,
-        alfa_max,
-        m_min,
-        m_max,
-        por_min,
-        por_max,
-        type,
-        iteration_count,
-        n_x_skv,
-        n_y_skv,
-        n_x,
-        n_y,
-        d_x,
-        d_y,
-        d_t,
-        n_step,
-        b_size,
-        q_main,
-    )
-    print(image)
-    return image
+    try:
+        image, main_dataset = app_start(
+            k_f_min,
+            k_f_max,
+            i_min,
+            i_max,
+            alfa_min,
+            alfa_max,
+            m_min,
+            m_max,
+            por_min,
+            por_max,
+            type,
+            iteration_count,
+            n_x_skv,
+            n_y_skv,
+            n_x,
+            n_y,
+            d_x,
+            d_y,
+            d_t,
+            n_step,
+            b_size,
+            q_main,
+        )
+        return image, main_dataset
+    except:
+        return False

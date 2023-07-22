@@ -9,16 +9,17 @@
   <div class="container wrapper flex-grow-1">
     <h1 class="my-4">{% translate 'Результат расчета' %}</h1>
     <style>
-        /* Ограничение максимальной высоты рисунка до 200 пикселей */
         #image {
-            max-height: 800px;
+        max-width: 800px;
+        width: 100%;
+        height: auto;
         }
     </style>
     <img id="image" src="data:image/png;base64,{{ image }}" alt="Изображение">
     <div class="form-group">
         {% csrf_token %}
         <a href="data:image/png;base64,{{ image }}" download="result.png" class="btn btn-primary" role="button">{% translate "Скачать изображение"%}</a>
-        <a href="data:image/png;base64,{{ image }}" download="result_image.png" class="btn btn-primary" role="button">{% translate "Скачать датасет"%}</a>
+        <a href="data:text/csv;base64,{{ df }}" download="dataset.csv" class="btn btn-primary" role="button">{% translate "Скачать данные"%}</a>
     </div>
   </div>
 {% endblock %}

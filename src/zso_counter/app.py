@@ -4,6 +4,7 @@ from tqdm import tqdm
 import numpy as np
 from zso_counter.start_parameters import distribution_array
 import json
+from io import BytesIO
 
 """
 # количество итераций
@@ -80,10 +81,10 @@ def app_start(
     # переводим вероятности из единиц в проценты (округление до единицы)
     main_df.Migration_front = main_df.Migration_front * (100 / iteration_count)
     # сохраняем датасет на всякий
-    main_df.to_csv("zso_counter/main_dataset.csv", index=False)
+    # main_df.to_csv("zso_counter/main_dataset.csv", index=False)
     # функция-визуализатор
     image = front_map(type, main_df, n_x_skv, n_y_skv, b_size, n_x, n_y)
-    return image
+    return image, main_df
 
 
 if __name__ == "__main__":

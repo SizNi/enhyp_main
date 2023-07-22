@@ -7,7 +7,7 @@ from io import BytesIO
 
 def front_map(
     type,
-    data=pd.read_csv("zso_counter/main_dataset.csv"),
+    data,
     n_x_skv=np.array([20, 30, 25]),
     n_y_skv=np.array([20, 15, 20]),
     b_size=10,
@@ -69,9 +69,6 @@ def front_map(
     plt.ylabel("Y")
     plt.title(f"Migration Front Contourmap, {type} distribution.")
     plt.legend()
-    # Сохранение графика в файл
-    # plt.savefig("zso_counter/result.png", dpi=600)
-    # сохранение в байты
     image = BytesIO()
     plt.savefig(image, format="png")
     image.seek(0)
