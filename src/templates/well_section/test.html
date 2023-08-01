@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+  <div class="container wrapper flex-grow-1">
+    <h1 class="my-4">Dynamic Form</h1>
+    <form method="post" id="dynamic-form">
+      {% csrf_token %}
+      <div id="form-container">
+        {{ formset.management_form }}
+        {% for form in formset %}
+          <div class="form-group form-row" id="form-{{ form.prefix }}">
+            <div class="col">
+              {{ form.field_name.label_tag }}
+              {{ form.field_name }}
+              {{ form.field_name.errors }}
+            </div>
+            <div class="col">
+              <button type="button" class="btn btn-danger btn-sm delete-btn" data-form-id="{{ form.prefix }}" name="delete">Delete</button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-primary" id="add-form">Add Field</button>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    const addButton = document.getElementById('add-form');
+    const formContainer = document.getElementById('form-container');
+    const formTemplate = `...`;  // Код шаблона формы здесь
+
+    let formCount = {{ formset.total_form_count }};
+
+    addButton.addEventListener('click', () => {
+      const formHtml = formTemplate.replace(/__prefix__/g, formCount);
+      const formDiv = document.createElement('div');
+      formDiv.innerHTML = formHtml;
+      formContainer.appendChild(formDiv);
+      formCount++;
+    });
+
+    formContainer.addEventListener('click', (event) => {
+      const target = event.target;
+      if (target.classList.contains('delete-btn')) {
+        const formId = target.dataset.formId;
+        const formToDelete = document.getElementById(`form-${formId}`);
+        formToDelete.remove();
+      }
+    });
+
+    const submitButton = document.querySelector('button[type="submit"]');
+    submitButton.addEventListener('click', () => {
+      event.preventDefault();
+
+      const forms = document.querySelectorAll('.form-group.form-row');
+      const data = { 'form_count': forms.length };
+
+      forms.forEach((form, index) => {
+        const fieldInput = form.querySelector('input[name^=field_name]');
+        const fieldName = `field_name_${index}`;
+        data[fieldName] = fieldInput.value;
+      });
+
+      fetch('', {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Обработка успешного ответа
+        } else {
+          // Обработка ошибки
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    });
+  </script>
+{% endblock %}
