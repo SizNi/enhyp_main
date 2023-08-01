@@ -91,5 +91,5 @@ class ZsoSecondCreateView(UpdateView):
             return render(request, "zso/result.html", context)
         else:
             context = {}
-            context['warning'] = 'Что-то пошло не так'
+            context["warning"] = "Что-то пошло не так"
             return render(request, "zso/mistake.html", context)

@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "apps.users.apps.UsersConfig",
     "apps.zso.apps.ZsoConfig",
     "apps.organizations.apps.OrganizationsConfig",
+    "apps.well_section.apps.WellSectionConfig",
     "bootstrap4",
 ]
 
@@ -59,6 +60,7 @@ TEMPLATES = [
             BASE_DIR / "templates" / "users",
             BASE_DIR / "templates" / "organizations",
             BASE_DIR / "templates" / "zso",
+            BASE_DIR / "templates" / "well_section",
         ],
         "APP_DIRS": True,
         "OPTIONS": {

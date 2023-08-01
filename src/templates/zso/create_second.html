@@ -13,34 +13,32 @@
       {% for i in well_numbers %}
         <div class="form-group">
           Расход скважины № {{ i }}
-          <input type="number" name="debits_{{ i }}" placeholder="62.8" step="0.01">
-            <small class="form-text text-muted">м.куб/сут</small>
-          Координата скважины по оси X
-          <input type="integer" name="x_{{ i }}" placeholder="20">
-            <small class="form-text text-muted">Номер блока по оси X</small>
-          Координата скважины по оси Y
-          <input type="integer" name="y_{{ i }}" placeholder="20">
-            <small class="form-text text-muted">Номер блока по оси Y</small>
+          <input type="number" name="debits_{{ i }}" placeholder="62.8" step="0.01" />
+          <small class="form-text text-muted">м.куб/сут</small>
+          Координата скважины по оси X<input type="integer" name="x_{{ i }}" placeholder="20" />
+          <small class="form-text text-muted">Номер блока по оси X</small>
+          Координата скважины по оси Y<input type="integer" name="y_{{ i }}" placeholder="20" />
+          <small class="form-text text-muted">Номер блока по оси Y</small>
         </div>
       {% endfor %}
       <div class="form-group">
         {% csrf_token %}
-        <input class="btn btn-primary" type="submit" value="Рассчитать" id="submitButton"/>
+        <input class="btn btn-primary" type="submit" value="Рассчитать" id="submitButton" />
         <small class="form-text text-muted">Расчет может занять довольно большое время, как расчет закончится - вас перекинет на страницу с результатом</small>
       </div>
     </form>
   </div>
-<script>
-  $(() => {
-    const $submitButton = $('#submitButton');
-    $submitButton.on('click', () => {
-      if ($submitButton.attr('disabled') === 'disabled') {
-        return;
-      }
-      $submitButton.attr('disabled', 'disabled');
-      $submitButton.val('Считаем ...');
-      $('#form').submit();
-    });
-  })
-</script>
+  <script>
+    $(() => {
+      const $submitButton = $('#submitButton')
+      $submitButton.on('click', () => {
+        if ($submitButton.attr('disabled') === 'disabled') {
+          return
+        }
+        $submitButton.attr('disabled', 'disabled')
+        $submitButton.val('Считаем ...')
+        $('#form').submit()
+      })
+    })
+  </script>
 {% endblock %}

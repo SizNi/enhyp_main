@@ -136,7 +136,7 @@ class UpdateUserForm(UserCreationForm):
         ),
     )
     password1 = forms.CharField(
-        label=_("Пароль"),
+        label=_("Новый пароль"),
         label_suffix="",
         max_length=100,
         required=True,

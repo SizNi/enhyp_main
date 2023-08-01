@@ -254,7 +254,11 @@ class ZsoFirstCreateForm(forms.ModelForm):
         initial="random",
         label=_("Тип распределения параметров в интервале"),
         required=True,
-    )
+        widget=forms.Select(attrs={"class": "form-control"}),
+        help_text=_(
+            "Выбор типа распределения параметров в интервале min - max"
+        ),
+        )
 
     class Meta:
         model = Zso
