@@ -21,15 +21,16 @@
             {% if field.help_text %}
               <small class="form-text text-muted">{{ field.help_text }}</small>
             {% endif %}
+            {% for error in field.errors %}
+              <small class="form-text" style="color: red;">{{ error }}</small>
+            {% endfor %}
           </div>
         </div>
         {% if forloop.counter|divisibleby:2 or forloop.last %}
           </div>
         {% endif %}
       {% endfor %}
-      {% for error in create_form.errors %}
-        <small class="form-text" style="color: red;">{{ error }}</small>
-      {% endfor %}
+
       <div class="form-group">
         <button class="btn btn-primary" role="button">{% translate 'Далее' %}</button>
       </div>

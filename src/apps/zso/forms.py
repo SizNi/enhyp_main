@@ -1,8 +1,4 @@
 from django import forms
-from django.conf import settings
-from django.contrib.auth import authenticate
-from django.core.validators import RegexValidator
-from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from apps.zso.models import Zso
 
@@ -35,6 +31,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
             }
         ),
     )
+
     i_min = forms.FloatField(
         label=_("Минимальное значение уклона потока подземных вод"),
         label_suffix="",
@@ -61,10 +58,13 @@ class ZsoFirstCreateForm(forms.ModelForm):
             }
         ),
     )
+
     alfa_min = forms.FloatField(
         label=_("Минимальное значение направления потока подземных вод"),
         label_suffix="",
         required=True,
+        min_value=0.0,
+        max_value=360.0,
         help_text=_("градусы от 0 до 360"),
         widget=forms.NumberInput(
             attrs={
@@ -78,6 +78,8 @@ class ZsoFirstCreateForm(forms.ModelForm):
         label=_("Максимальное значение направления потока подземных вод"),
         label_suffix="",
         required=True,
+        min_value=0.0,
+        max_value=360.0,
         help_text=_("градусы от 0 до 360"),
         widget=forms.NumberInput(
             attrs={
@@ -87,6 +89,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
             }
         ),
     )
+
     m_min = forms.FloatField(
         label=_("Минимальное значение мощности водоносного пласта"),
         label_suffix="",
@@ -139,6 +142,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
             }
         ),
     )
+
     well_numbers = forms.IntegerField(
         label=_("Количество скважин"),
         label_suffix="",
@@ -255,10 +259,52 @@ class ZsoFirstCreateForm(forms.ModelForm):
         label=_("Тип распределения параметров в интервале"),
         required=True,
         widget=forms.Select(attrs={"class": "form-control"}),
-        help_text=_(
-            "Выбор типа распределения параметров в интервале min - max"
-        ),
-        )
+        help_text=_("Выбор типа распределения параметров в интервале min - max"),
+    )
+
+    # валидатор
+    def clean(self):
+        cleaned_data = super().clean()
+        k_f_min = cleaned_data.get("k_f_min")
+        k_f_max = cleaned_data.get("k_f_max")
+        i_min = cleaned_data.get("i_min")
+        i_max = cleaned_data.get("i_max")
+        alfa_min = cleaned_data.get("alfa_min")
+        alfa_max = cleaned_data.get("alfa_max")
+        m_min = cleaned_data.get("m_min")
+        m_max = cleaned_data.get("m_max")
+        por_min = cleaned_data.get("por_min")
+        por_max = cleaned_data.get("por_max")
+        if k_f_min and k_f_max:
+            if float(k_f_min) >= float(k_f_max):
+                self.add_error(
+                    "k_f_min",
+                    "Минимальное значение коэффициента фильтрации должно быть меньше максимального значения.",
+                )
+        if i_min and i_max:
+            if float(i_min) >= float(i_max):
+                self.add_error(
+                    "i_min",
+                    "Минимальное значение уклона должно быть меньше максимального значения.",
+                )
+        if alfa_min and alfa_max:
+            if float(alfa_min) >= float(alfa_max):
+                self.add_error(
+                    "alfa_min",
+                    "Минимальное значение угла потока должно быть меньше максимального значения.",
+                )
+        if m_min and m_max:
+            if float(m_min) >= float(m_max):
+                self.add_error(
+                    "m_min",
+                    "Минимальное значение мощности пласта должно быть меньше максимального значения.",
+                )
+        if por_min and por_max:
+            if float(por_min) >= float(por_max):
+                self.add_error(
+                    "por_min",
+                    "Минимальное значение пористости должно быть меньше максимального значения.",
+                )
 
     class Meta:
         model = Zso
