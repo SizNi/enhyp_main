@@ -39,18 +39,23 @@ class ZsoFirstCreateView(CreateView):
             return render(request, "zso/create.html", context)
 
 
+# вторая форма, строится на основании количества скважин (из первой формы)
 @method_decorator(login_required, name="dispatch")
 class ZsoSecondCreateView(UpdateView):
     def get(self, request, *args, **kwargs):
         zso_id = kwargs.get("pk")
         zso = Zso.objects.get(id=zso_id)
         well_numbers = zso.well_numbers
-        context = {"well_numbers": range(1, well_numbers + 1)}
+        context = {}
+        context["form"] = []
+        for i in range(well_numbers):
+            context["form"].append({"id": i + 1, "debits": "", "x": "", "y": ""})
         return render(request, "zso/create_second.html", context)
 
     def post(self, request, *args, **kwargs):
         # получение данных
         form = request.POST
+        print(form)
         zso_id = kwargs.get("pk")
         zso = Zso.objects.get(id=zso_id)
         debit_value = form.getlist("debits")
@@ -75,9 +80,31 @@ class ZsoSecondCreateView(UpdateView):
                 elem = elem.replace(",", ".")
             y_value = list(map(int, y_value))
             y_json = json.dumps(y_value)
+        # обработка незаполненных полей
         else:
+            # это надо для заполнения формы старыми значениями
             well_numbers = zso.well_numbers
-            context = {"well_numbers": range(1, well_numbers + 1)}
+            context = {}
+            context["form"] = []
+            debit_value = [
+                float(x) if x and x.replace(".", "").isdigit() else x
+                for x in debit_value
+            ]
+            x_value = [
+                int(x) if x and x.replace(".", "").isdigit() else x for x in x_value
+            ]
+            y_value = [
+                int(x) if x and x.replace(".", "").isdigit() else x for x in y_value
+            ]
+            for i in range(well_numbers):
+                context["form"].append(
+                    {
+                        "id": i + 1,
+                        "debits": debit_value[i],
+                        "x": x_value[i],
+                        "y": y_value[i],
+                    }
+                )
             messages.error(request, _("Некорректные данные: поля не заполнены"))
             return render(request, "zso/create_second.html", context)
         # сериализация для записи в бд и сохранение формы

@@ -33,10 +33,12 @@ class ZsoFirstCreateForm(forms.ModelForm):
     )
 
     i_min = forms.FloatField(
-        label=_("Минимальное значение уклона потока подземных вод"),
+        label=_("Минимальное значение градиента потока подземных вод"),
         label_suffix="",
+        min_value=0.0,
+        max_value=1.0,
         required=True,
-        help_text=_("градусы"),
+        help_text=_("м/м"),
         widget=forms.NumberInput(
             attrs={
                 "step": 0.0001,
@@ -46,10 +48,12 @@ class ZsoFirstCreateForm(forms.ModelForm):
         ),
     )
     i_max = forms.FloatField(
-        label=_("Максимальное значение уклона потока подземных вод"),
+        label=_("Максимальное значение градиента потока подземных вод"),
         label_suffix="",
+        min_value=0.0,
+        max_value=1.0,
         required=True,
-        help_text=_("градусы"),
+        help_text=_("м/м"),
         widget=forms.NumberInput(
             attrs={
                 "step": 0.0001,
@@ -149,7 +153,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
         required=True,
         min_value=1,
         max_value=10,
-        help_text=_("штука"),
+        help_text=_("штук"),
         widget=forms.NumberInput(
             attrs={
                 "step": 1,
@@ -165,7 +169,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
         required=True,
         min_value=1,
         max_value=200,
-        help_text=_("штука"),
+        help_text=_("штук"),
         widget=forms.NumberInput(
             attrs={
                 "step": 1,
@@ -276,34 +280,34 @@ class ZsoFirstCreateForm(forms.ModelForm):
         por_min = cleaned_data.get("por_min")
         por_max = cleaned_data.get("por_max")
         if k_f_min and k_f_max:
-            if float(k_f_min) >= float(k_f_max):
+            if float(k_f_min) > float(k_f_max):
                 self.add_error(
                     "k_f_min",
-                    "Минимальное значение коэффициента фильтрации должно быть меньше максимального значения.",
+                    "Минимальное значение коэффициента фильтрации должно быть меньше или равно максимальному значению.",
                 )
         if i_min and i_max:
-            if float(i_min) >= float(i_max):
+            if float(i_min) > float(i_max):
                 self.add_error(
                     "i_min",
-                    "Минимальное значение уклона должно быть меньше максимального значения.",
+                    "Минимальное значение уклона должно быть меньше или равно максимальному значению.",
                 )
         if alfa_min and alfa_max:
-            if float(alfa_min) >= float(alfa_max):
+            if float(alfa_min) > float(alfa_max):
                 self.add_error(
                     "alfa_min",
-                    "Минимальное значение угла потока должно быть меньше максимального значения.",
+                    "Минимальное значение угла потока должно быть меньше или равно максимальному значению.",
                 )
         if m_min and m_max:
-            if float(m_min) >= float(m_max):
+            if float(m_min) > float(m_max):
                 self.add_error(
                     "m_min",
-                    "Минимальное значение мощности пласта должно быть меньше максимального значения.",
+                    "Минимальное значение мощности пласта должно быть меньше или равно максимальному значению.",
                 )
         if por_min and por_max:
-            if float(por_min) >= float(por_max):
+            if float(por_min) > float(por_max):
                 self.add_error(
                     "por_min",
-                    "Минимальное значение пористости должно быть меньше максимального значения.",
+                    "Минимальное значение пористости должно быть меньше или равно максимальному значению.",
                 )
 
     class Meta:
