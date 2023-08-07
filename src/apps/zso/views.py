@@ -55,7 +55,6 @@ class ZsoSecondCreateView(UpdateView):
     def post(self, request, *args, **kwargs):
         # получение данных
         form = request.POST
-        print(form)
         zso_id = kwargs.get("pk")
         zso = Zso.objects.get(id=zso_id)
         debit_value = form.getlist("debits")

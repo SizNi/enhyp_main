@@ -6,13 +6,35 @@ authors = ["SizNi <wwwwwwwww@list.ru>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "<3.12,>=3.8"
 django = "^4.2.3"
 black = "^23.3.0"
 python-dotenv = "^1.0.0"
 i18n = "^0.2"
 django-bootstrap4 = "^23.2"
 pillow = "^10.0.0"
+matplotlib = "^3.7.1"
+pandas = "^2.0.1"
+imod = "^0.13.1"
+seaborn = "^0.12.2"
+findent = "^4.2.6"
+fprettify = "^0.3.7"
+scipy = "^1.10.1"
+tqdm = "^4.65.0"
+bytesbufio = "^1.0.3"
+pycairo = "^1.23.0"
+ipython = "^8.9.0"
+drawsvg = "^1.9.0"
+docxtpl = "^0.16.6"
+qrcode = "^7.4.2"
+requests = "^2.29.0"
+mercantile = "^1.2.1"
+py-staticmaps = {extras = ["cairo"], version = "^0.4.0"}
+pyproj = "^3.5.0"
+msoffice2pdf = "^0.0.8"
+pypdf2 = "^3.0.1"
+img2pdf = "^0.4.4"
+reportlab = "3.5.2"
 
 
 [build-system]
