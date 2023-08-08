@@ -24,7 +24,6 @@ tqdm = "^4.65.0"
 bytesbufio = "^1.0.3"
 pycairo = "^1.23.0"
 ipython = "^8.9.0"
-drawsvg = "^1.9.0"
 docxtpl = "^0.16.6"
 qrcode = "^7.4.2"
 requests = "^2.29.0"
@@ -35,6 +34,7 @@ msoffice2pdf = "^0.0.8"
 pypdf2 = "^3.0.1"
 img2pdf = "^0.4.4"
 reportlab = "3.5.2"
+drawsvg = "^2.3.0"
 
 
 [build-system]
