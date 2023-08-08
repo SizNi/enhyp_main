@@ -1,6 +1,6 @@
 import math
 import drawSvg as draw
-from well_section_counter.format import frmt
+from format import frmt
 
 # отрисовка геологических крапов
 # ГОСТ Р 21.302-2021

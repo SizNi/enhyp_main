@@ -13,7 +13,7 @@ class BirdListView(ListView):
 
 # View for adding birds
 class BirdAddView(TemplateView):
-    template_name = "well_section/test_form.html"
+    template_name = "well_section/test_2.html"
 
     # Define method to handle GET request
     def get(self, *args, **kwargs):

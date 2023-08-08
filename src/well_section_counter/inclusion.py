@@ -1,5 +1,5 @@
 import drawSvg as draw
-from well_section_counter.format import frmt
+from format import frmt
 
 # вкрапления
 

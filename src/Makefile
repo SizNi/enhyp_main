@@ -47,3 +47,6 @@ compile:
 # старт серверов базы данных
 dbstart:
 	sudo service postgresql start
+
+vue:
+	cd form && npm install && npm run build

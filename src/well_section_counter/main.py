@@ -1,10 +1,10 @@
-import drawsvg as draw
+import drawSvg as draw
 import math
-from well_section_counter.index_colours import colour, convertation
-from well_section_counter.specks import speck
-from well_section_counter.format import frmt
-from well_section_counter.inclusion import inclus
-from well_section_counter.fixtures import well_data_4
+from index_colours import colour, convertation
+from specks import speck
+from format import frmt
+from inclusion import inclus
+from fixtures import well_data_4
 
 # from fixtures import well_data_3
 
@@ -615,5 +615,5 @@ def well(d, well_dt):
 
 
 if __name__ == "__main__":
-    path = "drawing/generated_cross.png"
+    path = "well_section_counter/generated_cross.png"
     main(well_data_4, path)
