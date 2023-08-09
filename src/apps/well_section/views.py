@@ -8,12 +8,12 @@ from django.shortcuts import redirect
 
 class BirdListView(ListView):
     model = Bird
-    template_name = "well_section/test.html"
+    template_name = "well_section/create_form.html"
 
 
 # View for adding birds
 class BirdAddView(TemplateView):
-    template_name = "well_section/test_form.html"
+    template_name = "well_section/create_form.html"
 
     # Define method to handle GET request
     def get(self, *args, **kwargs):
