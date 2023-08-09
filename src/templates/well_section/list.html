@@ -7,7 +7,7 @@
       {% translate "Ваши разрезы"%}
     </h1>
       <div class="form-group">
-        <a href="#" class="btn btn-info" role="button">{% translate "Создать разрез скважины"%}</a>
+        <a href="{% url 'well_section_create' %}" class="btn btn-info" role="button">{% translate "Создать разрез скважины"%}</a>
 </div>
 <table class="table table-striped">
 <thead> 
@@ -24,9 +24,9 @@
         <td>{{ elem.name }}</td>
         <td>{{ elem.created_at }}</td>
         <td>
-          <a href="{% url '#' organization.id %}">{% translate "Изменить"%}</a>
+          <a href="#">{% translate "Изменить"%}</a>
           <br>
-          <a href="{% url '#' organization.id %}">{% translate "Удалить"%}</a>
+          <a href="#">{% translate "Удалить"%}</a>
         </td>
       </tr>
     {% endfor %}
