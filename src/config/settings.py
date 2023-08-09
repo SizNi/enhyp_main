@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "apps.organizations.apps.OrganizationsConfig",
     "apps.well_section.apps.WellSectionConfig",
     "bootstrap4",
+    #"app",
 ]
 
 MIDDLEWARE = [
@@ -61,6 +62,7 @@ TEMPLATES = [
             BASE_DIR / "templates" / "organizations",
             BASE_DIR / "templates" / "zso",
             BASE_DIR / "templates" / "well_section",
+            BASE_DIR / "templates" / "well_section / form",
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -73,6 +75,9 @@ TEMPLATES = [
         },
     },
 ]
+
+STATICFILES_DIRS = ( os.path.join(BASE_DIR,'static/'),)
+STATIC_URL = '/static/'
 
 WSGI_APPLICATION = "config.wsgi.application"
 

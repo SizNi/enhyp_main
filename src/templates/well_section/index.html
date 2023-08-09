@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% bootstrap_css %}
+{% load static %}
+{% block content %}
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vite App</title>
+    {% comment %} <script type="module" crossorigin src="assets/index-9eb2f77f.js"></script> {% endcomment %}
+    <script src="{% static 'assets/index-9eb2f77f.js' %}" defer></script>
+    {% comment %} <link rel="stylesheet" href="static/assets/index-3ef5c228.css"> {% endcomment %}
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/index-3ef5c228.css' %}">
+  </head>
+  <body>
+    <div id="app"></div>
+    
+  </body>
+  {% endblock %}
