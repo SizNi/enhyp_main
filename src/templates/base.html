@@ -23,7 +23,7 @@
           </li>
           {% if request.user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'well_section_test' %}">{% trans 'Колонка скважины' %}</a>
+              <a class="nav-link" href="{% url 'well_section_list' %}"> {% trans 'Вертикальный разрез скважины' %} </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">{% trans 'Паспорт скважины' %}</a>

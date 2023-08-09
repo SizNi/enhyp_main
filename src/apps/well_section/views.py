@@ -1,32 +1,26 @@
 # views.py
 from django.views.generic import ListView, TemplateView  # Import TemplateView
-from .models import Bird
-from .forms import BirdFormSet  # Import the formset
+from .models import WellSection
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
-
-class BirdListView(ListView):
-    model = Bird
-    template_name = "well_section/create_form.html"
+@method_decorator(login_required, name="dispatch")
+class WellSectionListView(ListView):
+    model = WellSection
+    paginate_by = 10
+    
+    def get(self, request, *args, **kwargs):
+        user_well_sections = request.user.well_section.all()
+        return render(
+            request,
+            template_name="well_section/list.html",
+            context={"well_sections": user_well_sections, "title": "Well sections"},
+        )
 
 
 # View for adding birds
-class BirdAddView(TemplateView):
+class WellSectionCreateView(TemplateView):
     template_name = "well_section/create_form.html"
-
-    # Define method to handle GET request
-    def get(self, *args, **kwargs):
-        # Create an instance of the formset
-        formset = BirdFormSet(queryset=Bird.objects.none())
-        return self.render_to_response({"bird_formset": formset})
-
-    def post(self, *args, **kwargs):
-        formset = BirdFormSet(data=self.request.POST)
-
-        # Check if submitted forms are valid
-        if formset.is_valid():
-            formset.save()
-            return redirect(reverse_lazy("bird_list"))
-
-        return self.render_to_response({"bird_formset": formset})
