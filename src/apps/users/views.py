@@ -19,12 +19,16 @@ class LoginView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = {}
         form = LoginUserForm()
+        next_url = request.GET.get("next", "/")
+        print(next_url)
+        context["next"] = next_url
         context["login_form"] = form
         return render(request, "users/login.html", context)
 
     def post(self, request, *args, **kwargs):
         context = {}
         form = LoginUserForm(request.POST)
+        next_url = request.POST.get("next", "/")
 
         if form.is_valid():
             username = request.POST["username"]
@@ -33,8 +37,10 @@ class LoginView(TemplateView):
 
             if user:
                 login(request, user)
+
+                print(next_url)
                 messages.info(request, _("Вы залогинены"))
-                return redirect("home")
+                return redirect(next_url)
         messages.error(
             request,
             _(
@@ -43,6 +49,7 @@ class LoginView(TemplateView):
             ),
         )
         context["login_form"] = form
+        context["next"] = next_url
         return render(request, "users/login.html", context)
 
 
