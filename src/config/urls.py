@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from config import views
+from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -14,6 +14,11 @@ urlpatterns = (
         ),
         path("zso/", include("apps.zso.urls"), name="zso"),
         path("well_section/", include("apps.well_section.urls"), name="well_section"),
+        path(
+            "passport_example/",
+            views.PassportExampleView.as_view(),
+            name="passport_example",
+        ),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
