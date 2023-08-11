@@ -211,6 +211,7 @@ import * as yup from "yup";
 import UiInput from "./components/ui/Input.vue";
 import errors from "@/messages/errors.js";
 import {ref, watch} from 'vue';
+import axios from "axios";
 
 const columnTypeValue = ref('Открытый ствол');
 
@@ -599,8 +600,16 @@ const addField = (type, subtype = null) => {
   validIndex.value = validationMap.size;
 };
 
+
 const submit = () => {
-  console.log(formData.value)
+  axios.post('/well_section/create/', formData.value)
+    .then(response => {
+      window.location.href=response.data.url
+      console.log(response.data, 'success');
+    })
+    .catch(error => {
+      console.error(error);
+    });
 };
 
 watch(columnTypeValue, (value) => {

@@ -6,6 +6,9 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.http import FileResponse, HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 
 @method_decorator(login_required, name="dispatch")
@@ -22,6 +25,11 @@ class WellSectionListView(ListView):
         )
 
 
-@method_decorator(login_required, name="dispatch")
+@method_decorator([csrf_exempt, login_required], name="dispatch")
 class WellSectionCreateView(TemplateView):
     template_name = "well_section/create_form.html"
+    
+    def post(self, request, *args, **kwargs):
+        data_json = json.loads(request.body)
+        print(data_json)
+        return JsonResponse({'url':'/'})
