@@ -326,13 +326,17 @@ const getDefaultValidationRule = {
 
 const fields = ref({
   well: {
-    depth: {
+    project_name: {
+      label: "Название проекта",
+      required: true,
+    },
+    well_depth: {
       label: "Глубина скважины, м",
       required: true,
     }
   },
   casingString: [getDefaultField.casingString()],
-  filterColumn: {
+  columns: {
     diameter: {
       label: "Диаметр колонны, мм",
       required: true,
@@ -341,19 +345,19 @@ const fields = ref({
     intervals: [],
   },
   rigging: {
-    pumpName: {
+    pump_type: {
       label: "Название насоса",
       required: false,
     },
-    pumpDepth: {
+    pump_depth: {
       label: "Глубина установки насоса, м",
       required: false,
     },
-    staticLvl: {
+    static_lvl: {
       label: "Статический уровень, м",
       required: false,
     },
-    dynamicLvl: {
+    dynamic_lvl: {
       label: "Динамический уровень, м",
       required: false,
     }

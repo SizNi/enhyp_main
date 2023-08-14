@@ -28,8 +28,9 @@ class WellSectionListView(ListView):
 @method_decorator([csrf_exempt, login_required], name="dispatch")
 class WellSectionCreateView(TemplateView):
     template_name = "well_section/create_form.html"
-    
+
     def post(self, request, *args, **kwargs):
         data_json = json.loads(request.body)
         print(data_json)
-        return JsonResponse({'url':'/'})
+        print(type(data_json))
+        return JsonResponse({"url": "/"})
