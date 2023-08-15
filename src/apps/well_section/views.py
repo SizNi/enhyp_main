@@ -25,14 +25,26 @@ class WellSectionListView(ListView):
             context={"well_sections": user_well_sections, "title": "Well sections"},
         )
 
-
+# переписать
 @method_decorator([csrf_exempt, login_required], name="dispatch")
 class WellSectionCreateView(TemplateView):
     template_name = "well_section/create_form.html"
 
     def post(self, request, *args, **kwargs):
+        # это в бд
         data_json = json.loads(request.body)
-        handler_front(data_json)
+        # это в следующий вью
+        image = handler_front(data_json)
+        return JsonResponse({"url": "/"})
+
+# дописать
+@method_decorator(login_required, name="dispatch")
+class WellSectionCreatedView(TemplateView):
+    template_name = "well_section/create_form.html"
+
+    def post(self, request, *args, **kwargs):
+        data_json = json.loads(request.body)
+        image = handler_front(data_json)
         print(data_json)
         print(type(data_json))
         return JsonResponse({"url": "/"})

@@ -61,5 +61,4 @@ def handler_front(data):
                 "inclusions": tuple(horizon["inclusions"]),
             }
         result_data["layers"] = layers
-        main(result_data)
-    print(result_data)
+        return(main(result_data))

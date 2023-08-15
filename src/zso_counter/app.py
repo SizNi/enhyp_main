@@ -1,30 +1,7 @@
 from zso_counter.main_counter import main
 from zso_counter.map import front_map
 from tqdm import tqdm
-import numpy as np
 from zso_counter.start_parameters import distribution_array
-import json
-from io import BytesIO
-
-"""
-# количество итераций
-iteration_count = 100
-# размеры модели в блоках
-n_x = n_y = 40
-# координаты скважин
-n_x_skv = np.array([20, 30, 25])
-n_y_skv = np.array([20, 15, 20])
-# размер блока
-b_size = 10.0
-# приращение
-d_x = np.full(n_x, b_size)
-d_y = np.full(n_y, b_size)
-# временной шаг
-d_t = 1
-# количество временных шагов
-n_step = 200
-# тип распределения параметров
-type = "random" """
 
 
 def app_start(

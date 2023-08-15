@@ -5,6 +5,8 @@ from well_section_counter.format import frmt
 from well_section_counter.inclusion import inclus
 from well_section_counter.fixtures import well_data_4
 import drawSvg as draw
+from PIL import Image
+from io import BytesIO
 
 
 # размер листа А4 при плотности пикселей 300 dpi
@@ -31,9 +33,8 @@ def main(well_dt, path = "generated_cross.png"):
     layers(d, well_depth, well_dt)
     # отрисовывает все относящиеся к скважине
     well(d, well_dt)
-    d.savePng(path)
-    # почему-то Svg криво работает, половина графики не отображается
-    # d.saveSvg('example_svg.svg')
+    # d.savePng(path)
+    return d.rasterize().asDataUri
 
 
 # выбор масштаба (размер секции и количество секций)
