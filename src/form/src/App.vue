@@ -330,13 +330,13 @@ const fields = ref({
       label: "Название проекта",
       required: true,
     },
-    well_depth: {
+    depth: {
       label: "Глубина скважины, м",
       required: true,
     }
   },
   casingString: [getDefaultField.casingString()],
-  columns: {
+  filterColumn: {
     diameter: {
       label: "Диаметр колонны, мм",
       required: true,
@@ -345,19 +345,19 @@ const fields = ref({
     intervals: [],
   },
   rigging: {
-    pump_type: {
+    pumpName: {
       label: "Название насоса",
       required: false,
     },
-    pump_depth: {
+    pumpDepth: {
       label: "Глубина установки насоса, м",
       required: false,
     },
-    static_lvl: {
+    staticLvl: {
       label: "Статический уровень, м",
       required: false,
     },
-    dynamic_lvl: {
+    dynamicLvl: {
       label: "Динамический уровень, м",
       required: false,
     }
