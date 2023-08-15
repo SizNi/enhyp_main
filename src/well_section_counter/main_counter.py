@@ -1,21 +1,18 @@
-import drawsvg as draw
 import math
 from well_section_counter.index_colours import colour, convertation
 from well_section_counter.specks import speck
 from well_section_counter.format import frmt
 from well_section_counter.inclusion import inclus
 from well_section_counter.fixtures import well_data_4
+import drawSvg as draw
 
-# from fixtures import well_data_3
-
-# from fixtures import well_data_2
 
 # размер листа А4 при плотности пикселей 300 dpi
 
 width, height, koef = frmt("a4")
 
 
-def main(well_dt, path):
+def main(well_dt, path = "generated_cross.png"):
     well_depth = well_dt["well_data"]["well_depth"]
     d = draw.Drawing(width, height, origin=(0, 0), displayInline=False)
     # Подложка
@@ -612,8 +609,3 @@ def well(d, well_dt):
                 str(well_dt["well_data"]["pump_type"]), 20, path=p, text_anchor="left"
             )
         )
-
-
-if __name__ == "__main__":
-    path = "drawing/generated_cross.png"
-    main(well_data_4, path)

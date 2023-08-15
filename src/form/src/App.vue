@@ -436,7 +436,18 @@ const setError = (type, subtype, name, index, error) => {
 
 const updateForm = ({name, value, type, subtype, index}) => {
   let validationRule = "";
+  console.log(type)
   switch (type) {
+    case "rigging": {
+      if (!Object.hasOwn(formData.value, type)) {
+        formData.value[type] = {}
+      }
+      
+      formData.value[type][name] = value;
+      validationRule = `${type}-${name}`;
+      break;
+    }
+
     case "well": {
       if (!Object.hasOwn(formData.value, type)) {
         formData.value[type] = {}

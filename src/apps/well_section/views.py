@@ -9,6 +9,7 @@ from django.utils.decorators import method_decorator
 from django.http import FileResponse, HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from well_section_counter.handler import handler_front
 
 
 @method_decorator(login_required, name="dispatch")
@@ -31,6 +32,7 @@ class WellSectionCreateView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         data_json = json.loads(request.body)
+        handler_front(data_json)
         print(data_json)
         print(type(data_json))
         return JsonResponse({"url": "/"})
