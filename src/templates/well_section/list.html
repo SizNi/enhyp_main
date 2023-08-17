@@ -22,7 +22,7 @@
     {% for elem in well_sections %}
       <tr>
         <td>{{ elem.name }}</td>
-        <td>{{ elem.created_at }}</td>
+        <td>{{ elem.created_at|date:"d E Y в H:i" }}</td>
         <td>
           <a href="{% url 'well_section_result' elem.id %}">{% translate "Посмотреть"%}</a>
           <br>

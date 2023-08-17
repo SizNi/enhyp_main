@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "apps.zso.apps.ZsoConfig",
     "apps.organizations.apps.OrganizationsConfig",
     "apps.well_section.apps.WellSectionConfig",
+    "apps.well_passport.apps.WellPassportConfig",
     "bootstrap4",
 ]
 
@@ -61,6 +62,7 @@ TEMPLATES = [
             BASE_DIR / "templates" / "organizations",
             BASE_DIR / "templates" / "zso",
             BASE_DIR / "templates" / "well_section",
+            BASE_DIR / "templates" / "well_passport",
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -120,7 +122,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ru"
 
 TIME_ZONE = "UTC"
 

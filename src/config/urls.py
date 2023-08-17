@@ -15,6 +15,9 @@ urlpatterns = (
         path("zso/", include("apps.zso.urls"), name="zso"),
         path("well_section/", include("apps.well_section.urls"), name="well_section"),
         path(
+            "well_passport/", include("apps.well_passport.urls"), name="well_passport"
+        ),
+        path(
             "passport_example/",
             views.PassportExampleView.as_view(),
             name="passport_example",
