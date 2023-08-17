@@ -122,7 +122,7 @@ class ZsoSecondCreateView(UpdateView):
             context = {}
             context["image"] = image_data
             context["df"] = main_df_base64
-            messages.info(request, _("Расчет завершен!"))
+            messages.success(request, _("Расчет завершен!"))
             return render(request, "zso/result.html", context)
         else:
             context = {}

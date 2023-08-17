@@ -1,12 +1,13 @@
 from well_section_counter.main_counter import main
 
+
 # обработчик получаемого с фронта в бек
 def handler_front(data):
     result_data = {}
     # заполнение данных скважины
-    if data["casingString"]:
-        casing_data = data.get("casingString", [])
-        columns = {}
+    casing_data = data.get("casingString", [])
+    columns = {}
+    if casing_data:
         for i, casing in enumerate(casing_data):
             columns[i + 1] = {
                 "id": i + 1,
@@ -47,9 +48,9 @@ def handler_front(data):
         "well_depth": float(data["well"]["depth"]),
     }
     # заполнение геологических слоев
-    if data["horizons"]:
-        layers = {}
-        horizons_data = data.get("horizons", [])
+    horizons_data = data.get("horizons", [])
+    layers = {}
+    if horizons_data:
         for i, horizon in enumerate(horizons_data):
             layers[i + 1] = {
                 "id": i + 1,
@@ -61,4 +62,6 @@ def handler_front(data):
                 "inclusions": tuple(horizon["inclusions"]),
             }
         result_data["layers"] = layers
-        return(main(result_data))
+        if data["well"]["project_name"]:
+            result_data["project_name"] = data["well"]["project_name"]
+        return result_data

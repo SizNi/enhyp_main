@@ -14,7 +14,7 @@ from io import BytesIO
 width, height, koef = frmt("a4")
 
 
-def main(well_dt, path = "generated_cross.png"):
+def main(well_dt, path="generated_cross.png"):
     well_depth = well_dt["well_data"]["well_depth"]
     d = draw.Drawing(width, height, origin=(0, 0), displayInline=False)
     # Подложка
@@ -287,10 +287,10 @@ def layers(d, well_depth, dt):
         x_start += 12
         # преобразование отложений из кортежа в строку для описания разреза
         sediments_text = (", ".join(data[elem]["sediments"])).capitalize()
-        if "interlayers" in data[elem]:
+        if "interlayers" in data[elem] and data[elem]["interlayers"] != []:
             sediments_text += ". Прослои: " + ", ".join(data[elem]["interlayers"])
         # добавление вкраплений
-        if "inclusions" in data[elem]:
+        if "inclusions" in data[elem] and data[elem]["inclusions"] != []:
             sediments_text += ". Вкрапления: " + ", ".join(data[elem]["inclusions"])
         rectangle(
             d, x_start, y_start, 30, -data[elem]["thick"] * scale_m, sediments_text, "h"

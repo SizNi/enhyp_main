@@ -24,9 +24,9 @@
         <td>{{ elem.name }}</td>
         <td>{{ elem.created_at }}</td>
         <td>
-          <a href="#">{% translate "Изменить"%}</a>
+          <a href="{% url 'well_section_result' elem.id %}">{% translate "Посмотреть"%}</a>
           <br>
-          <a href="#">{% translate "Удалить"%}</a>
+          <a href="{% url 'well_section_delete' elem.id %}">{% translate "Удалить"%}</a>
         </td>
       </tr>
     {% endfor %}

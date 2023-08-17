@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+
+{% block content %}
+<div class="container wrapper flex-grow-1">
+      
+
+
+    <h1 class="my-4">
+{% trans 'Удаление разреза' %}   
+
+
+    </h1>
+    
+<p>{% trans 'Вы уверены, что хотите удалить разрез?' %}</p>
+<i>{% trans 'Отменить это действие невозможно' %} </i>
+<form method="post">
+{% csrf_token %}
+<input type="hidden">
+<input type="hidden" name="confirm" value="true">
+<input class="btn btn-danger" type="submit" value="{% trans 'Да, удалить' %}">
+</form>
+
+  </div>
+{% endblock %}
