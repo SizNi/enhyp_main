@@ -17,6 +17,7 @@ class WellPassport(models.Model):
     )
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    project_name = models.CharField(max_length=100, blank=True)
     # основные поля
     well_number = models.CharField(max_length=100, blank=True)
     passport_type = models.CharField(max_length=100, blank=True)
@@ -66,7 +67,7 @@ class WellPassport(models.Model):
     )
     # связь с разрезом
     well_section = models.OneToOneField(
-        "apps.well_section.WellSection",
+        "well_section.WellSection",
         on_delete=models.CASCADE,
         related_name="passport",
     )
