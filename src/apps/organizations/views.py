@@ -19,7 +19,7 @@ def index(request):
 
 
 @method_decorator(login_required, name="dispatch")
-class MyOrganizationsView(TemplateView):
+class OrganizationsListView(TemplateView):
     template_name = "organizations/list.html"
 
     def get(self, request, *args, **kwargs):
@@ -98,7 +98,7 @@ class OrganizationUpdateView(UpdateView):
             organization.user = request.user
             organization.save()
             messages.info(request, _("Информация обновлена"))
-            return redirect("home")
+            return redirect("organizations_mine")
         else:
             context["update_form"] = form
             return render(request, "organizations/update.html", context)

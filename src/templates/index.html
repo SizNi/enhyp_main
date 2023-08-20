@@ -7,7 +7,7 @@
 {% block assets %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% translate "Геология"%}</title>
+    <title>{% translate "Геология" %}</title>
     <style>
         .section {
             display: flex;
@@ -20,10 +20,13 @@
         .section img {
             max-width: 300px;
             margin-left: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         .section-content {
             flex: 1;
+            padding-left: 20px; /* Добавленный отступ слева */
         }
 
         .btn {
@@ -38,31 +41,36 @@
 {% endblock%}  
 {% block content %}
     <div class="section">
-        <img src="media/geology/example_zso.png" alt="Изображение 1">
+        <div class="img-container">
+            <img src="media/geology/example_zso.png" alt="Изображение 1">
+        </div>
         <div class="section-content">
-            <h2>{% translate "Построение вероятностных контуров зон санитарной охраны"%}</h2>
-            <p>{% translate "Численно-аналитический вероятностный подход к моделированию миграции и построению зон захвата позволяет оптимизировать размеры зон санитарной охраны и с большой достоверностью отображает реальную картину миграции, по сравнению с аналитbческими и обычными численно-аналитическими моделями"%}</p>
-            <a href="{% url 'zso_create' %}" class="btn">{% translate "Перейти"%}</a>
+            <h2>{% translate "Построение вероятностных контуров зон санитарной охраны" %}</h2>
+            <p>{% translate "Численно-аналитический вероятностный подход к моделированию миграции и построению зон захвата позволяет оптимизировать размеры зон санитарной охраны и с большой достоверностью отображает реальную картину миграции, по сравнению с аналитическими и обычными численно-аналитическими моделями" %}</p>
+            <a href="{% url 'zso_create' %}" class="btn">{% translate "Перейти" %}</a>
         </div>
     </div>
 
     <div class="section">
-        <img src="media/geology/example_well.png" alt="Изображение 2">
+        <div class="img-container">
+            <img src="media/geology/example_well.png" alt="Изображение 2">
+        </div>
         <div class="section-content">
-            <h2>{% translate "Построение вертикального разреза скважины"%}</h2>
-            <p>{% translate "Расчленение по цветам выполнено на основании общей геохронологической шкалы ВСЕГЕИ https://vsegei.ru/ru/info/stratigraphy/stratigraphic_scale/. Добавленный интервал: четвертичные отложения - девонские отложения (за исключением палеогена). Отрисовка геологических крапов в соответствии с ГОСТ Р 21.302-2021. Подогнано под формат печати - А4."%}</p>
-            <a href="{% url 'well_section_list' %}" class="btn">{% translate "Перейти"%}</a>
+            <h2>{% translate "Построение вертикального разреза скважины" %}</h2>
+            <p>{% translate "Расчленение по цветам выполнено на основании общей геохронологической шкалы ВСЕГЕИ https://vsegei.ru/ru/info/stratigraphy/stratigraphic_scale/. Добавленный интервал: четвертичные отложения - девонские отложения (за исключением палеогена). Отрисовка геологических крапов в соответствии с ГОСТ Р 21.302-2021. Подогнано под формат печати - А4." %}</p>
+            <a href="{% url 'well_section_list' %}" class="btn">{% translate "Перейти" %}</a>
         </div>
     </div>
 
     <div class="section">
-        <img src="media/geology/example_passport.png" alt="Изображение 3">
+        <div class="img-container">
+            <img src="media/geology/example_passport.png" alt="Изображение 3">
+        </div>
         <div class="section-content">
-            <h2>{% translate "Формирование паспорта скважины"%}</h2>
-            <p>{% translate "Упрощает создание документации на скважину, самостоятельно подтягивает карту по координатам, добавляет разрез скважины, позволяет прикрепить необходимые приложения к паспорту. Для создания паспорта необходимо создать организацию, реквизиты которой будут указаны в паспорте"%}</p>
-            <a href="#" class="btn">{% translate "Перейти"%}</a>
-            <a href="{% url 'passport_example' %}" target="_blank" class="btn btn-primary">{% translate "Пример паспорта"%}</a>
-
+            <h2>{% translate "Формирование паспорта скважины" %}</h2>
+            <p>{% translate "Упрощает создание документации на скважину, самостоятельно подтягивает карту по координатам, добавляет разрез скважины, позволяет прикрепить необходимые приложения к паспорту. Для создания паспорта необходимо создать организацию, реквизиты которой будут указаны в паспорте" %}</p>
+            <a href="#" class="btn">{% translate "Перейти" %}</a>
+            <a href="{% url 'passport_example' %}" target="_blank" class="btn btn-primary">{% translate "Пример паспорта" %}</a>
         </div>
     </div>
 {% endblock %}
