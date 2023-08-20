@@ -10,18 +10,48 @@
     <h1 class="my-4">{% translate 'Добавление организации' %}</h1>
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      {% for field in create_form %}
-        <div class="form-group">
-          {{ field.label_tag }}
-          {{ field }}
-          {% if field.help_text %}
-            <small class="form-text text-muted">{{ field.help_text }}</small>
-          {% endif %}
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            {{ create_form.org_name.label_tag }}
+            {{ create_form.org_name }}
+          </div>
+          <div class="form-group">
+            {{ create_form.inn.label_tag }}
+            {{ create_form.inn }}
+          </div>
+          <div class="form-group">
+            {{ create_form.address.label_tag }}
+            {{ create_form.address }}
+          </div>
+          <div class="form-group">
+            {{ create_form.email.label_tag }}
+            {{ create_form.email }}
+          </div>
         </div>
-      {% endfor %}
-      {% for error in create_form.errors %}
-        <small class="form-text" style=" color: red;">{{ error }}</small>
-      {% endfor %}
+        <div class="col-md-6">
+          <div class="form-group">
+            {{ create_form.phone.label_tag }}
+            {{ create_form.phone }}
+          </div>
+          <div class="form-group">
+            {{ create_form.ceo_name.label_tag }}
+            {{ create_form.ceo_name }}
+          </div>
+          <div class="form-group">
+            {{ create_form.originator_position.label_tag }}
+            {{ create_form.originator_position }}
+          </div>
+          <div class="form-group">
+            {{ create_form.originator_name.label_tag }}
+            {{ create_form.originator_name }}
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        {{ create_form.logo.label_tag }}
+        {{ create_form.logo }}
+      </div>
       <div class="form-group">
         {% csrf_token %}
         <input class="btn btn-primary" type="submit" value="Далее" />

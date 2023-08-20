@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% block content %}
+<div class="container wrapper flex-grow-1">
+    <h1 class="my-4">
+      {% translate "Ваши паспорта скважин"%}
+    </h1>
+      <div class="form-group">
+        <a href="#" class="btn btn-info" role="button">{% translate "Создать паспорт скважины"%}</a>
+</div>
+<table class="table table-striped">
+<thead> 
+  <tr>
+    <th>{% translate "Наименование проекта"%}</th>
+    <th>{% translate "Организация составитель"%}</th>
+    <th>{% translate "Дата создания"%}</th>
+    <th></th>
+  </tr>
+</thead>
+<tbody>
+  {% if well_passports %}
+    {% for elem in well_passports %}
+      <tr>
+        <td>{{ elem.project_name }}</td>
+        <td>{{ elem.organization }}</td>
+        <td>{{ elem.created_at|date:"d E Y в H:i" }}</td>
+        <td>
+          <a href="#">{% translate "Посмотреть"%}</a>
+          <br>
+          <a href="#">{% translate "Изменить"%}</a>
+          <br>
+          <a href="#">{% translate "Удалить"%}</a>
+        </td>
+      </tr>
+    {% endfor %}
+{% endif %}
+</tbody>
+</table>
+</div>
+{% endblock %}

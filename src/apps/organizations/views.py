@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect
 import uuid
 import os
 from django.contrib import messages
-from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView
-from django.http import HttpResponse
+from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView, View
+from django.http import HttpResponse, HttpResponseRedirect
 from apps.organizations.forms import CreateOrganizationForm, UpdateOrganizationForm
 from django.utils.translation import gettext_lazy as _
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.files.storage import default_storage
 from django.contrib.auth.decorators import login_required
@@ -71,6 +71,7 @@ class OrganizationUpdateView(UpdateView):
         if current_user.id == organization.user_id:
             form = UpdateOrganizationForm(instance=organization)
             context["update_form"] = form
+            context["id"] = org_id
             if organization.logo:
                 context["logo"] = organization.logo
             return render(request, "organizations/update.html", context)
@@ -124,3 +125,33 @@ class OrganizationDeleteView(DeleteView):
                 print(f"Ошибка при удалении логотипа: {e}")
         messages.info(request, _("Организация удалена"))
         return super().delete(request, *args, **kwargs)
+
+
+@method_decorator(login_required, name="dispatch")
+class OrganizationLogoDeleteView(View):
+    def get(self, request, *args, **kwargs):
+        org_id = kwargs.get("pk")
+        current_user = request.user
+        context = {}
+        organization = Organization.objects.get(id=org_id)
+        if current_user.id == organization.user_id:
+            context["logo"] = organization.logo
+            return render(request, "organizations/delete_logo.html", context)
+        else:
+            messages.error(request, _("Сюда не ходите."))
+            return redirect("organizations_mine")
+
+    def post(self, request, *args, **kwargs):
+        org_id = kwargs.get("pk")
+        current_user = request.user
+        organization = Organization.objects.get(id=org_id)
+        if current_user.id == organization.user_id:
+            # Удаление логотипа из базы данных и файловой системы
+            try:
+                logo_path = organization.logo.path
+                os.remove(logo_path)
+                organization.logo.delete()
+                messages.info(request, _("Логотип удален"))
+            except Exception as e:
+                print(f"Ошибка при удалении логотипа: {e}")
+        return HttpResponseRedirect(reverse("organization_update", args=[org_id]))

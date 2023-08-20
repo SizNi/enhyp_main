@@ -16,4 +16,9 @@ urlpatterns = [
         views.OrganizationDeleteView.as_view(),
         name="organization_delete",
     ),
+    path(
+        "<int:pk>/update/logo_delete",
+        views.OrganizationLogoDeleteView.as_view(),
+        name="logo_delete_view",
+    ),
 ]

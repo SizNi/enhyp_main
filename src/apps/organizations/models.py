@@ -11,6 +11,9 @@ class Organization(models.Model):
     address = models.CharField(max_length=200)
     email = models.EmailField()
     phone = models.CharField(max_length=15)
+    ceo_name = models.CharField(max_length=25)
+    originator_position = models.CharField(max_length=25)
+    originator_name = models.CharField(max_length=25)
     logo = models.ImageField(upload_to="logos/")
 
     def __str__(self):

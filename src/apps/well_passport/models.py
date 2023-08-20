@@ -21,53 +21,54 @@ class WellPassport(models.Model):
     # основные поля
     well_number = models.CharField(max_length=100, blank=True)
     passport_type = models.CharField(max_length=100, blank=True)
-    republic = models.CharField(max_length=100)
-    region = models.CharField(max_length=100)
-    district = models.CharField(max_length=100)
-    location = models.CharField(max_length=200)
-    well_owner = models.CharField(max_length=200)
-    mailing_adress = models.CharField(max_length=200)
-    NL = models.CharField(max_length=40)
-    SL = models.CharField(max_length=40)
-    ground_lvl = models.FloatField()
-    well_type = models.CharField(max_length=200)
-    well_purpose = models.CharField(max_length=200)
-    drilling_method = models.CharField(max_length=200)
-    rig = models.CharField(max_length=200)
-    project_owner = models.CharField(max_length=200)
-    drilling_company = models.CharField(max_length=200)
-    start = models.DateField()
-    end = models.DateField()
-    finishing = models.DateField()
+    republic = models.CharField(max_length=100, null=True)
+    region = models.CharField(max_length=100, null=True)
+    district = models.CharField(max_length=100, null=True)
+    location = models.CharField(max_length=200, null=True)
+    well_owner = models.CharField(max_length=200, null=True)
+    mailing_adress = models.CharField(max_length=200, null=True)
+    NL = models.CharField(max_length=40, null=True)
+    SL = models.CharField(max_length=40, null=True)
+    ground_lvl = models.FloatField(null=True)
+    well_type = models.CharField(max_length=200, null=True)
+    well_purpose = models.CharField(max_length=200, null=True)
+    drilling_method = models.CharField(max_length=200, null=True)
+    rig = models.CharField(max_length=200, null=True)
+    project_owner = models.CharField(max_length=200, null=True)
+    drilling_company = models.CharField(max_length=200, null=True)
+    start = models.DateField(null=True)
+    end = models.DateField(null=True)
+    finishing = models.DateField(null=True)
     # дополнительная информация по скважине
-    pump_power = models.FloatField()
-    pump_column = models.FloatField()
-    debit = models.FloatField()
+    pump_power = models.FloatField(null=True)
+    pump_column = models.FloatField(null=True)
+    debit = models.FloatField(null=True)
     # общие данные, требующие сериализации
-    gis_data = models.CharField(max_length=400)
-    ofr_data = models.CharField(max_length=400)
+    gis_data = models.CharField(max_length=400, null=True)
+    ofr_data = models.CharField(max_length=400, null=True)
     # это должно присосаться к well_data['cementation'] и тоже сериализовать
-    cementation_data = models.CharField(max_length=400)
+    cementation_data = models.CharField(max_length=400, null=True)
     # дополнительные файлы
     gis = models.FileField(
-        upload_to="well_passport/gis/", validators=[validate_file_size]
+        upload_to="well_passport/gis/", validators=[validate_file_size], null=True
     )
     analyses = models.FileField(
-        upload_to="well_passport/analyses/", validators=[validate_file_size]
+        upload_to="well_passport/analyses/", validators=[validate_file_size], null=True
     )
     acts = models.FileField(
-        upload_to="well_passport/acts/", validators=[validate_file_size]
+        upload_to="well_passport/acts/", validators=[validate_file_size], null=True
     )
     sro = models.FileField(
-        upload_to="well_passport/sro/", validators=[validate_file_size]
+        upload_to="well_passport/sro/", validators=[validate_file_size], null=True
     )
-    others_apps_name = models.CharField(max_length=200)
+    others_apps_name = models.CharField(max_length=200, null=True)
     others_apps = models.FileField(
-        upload_to="well_passport/others/", validators=[validate_file_size]
+        upload_to="well_passport/others/", validators=[validate_file_size], null=True
     )
     # связь с разрезом
     well_section = models.OneToOneField(
         "well_section.WellSection",
         on_delete=models.CASCADE,
         related_name="passport",
+        null=True,
     )

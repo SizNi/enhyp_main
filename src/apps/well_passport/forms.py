@@ -5,8 +5,8 @@ from apps.well_passport.models import WellPassport
 
 class WellPassportCreateForm(forms.ModelForm):
     TYPE_CHOICES = (
-        ('', 'Первичный'),
-        ('восстановленный', 'Восстановленный'),
+        ("", "Первичный"),
+        ("восстановленный", "Восстановленный"),
     )
     # Заголовок "Общие данные"
     project_name = forms.CharField(
@@ -21,7 +21,12 @@ class WellPassportCreateForm(forms.ModelForm):
         ),
     )
     organization = forms.ChoiceField(
-        widget=forms.Select(attrs={'class': 'form-control', "class": "form-control",}),
+        widget=forms.Select(
+            attrs={
+                "class": "form-control",
+                "class": "form-control",
+            }
+        ),
         label=_("Выберите организацию-составителя паспорта"),
         label_suffix="",
         required=True,
@@ -40,10 +45,13 @@ class WellPassportCreateForm(forms.ModelForm):
     )
     passport_type = forms.ChoiceField(
         label=_("Тип паспорта"),
-        initial='',
+        initial="",
         choices=TYPE_CHOICES,
         widget=forms.Select(
-        attrs={'class': 'form-control',}),
+            attrs={
+                "class": "form-control",
+            }
+        ),
     )
     # Заголовок "Местоположение скважины"
     republic = forms.CharField(
@@ -105,10 +113,11 @@ class WellPassportCreateForm(forms.ModelForm):
         label=_("Почтовый адрес владельца скважины"),
         label_suffix="",
         required=True,
-
         widget=forms.TextInput(
             attrs={
-                "placeholder": _("364024, Чеченская республика, г. Грозны, р-н Ахматовский, ул. Назарбаева 116'"),
+                "placeholder": _(
+                    "364024, Чеченская республика, г. Грозны, р-н Ахматовский, ул. Назарбаева 116'"
+                ),
                 "class": "form-control",
             }
         ),
@@ -279,26 +288,26 @@ class WellPassportCreateForm(forms.ModelForm):
     class Meta:
         model = WellPassport
         fields = (
-            'well_number',
-            'passport_type',
-            'republic',
-            'region',
-            'district',
-            'location',
-            'well_owner',
-            'mailing_address',
-            'NL',
-            'SL',
-            'ground_level',
-            'well_type',
-            'well_purpose',
-            'drilling_method',
-            'rig',
-            'project_owner',
-            'drilling_company',
-            'start',
-            'end',
-            'pump_power',
-            'pump_column',
-            'debit',
+            "well_number",
+            "passport_type",
+            "republic",
+            "region",
+            "district",
+            "location",
+            "well_owner",
+            "mailing_address",
+            "NL",
+            "SL",
+            "ground_level",
+            "well_type",
+            "well_purpose",
+            "drilling_method",
+            "rig",
+            "project_owner",
+            "drilling_company",
+            "start",
+            "end",
+            "pump_power",
+            "pump_column",
+            "debit",
         )

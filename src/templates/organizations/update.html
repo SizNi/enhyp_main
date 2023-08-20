@@ -6,27 +6,47 @@
 {% bootstrap_messages %}
 
 {% block content %}
-  <!-- Если профиль организации уже создан надо поменять кнопку на просто профиль организации-->
+  <!-- Если профиль организации уже создан, кнопку можно заменить на "Профиль организации" -->
   <div class="container wrapper flex-grow-1">
     <h1 class="my-4">{% translate 'Обновление информации' %}</h1>
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      {% for field in update_form %}
-          {{field.label_tag}}
-          {{field}}
-          {% if field.help_text %}
-          <small class="form-text text-muted">{{field.help_text}}</small>
+      <div class="row">
+        <div class="col-md-6">
+          {% for field in update_form.visible_fields %}
+            <div class="form-group">
+              {{ field.label_tag }}
+              {{ field }}
+              {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+        <div class="col-md-6">
+          {% for field in update_form.hidden_fields %}
+            <div class="form-group">
+              {{ field }}
+            </div>
+          {% endfor %}
+          {% if logo %}
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">{% translate 'Текущий логотип:' %}</h5>
+                <img src="{{ logo.url }}" style="max-height: 100px" class="img-fluid">
+              </div>
+              <div class="card-footer">
+                <a href="{% url 'logo_delete_view' id %}" class="btn btn-danger mt-2 float-end">{% translate 'Удалить логотип' %}</a>
+              </div>
+            </div>
           {% endif %}
-      {% endfor %}
-      {% if logo %}
-      <b class="form-text"> {% translate 'Текущий логотип:' %}</b>
-      <img src="{{ logo.url }}" style="max-height:200px">
-      {% endif %}
+        </div>
+      </div>
       {% for error in update_form.errors %}
-      <small class="form-text", style=" color: red;">{{error}}</small>
+        <small class="form-text text-danger">{{ error }}</small>
       {% endfor %}
       <div class="form-group">
-        <input class="btn btn-primary" type="submit" value="Изменить" />
+        <input class="btn btn-primary" type="submit" value="{% translate 'Изменить' %}" />
       </div>
     </form>
   </div>

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+
+{% block content %}
+<div class="container wrapper flex-grow-1">
+    <h1 class="my-4">{% trans 'Удаление логотипа' %}</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <p>{% trans 'Вы уверены, что хотите удалить логотип?' %}</p>
+            <i>{% trans 'Отменить не получится' %}</i>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden">
+                <input class="btn btn-danger" type="submit" value="{% trans 'Да, удалить' %}">
+            </form>
+        </div>
+        <div class="col-md-6">
+            {% if logo %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{% trans 'Текущий логотип:' %}</h5>
+                    <img src="{{ logo.url }}" style="max-height: 100px" class="img-fluid">
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

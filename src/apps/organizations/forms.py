@@ -94,7 +94,46 @@ class CreateOrganizationForm(forms.ModelForm):
             }
         ),
     )
+    ceo_name = forms.CharField(
+        label=_("ФИО генерально директора"),
+        max_length=100,
+        label_suffix="",
+        required=True,
+        help_text=_("Обязательное поле, будет отображено на титуле"),
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": _("И.И. Иванов"),
+                "class": "form-control",
+            }
+        ),
+    )
+    originator_position = forms.CharField(
+        label=_("Должность составителя паспорта"),
+        max_length=100,
+        label_suffix="",
+        required=True,
+        help_text=_("Обязательное поле, будет отображено в конце паспорта"),
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": _("Гидрогеолог"),
+                "class": "form-control",
+            }
+        ),
+    )
 
+    originator_name = forms.CharField(
+        label=_("ФИО составителя паспорта"),
+        max_length=100,
+        label_suffix="",
+        required=True,
+        help_text=_("Обязательное поле, будет отображено в конце паспорта"),
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": _("В.В. Ватутин"),
+                "class": "form-control",
+            }
+        ),
+    )
     logo = forms.ImageField(
         label=_("Логотип"),
         required=False,
@@ -108,7 +147,17 @@ class CreateOrganizationForm(forms.ModelForm):
 
     class Meta:
         model = Organization
-        fields = ["org_name", "inn", "address", "email", "phone", "logo"]
+        fields = [
+            "org_name",
+            "inn",
+            "address",
+            "email",
+            "phone",
+            "ceo_name",
+            "originator_position",
+            "originator_name",
+            "logo",
+        ]
 
 
 class UpdateOrganizationForm(forms.ModelForm):
