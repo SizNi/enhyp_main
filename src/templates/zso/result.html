@@ -9,15 +9,22 @@
   <div class="container wrapper flex-grow-1">
     <h1 class="my-4">{% translate 'Результат расчета' %}</h1>
     <style>
-        #image {
-        max-width: 800px;
-        width: 100%;
-        height: auto;
+        .download-item {
+            margin-top: 20px;
+        }
+        .download-item img,
+        .download-item a {
+            display: block;
+            max-width: 600px;
+            width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
         }
     </style>
-    <img id="image" src="data:image/png;base64,{{ image }}" alt="Изображение">
-    <div class="form-group">
-        {% csrf_token %}
+    <div class="download-item">
+        <img src="data:image/png;base64,{{ image }}" alt="Изображение">
         <a href="data:image/png;base64,{{ image }}" download="result.png" class="btn btn-primary" role="button">{% translate "Скачать изображение"%}</a>
         <a href="data:text/csv;base64,{{ df }}" download="dataset.csv" class="btn btn-primary" role="button">{% translate "Скачать данные"%}</a>
     </div>

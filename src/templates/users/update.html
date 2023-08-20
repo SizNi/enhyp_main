@@ -11,7 +11,7 @@
     <h1 class="my-4">{% translate 'Обновление информации' %}</h1>
       <div class="form-group">
         <a href="{% url 'organization_create' %}" class="btn btn-info" role="button">{% translate "Добавить профиль организации"%}</a>
-        <a href="{% url 'organizations_mine' %}" class="btn btn-info" role="button">{% translate "Список организаций"%}</a>
+        <a href="{% url 'organizations_mine' %}" class="btn btn-info" role="button">{% translate "Список моих организаций"%}</a>
       </div>
     <form method="post">
       {% csrf_token %}

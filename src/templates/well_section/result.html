@@ -7,21 +7,25 @@
 
 {% block content %}
   <div class="container wrapper flex-grow-1">
-    <h1 class="my-4">{% translate 'Разрез скважины' %} {{ project_name}}</h1>
+    <h1 class="my-4">{% translate 'Разрез скважины' %} {{ project_name }}</h1>
     <style>
-        #image {
-        max-width: 800px;
-        width: 100%;
-        height: auto;
-        }
         .form-group {
             margin-top: 40px; /* Измените значение по вашему усмотрению */
         }
+        .download-item img,
+        .download-item a {
+            display: block;
+            max-width: 600px;
+            width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
     </style>
-    <img id="image" src="{{ image }}" alt="Изображение">
-    <div class="form-group">
-        {% csrf_token %}
-        <a href="{{ image }}" download="result.png" class="btn btn-primary" role="button">{% translate "Скачать изображение"%}</a>
+    <div class="download-item">
+        <img id="image" src="{{ image }}" alt="Изображение">
+        <a href="{{ image }}" download="result.png" class="btn btn-primary" role="button">{% translate "Скачать изображение" %}</a>
     </div>
   </div>
 {% endblock %}
