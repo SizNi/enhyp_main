@@ -3,6 +3,7 @@ from django.urls import path, include
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from config.views import TestMailView
 
 urlpatterns = (
     [
@@ -22,6 +23,8 @@ urlpatterns = (
             views.PassportExampleView.as_view(),
             name="passport_example",
         ),
+        ######################
+        path("test_mail/", views.TestMailView.as_view(), name="test_mail"),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

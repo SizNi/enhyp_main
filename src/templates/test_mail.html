@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+
+{% block content %}
+<div class="container wrapper flex-grow-1">
+      
+
+
+    <h1 class="my-4">
+{% trans 'Отправка письма' %}   
+
+
+    </h1>
+    
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden">
+  <input type="hidden" name="confirm" value="true">
+  <input class="btn btn-danger" type="submit" value="{% trans 'Да, отправить' %}">
+</form>
+
+  </div>
+{% endblock %}
