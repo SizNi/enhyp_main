@@ -107,12 +107,10 @@ class CreateUserForm(UserCreationForm):
         fields = ("username", "email", "password1", "password2")
 
 
-class UpdateUserForm(UserCreationForm):
+class UpdateUserForm(forms.ModelForm):
     username = forms.CharField(
         label=_("Имя пользователя"),
-        max_length=20,
         label_suffix="",
-        required=True,
         help_text=_("Обязательное поле. " "Не более 20 символов."),
         widget=forms.TextInput(
             attrs={
@@ -126,8 +124,6 @@ class UpdateUserForm(UserCreationForm):
     email = forms.EmailField(
         label=_("Электронная почта"),
         label_suffix="",
-        max_length=100,
-        required=True,
         widget=forms.TextInput(
             attrs={
                 "placeholder": _("Электронная почта"),
@@ -138,8 +134,6 @@ class UpdateUserForm(UserCreationForm):
     password1 = forms.CharField(
         label=_("Новый пароль"),
         label_suffix="",
-        max_length=100,
-        required=True,
         help_text=_("Ваш пароль должен содержать " "как минимум 3 символа."),
         widget=forms.PasswordInput(
             attrs={
@@ -151,8 +145,6 @@ class UpdateUserForm(UserCreationForm):
     password2 = forms.CharField(
         label=_("Подтверждение пароля"),
         label_suffix="",
-        max_length=100,
-        required=True,
         help_text=_("Для подтверждения введите," " пожалуйста, пароль ещё раз."),
         widget=forms.PasswordInput(
             attrs={
@@ -165,3 +157,9 @@ class UpdateUserForm(UserCreationForm):
     class Meta:
         model = get_user_model()
         fields = ("username", "email", "password1", "password2")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Сделайте поле password1 необязательным
+        self.fields["password1"].required = False
+        self.fields["password2"].required = False

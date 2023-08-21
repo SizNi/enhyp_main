@@ -28,7 +28,6 @@ class TestMailView(View):
         return render(request, "test_mail.html", context)
 
     def post(self, request, *args, **kwargs):
-        print('test')
         print(send_mail(
             "Subject here",
             "Here is the message.",
