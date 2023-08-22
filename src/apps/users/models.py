@@ -9,6 +9,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=100, unique=True)
     password = models.CharField(max_length=100)
     date_joined = models.DateTimeField(default=timezone.now)
+    confirmed = models.BooleanField(default=False)
+    confirmation_code = models.CharField(max_length=20, blank=True, null=True)
+    confirmation_code_dt = models.DateTimeField(blank=True, null=True)
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email", "password"]

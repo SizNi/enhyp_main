@@ -9,8 +9,9 @@ from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.core.mail import send_mail
-from django.conf import settings
+from .confirmation import mail_confirmation
+from django.utils import timezone
+from datetime import timedelta
 
 
 def index(request):
@@ -22,7 +23,6 @@ class LoginView(TemplateView):
         context = {}
         form = LoginUserForm()
         next_url = request.GET.get("next", "/")
-        print(next_url)
         context["next"] = next_url
         context["login_form"] = form
         return render(request, "users/login.html", context)
@@ -36,11 +36,8 @@ class LoginView(TemplateView):
             username = request.POST["username"]
             password = request.POST["password"]
             user = authenticate(username=username, password=password)
-
             if user:
                 login(request, user)
-
-                print(next_url)
                 messages.info(request, _("Вы залогинены"))
                 return redirect(next_url)
         messages.error(
@@ -76,9 +73,8 @@ class CreateView(CreateView):
             form.save()
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password1")
-            email = form.cleaned_data.get("email")
             user = authenticate(username=username, password=password)
-            if user:
+            if user is not None:
                 login(request, user)
                 messages.info(
                     request,
@@ -87,7 +83,8 @@ class CreateView(CreateView):
                     ),
                 )
                 try:
-                    mail_confirmation(username, email, "reg")
+                    # функция отправки почты для верифицкации
+                    mail_confirmation(user)
                 except Exception as e:
                     messages.error(
                         request,
@@ -122,7 +119,7 @@ class UserUpdateView(UpdateView):
 
     def post(
         self, request, *args, **kwargs
-    ):  # изменение работает некорректно, нельзя оставить старое имя пользователя и при пустом поле пароля все сбивается
+    ):
         context = {}
         user_id = kwargs.get("pk")
         user = CustomUser.objects.get(id=user_id)
@@ -131,6 +128,7 @@ class UserUpdateView(UpdateView):
         if form.is_valid():
             new_email = form.cleaned_data.get("email")
             username = form.cleaned_data.get("username")
+            # если поменялся пароль
             if form.cleaned_data.get("password1"):
                 password = form.cleaned_data.get("password1")
                 user.set_password(password)
@@ -138,15 +136,20 @@ class UserUpdateView(UpdateView):
                 password = user.password
             user = authenticate(username=username, password=password)
             form.save()
+            # если поменялся емейл
             if new_email != user_email:
                 try:
-                    mail_confirmation(username, new_email, "upd")
+                    user.confirmation_code_dt = timezone.now
+                    user.confirmed = False
+                    mail_confirmation(user)
                     messages.info(
                         request,
                         _(
                             "Профиль изменен, письмо с подтверждением для нового почтового адреса отправлено"
                         ),
                     )
+                    login(request, user)
+                    return redirect("home")
                 except Exception as e:
                     messages.error(
                         request,
@@ -167,17 +170,39 @@ class UserUpdateView(UpdateView):
             return render(request, "users/update.html", context)
 
 
-def mail_confirmation(username, user_mail, status):
-    message = f"""
-            Добрый день, {username}, для подтверждения адреса перейдите по ссылке:<br>
-            <a href="https://enhyp.ru/">ссылка</a>
-            """
-    send_mail(
-        "Подтверждение почтового адреса",
-        f"Добрый день, {username}, для подтверждения адреса перейдите по ссылке",
-        settings.EMAIL_HOST_USER,
-        [f"{user_mail}"],
-        # ["q7j4lypoikqg@mail.ru"],
-        fail_silently=False,
-        html_message=message,
-    )
+class UserVerificationView(TemplateView):
+    
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        # проверка, что пользователь авторизован
+        if user is not None:
+            verification_code = kwargs.get("verification_code")
+            user_verification_code = user.confirmation_code
+            expiration_time = user.confirmation_code_dt + timedelta(days=7)
+            current_time = timezone.now()
+            context = {}
+            # устанавливаем срок действия ссылки
+            if current_time > expiration_time:
+                messages.error(
+                request, _("Истек срок действия ссылки. Запросите новую в своем профиле") # новую надо реализовать
+                )
+                return redirect("user_update")
+            # сраниваем коды верификации
+            if verification_code == user_verification_code and len(verification_code) != 0:
+                user.confirmed = True
+                user.confirmation_code = ""
+                user.save()
+                context["email"] = user.email
+                context["name"] = user.username
+                messages.success(request, _("Почта подтверждена!"))
+                return render(request, "users/mail_verification.html", context)
+            else:
+                messages.error(
+                    request, _("Верификация не удалась, обратитесь к администратору")
+                )
+                return redirect("home")
+        else:
+            messages.error(
+                request, _("Сначала залогиньтесь")
+            )
+            return redirect("user_login")
