@@ -9,7 +9,7 @@ class Organization(models.Model):
     org_name = models.CharField(max_length=100)
     inn = models.CharField(max_length=12)
     address = models.CharField(max_length=200)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15)
     ceo_name = models.CharField(max_length=25)
     originator_position = models.CharField(max_length=25)

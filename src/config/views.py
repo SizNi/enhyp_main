@@ -17,22 +17,26 @@ class PassportExampleView(View):
             return FileResponse(open(pdf_path, "rb"), content_type="application/pdf")
         else:
             return HttpResponse("PDF not found", status=404)
+
+
 ##############################
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 
-class TestMailView(View):
 
+class TestMailView(View):
     def get(self, request, *args, **kwargs):
         context = {}
         return render(request, "test_mail.html", context)
 
     def post(self, request, *args, **kwargs):
-        print(send_mail(
-            "Subject here",
-            "Here is the message.",
-            settings.EMAIL_HOST_USER,
-            ["wwwwwwwww@list.ru"],
-            fail_silently=False,
-        ))
+        print(
+            send_mail(
+                "Subject here",
+                "Here is the message.",
+                settings.EMAIL_HOST_USER,
+                ["wwwwwwwww@list.ru"],
+                fail_silently=False,
+            )
+        )
         return redirect("home")

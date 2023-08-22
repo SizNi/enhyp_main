@@ -81,12 +81,20 @@ class CreateView(CreateView):
             if user:
                 login(request, user)
                 messages.info(
-                    request, _("Пользователь успешно зарегистрирован и залогинен. Подтвердите вашу почту")
+                    request,
+                    _(
+                        "Пользователь успешно зарегистрирован и залогинен. Подтвердите вашу почту"
+                    ),
                 )
                 try:
-                    mail_confirmation(username, email, 'reg')
+                    mail_confirmation(username, email, "reg")
                 except Exception as e:
-                    messages.error(request, _("Произошла ошибка при отправке письма с подтверждением. Пожалуйста, свяжитесь с администратором."))
+                    messages.error(
+                        request,
+                        _(
+                            "Произошла ошибка при отправке письма с подтверждением. Пожалуйста, свяжитесь с администратором."
+                        ),
+                    )
                     print(f"Ошибка отправки почты: {e}")
                 return redirect("home")
         else:
@@ -112,7 +120,9 @@ class UserUpdateView(UpdateView):
             )
             return redirect("home")
 
-    def post(self, request, *args, **kwargs): # изменение работает некорректно, нельзя оставить старое имя пользователя и при пустом поле пароля все сбивается
+    def post(
+        self, request, *args, **kwargs
+    ):  # изменение работает некорректно, нельзя оставить старое имя пользователя и при пустом поле пароля все сбивается
         context = {}
         user_id = kwargs.get("pk")
         user = CustomUser.objects.get(id=user_id)
@@ -121,24 +131,33 @@ class UserUpdateView(UpdateView):
         if form.is_valid():
             new_email = form.cleaned_data.get("email")
             username = form.cleaned_data.get("username")
-            print(form.cleaned_data.get("password1"))
             if form.cleaned_data.get("password1"):
                 password = form.cleaned_data.get("password1")
                 user.set_password(password)
-                print('hoho')
             else:
                 password = user.password
             user = authenticate(username=username, password=password)
             form.save()
             if new_email != user_email:
                 try:
-                    mail_confirmation(username, new_email, 'upd')
-                    messages.info(request, _("Профиль изменен, письмо с подтверждением для нового почтового адреса отправлено"))
+                    mail_confirmation(username, new_email, "upd")
+                    messages.info(
+                        request,
+                        _(
+                            "Профиль изменен, письмо с подтверждением для нового почтового адреса отправлено"
+                        ),
+                    )
                 except Exception as e:
-                    messages.error(request, _("Произошла ошибка при отправке письма с подтверждением. Пожалуйста, свяжитесь с администратором."))
+                    messages.error(
+                        request,
+                        _(
+                            "Произошла ошибка при отправке письма с подтверждением. Пожалуйста, свяжитесь с администратором."
+                        ),
+                    )
                     print(f"Ошибка отправки почты: {e}")
             else:
                 messages.info(request, _("Профиль изменен"))
+                return redirect("home")
             if user:
                 login(request, user)
                 return redirect("home")
@@ -149,16 +168,16 @@ class UserUpdateView(UpdateView):
 
 
 def mail_confirmation(username, user_mail, status):
-        message = f"""
+    message = f"""
             Добрый день, {username}, для подтверждения адреса перейдите по ссылке:<br>
             <a href="https://enhyp.ru/">ссылка</a>
             """
-        send_mail(
-            "Подтверждение почтового адреса",
-            f"Добрый день, {username}, для подтверждения адреса перейдите по ссылке",
-            settings.EMAIL_HOST_USER,
-            [f"{user_mail}"],
-            # ["q7j4lypoikqg@mail.ru"],
-            fail_silently=False,
-            html_message=message,
-        )
+    send_mail(
+        "Подтверждение почтового адреса",
+        f"Добрый день, {username}, для подтверждения адреса перейдите по ссылке",
+        settings.EMAIL_HOST_USER,
+        [f"{user_mail}"],
+        # ["q7j4lypoikqg@mail.ru"],
+        fail_silently=False,
+        html_message=message,
+    )
