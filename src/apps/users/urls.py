@@ -8,5 +8,9 @@ urlpatterns = [
     path("registration/", views.CreateView.as_view(), name="user_create"),
     path("logout/", views.LogoutView.as_view(), name="user_logout"),
     path("<int:pk>/update/", views.UserUpdateView.as_view(), name="user_update"),
-    path('verification/<str:verification_code>/', views.UserVerificationView.as_view(), name='email_verification'),
+    path(
+        "verification/<str:verification_code>/",
+        views.UserVerificationView.as_view(),
+        name="email_verification",
+    ),
 ]

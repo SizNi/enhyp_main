@@ -117,9 +117,7 @@ class UserUpdateView(UpdateView):
             )
             return redirect("home")
 
-    def post(
-        self, request, *args, **kwargs
-    ):
+    def post(self, request, *args, **kwargs):
         context = {}
         user_id = kwargs.get("pk")
         user = CustomUser.objects.get(id=user_id)
@@ -128,6 +126,7 @@ class UserUpdateView(UpdateView):
         if form.is_valid():
             new_email = form.cleaned_data.get("email")
             username = form.cleaned_data.get("username")
+
             # если поменялся пароль
             if form.cleaned_data.get("password1"):
                 password = form.cleaned_data.get("password1")
@@ -135,21 +134,21 @@ class UserUpdateView(UpdateView):
             else:
                 password = user.password
             user = authenticate(username=username, password=password)
+            user = CustomUser.objects.get(id=user_id)
             form.save()
+
             # если поменялся емейл
             if new_email != user_email:
+                user.email = new_email
+                user.save()
+                login(request, user)
+                messages.info(
+                    request,
+                    _("Информация обновлена. Подтвердите вашу почту"),
+                )
                 try:
-                    user.confirmation_code_dt = timezone.now
-                    user.confirmed = False
+                    # функция отправки почты для верифицкации
                     mail_confirmation(user)
-                    messages.info(
-                        request,
-                        _(
-                            "Профиль изменен, письмо с подтверждением для нового почтового адреса отправлено"
-                        ),
-                    )
-                    login(request, user)
-                    return redirect("home")
                 except Exception as e:
                     messages.error(
                         request,
@@ -158,12 +157,13 @@ class UserUpdateView(UpdateView):
                         ),
                     )
                     print(f"Ошибка отправки почты: {e}")
+                return redirect("home")
             else:
                 messages.info(request, _("Профиль изменен"))
                 return redirect("home")
-            if user:
-                login(request, user)
-                return redirect("home")
+        if user:
+            login(request, user)
+            return redirect("home")
         else:
             context["update_form"] = form
             context["pk"] = user_id
@@ -171,7 +171,6 @@ class UserUpdateView(UpdateView):
 
 
 class UserVerificationView(TemplateView):
-    
     def get(self, request, *args, **kwargs):
         user = request.user
         # проверка, что пользователь авторизован
@@ -184,11 +183,17 @@ class UserVerificationView(TemplateView):
             # устанавливаем срок действия ссылки
             if current_time > expiration_time:
                 messages.error(
-                request, _("Истек срок действия ссылки. Запросите новую в своем профиле") # новую надо реализовать
+                    request,
+                    _(
+                        "Истек срок действия ссылки. Запросите новую в своем профиле"
+                    ),  # новую надо реализовать
                 )
                 return redirect("user_update")
             # сраниваем коды верификации
-            if verification_code == user_verification_code and len(verification_code) != 0:
+            if (
+                verification_code == user_verification_code
+                and len(verification_code) != 0
+            ):
                 user.confirmed = True
                 user.confirmation_code = ""
                 user.save()
@@ -202,7 +207,5 @@ class UserVerificationView(TemplateView):
                 )
                 return redirect("home")
         else:
-            messages.error(
-                request, _("Сначала залогиньтесь")
-            )
+            messages.error(request, _("Сначала залогиньтесь"))
             return redirect("user_login")
