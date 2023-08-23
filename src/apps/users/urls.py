@@ -13,4 +13,9 @@ urlpatterns = [
         views.UserVerificationView.as_view(),
         name="email_verification",
     ),
+    path(
+        "<int:pk>/email_confirmation/",
+        views.UserEmailConfirmationView.as_view(),
+        name="send_email_confirmation",
+    ),
 ]

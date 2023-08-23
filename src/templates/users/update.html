@@ -9,6 +9,18 @@
   <div class="container wrapper flex-grow-1">
 
     <h1 class="my-4">{% translate 'Обновление информации' %}</h1>
+      <div class="text-right mb-3">
+        <!-- Отображение статуса подтверждения email -->
+        {% if request.user.confirmed %}
+            <span class="badge badge-success">{% translate 'Email подтвержден' %}</span>
+        {% else %}
+            <span class="badge badge-danger">{% translate 'Email не подтвержден' %}</span>
+            <br>
+            <p style="font-size: smaller;">
+            <a href="{% url 'send_email_confirmation' request.user.id %}" class="btn btn-link btn-sm">{% translate 'Отправить повторно' %}</a>
+            </p>
+        {% endif %}
+      </div>
       <div class="form-group">
         <a href="{% url 'organization_create' %}" class="btn btn-info" role="button">{% translate "Добавить профиль организации"%}</a>
         <a href="{% url 'organizations_mine' %}" class="btn btn-info" role="button">{% translate "Список моих организаций"%}</a>

@@ -10,6 +10,6 @@
   <h1 class="my-4">
       {% trans 'Уважаемый' %}  {{ name }}, {% trans 'почта' %} {{ email }} {% trans 'подтверждена, к работе!' %}
   </h1>
-  <a class="btn btn-success" href="{% url 'home' %}">Пойду работать</a>
+  <a class="btn btn-primary" href="{% url 'home' %}">{% trans 'Пойду работать' %}</a>
 </div>
 {% endblock %}

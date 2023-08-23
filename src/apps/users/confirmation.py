@@ -8,6 +8,7 @@ from apps.users.models import CustomUser
 # тут отправляется случайно сгенерированная ссылка для подтверждения почты пользователя
 def mail_confirmation(user):
     conf_code = str(uuid.uuid4().hex)[:10]
+    user.confirmed = False
     user.confirmation_code = conf_code
     user.confirmation_code_dt = timezone.now()
     user.save()

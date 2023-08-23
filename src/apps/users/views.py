@@ -170,6 +170,7 @@ class UserUpdateView(UpdateView):
             return render(request, "users/update.html", context)
 
 
+@method_decorator(login_required, name="dispatch")
 class UserVerificationView(TemplateView):
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -209,3 +210,32 @@ class UserVerificationView(TemplateView):
         else:
             messages.error(request, _("Сначала залогиньтесь"))
             return redirect("user_login")
+
+
+@method_decorator(login_required, name="dispatch")
+class UserEmailConfirmationView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        current_user = request.user
+        user_id = kwargs.get("pk")
+        context = {}
+        if current_user.id == user_id:
+            user = CustomUser.objects.get(id=user_id)
+            context["name"] = user.username
+            context["email"] = user.email
+            try:
+                # функция отправки почты для верифицкации
+                mail_confirmation(user)
+            except Exception as e:
+                messages.error(
+                    request,
+                    _(
+                        "Произошла ошибка при отправке письма с подтверждением. Пожалуйста, свяжитесь с администратором."
+                    ),
+                )
+                print(f"Ошибка отправки почты: {e}")
+            return render(request, "users/send_email_confirmation.html", context)
+        else:
+            messages.error(
+                request, _("У вас нет прав для изменения другого пользователя.")
+            )
+            return redirect("home")
