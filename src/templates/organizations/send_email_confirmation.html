@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% bootstrap_messages %}
+
+{% block content %}
+<div class="container wrapper flex-grow-1">
+  <h1 class="my-4">
+      {% trans 'Уважаемые' %}  {{ name }}, {% trans 'на почту организации' %} {{ email }} {% trans 'отправлено письмо с подтверждением!' %}
+  </h1>
+  <a class="btn btn-primary" href="{% url 'home' %}">{% trans 'На главную' %}</a>
+</div>
+{% endblock %}

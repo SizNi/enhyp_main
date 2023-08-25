@@ -15,6 +15,9 @@ class Organization(models.Model):
     originator_position = models.CharField(max_length=25)
     originator_name = models.CharField(max_length=25)
     logo = models.ImageField(upload_to="logos/")
+    confirmed = models.BooleanField(default=False)
+    confirmation_code = models.CharField(max_length=20, blank=True, null=True)
+    confirmation_code_dt = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.org_name

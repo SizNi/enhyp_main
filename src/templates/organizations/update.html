@@ -9,6 +9,18 @@
   <!-- Если профиль организации уже создан, кнопку можно заменить на "Профиль организации" -->
   <div class="container wrapper flex-grow-1">
     <h1 class="my-4">{% translate 'Обновление информации' %}</h1>
+        <div class="text-right mb-3">
+        <!-- Отображение статуса подтверждения email -->
+        {% if email_status %}
+            <span class="badge badge-success">{% translate 'Email подтвержден' %}</span>
+        {% else %}
+            <span class="badge badge-danger">{% translate 'Email не подтвержден' %}</span>
+            <br>
+            <p style="font-size: smaller;">
+            <a href="{% url 'org_send_email_confirmation' id %}" class="btn btn-link btn-sm">{% translate 'Отправить повторно' %}</a>
+            </p>
+        {% endif %}
+      </div>
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="row">

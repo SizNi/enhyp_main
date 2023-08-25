@@ -21,4 +21,14 @@ urlpatterns = [
         views.OrganizationLogoDeleteView.as_view(),
         name="logo_delete_view",
     ),
+    path(
+        "verification/<str:verification_code>/",
+        views.OrganizationVerificationView.as_view(),
+        name="org_email_verification",
+    ),
+    path(
+        "<int:pk>/email_confirmation/",
+        views.OrganizationEmailConfirmationView.as_view(),
+        name="org_send_email_confirmation",
+    ),
 ]

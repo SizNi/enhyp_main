@@ -142,13 +142,13 @@ class UserUpdateView(UpdateView):
                 user.email = new_email
                 user.save()
                 login(request, user)
-                messages.info(
-                    request,
-                    _("Информация обновлена. Подтвердите вашу почту"),
-                )
                 try:
                     # функция отправки почты для верифицкации
                     mail_confirmation(user)
+                    messages.info(
+                        request,
+                        _("Информация обновлена. Подтвердите вашу почту"),
+                    )
                 except Exception as e:
                     messages.error(
                         request,

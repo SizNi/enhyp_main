@@ -12,10 +12,9 @@ def mail_confirmation(user):
     user.confirmation_code = conf_code
     user.confirmation_code_dt = timezone.now()
     user.save()
-    print({str(settings.BASE_URL_MAIL) + conf_code})
     message = f"""
             Добрый день, {user.username}, для подтверждения адреса перейдите по ссылке:<br>
-            <a href="{str(settings.BASE_URL_MAIL) + conf_code}">ссылка</a>
+            <a href="{str(settings.BASE_URL_MAIL) + 'users/verification/' + conf_code}">ссылка</a>
             """
     send_mail(
         "Подтверждение почтового адреса",
