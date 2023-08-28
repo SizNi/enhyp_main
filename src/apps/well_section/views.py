@@ -17,13 +17,22 @@ from django.urls import reverse_lazy
 class WellSectionListView(ListView):
     model = WellSection
     paginate_by = 10
+    template_name = ("well_section/list.html",)
 
     def get(self, request, *args, **kwargs):
         user_well_sections = request.user.well_section.all()
+        well_sections = [
+            {
+                "name": section.get_deserialized_name(),
+                "created_at": section.created_at,
+                "id": section.id,
+            }
+            for section in user_well_sections
+        ]
         return render(
             request,
-            template_name="well_section/list.html",
-            context={"well_sections": user_well_sections, "title": "Well sections"},
+            template_name=self.template_name,
+            context={"well_sections": well_sections, "title": "Well sections"},
         )
 
 

@@ -225,6 +225,10 @@ class UserEmailConfirmationView(TemplateView):
             try:
                 # функция отправки почты для верифицкации
                 mail_confirmation(user)
+                messages.info(
+                    request,
+                    _("Письмо с подтверждением отправлено на почту"),
+                )
             except Exception as e:
                 messages.error(
                     request,
