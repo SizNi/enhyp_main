@@ -284,6 +284,48 @@ class UpdateOrganizationForm(forms.ModelForm):
                         "Недопустимое расширение файла. Допустимы только файлы с расширениями .png, .jpg, .jpeg."
                     )
                 )
+        return logo
+
+    class Meta:
+        model = Organization
+        fields = ["org_name", "inn", "address", "email", "phone", "logo"]
+
+
+class UpdateOrganizationLogoForm(forms.ModelForm):
+    logo = forms.ImageField(
+        label=_("Логотип"),
+        required=False,
+        help_text=_(
+            "Необязательное поле. Будет отображаться на титуле паспорта скважины"
+        ),
+        widget=forms.FileInput(
+            attrs={
+                "multiple": False,
+                "class": "form-control",
+            }
+        ),
+    )
+
+    # проверка логотипа
+    def clean_logo(self):
+        logo = self.cleaned_data.get("logo")
+        if logo:
+            # Проверка размера
+            max_size = 5 * 1024 * 1024  # 5 МБ
+            if logo.size > max_size:
+                raise ValidationError(
+                    _("Размер логотипа превышает максимально допустимый размер (5 МБ).")
+                )
+
+            # Проверка расширения
+            allowed_extensions = ["png", "jpg", "jpeg"]
+            extension = str(logo.name).lower().split(".")[-1]
+            if extension not in allowed_extensions:
+                raise ValidationError(
+                    _(
+                        "Недопустимое расширение файла. Допустимы только файлы с расширениями .png, .jpg, .jpeg."
+                    )
+                )
         organization = self.instance
         if organization.logo:
             # Получаем путь к файлу старого логотипа
@@ -296,4 +338,4 @@ class UpdateOrganizationForm(forms.ModelForm):
 
     class Meta:
         model = Organization
-        fields = ["org_name", "inn", "address", "email", "phone", "logo"]
+        fields = ["logo"]

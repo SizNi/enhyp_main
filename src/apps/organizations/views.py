@@ -105,18 +105,17 @@ class OrganizationUpdateView(UpdateView):
         form = UpdateOrganizationForm(
             request.POST, request.FILES, instance=organization
         )
-        print(organization.logo)
+        old_logo = organization.logo
         if form.is_valid():
             organization = form.save(commit=False)
             new_email = organization.email
-            # лишнее но именует файл логотипа. переделать
-            # форма удаляет старое в любом случае, а если нового нет - то не перезаписывает. Поправить
+            # загружаем новый логотип если есть и удаляем старый
             try:
                 logo = request.FILES["logo"]
-                # filename = f"logos/{uuid.uuid4().hex}_{logo.name}"
-                filename = f"logos/{logo.name}"
+                filename = f"logos/{uuid.uuid4().hex}_{logo.name}"
                 filename = default_storage.save(filename, logo)
                 organization.logo = filename
+                default_storage.delete(old_logo.path)
             except MultiValueDictKeyError:
                 pass
             organization.save()
@@ -147,49 +146,6 @@ class OrganizationUpdateView(UpdateView):
         else:
             context = {"update_form": form}
             return render(request, "organizations/update.html", context)
-
-
-######################################################################## тестовый вью
-@method_decorator(login_required, name="dispatch")
-class TestOrganizationUpdateView(View):
-    template_name = "organizations/update.html"
-
-    def get(self, request, *args, **kwargs):
-        org_id = kwargs.get("pk")
-        try:
-            organization = Organization.objects.get(id=org_id, user=request.user)
-        except Organization.DoesNotExist:
-            messages.error(request, "Вы не можете редактировать эту организацию.")
-            return redirect("organizations_mine")
-
-        form = UpdateOrganizationForm(instance=organization)
-        return render(
-            request,
-            self.template_name,
-            {"update_form": form, "organization": organization},
-        )
-
-    def post(self, request, *args, **kwargs):
-        org_id = kwargs.get("pk")
-        organization = Organization.objects.get(id=org_id, user=request.user)
-        form = UpdateOrganizationForm(
-            request.POST, request.FILES, instance=organization
-        )
-        if form.is_valid():
-            organization = form.save(commit=False)
-            organization.user = request.user
-            organization.save()
-            messages.success(request, "Данные организации успешно обновлены.")
-            return redirect("organizations_mine")
-        else:
-            messages.error(request, "Исправьте ошибки в форме.")
-
-        return render(
-            request, self.template_name, {"form": form, "organization": organization}
-        )
-
-
-######################################################################## тестовый вью
 
 
 @method_decorator(login_required, name="dispatch")
