@@ -4,8 +4,23 @@ from apps.zso.models import Zso
 
 
 class ZsoFirstCreateForm(forms.ModelForm):
+    project_name = forms.CharField(
+        label=_("Название проекта"),
+        max_length=100,
+        label_suffix="",
+        required=True,
+        help_text=_(
+            "поможет в дальнейшем ориентироваться по собственным проектам"
+        ),
+        widget=forms.TextInput(
+            attrs={
+                "autofocus": True,
+                "class": "form-control",
+            }
+        ),
+    )
     k_f_min = forms.FloatField(
-        label=_("Минимальное значение коэффициента фильтрации"),
+        label=_("Коэффициент фильтрации"),
         label_suffix="",
         required=True,
         help_text=_("м/сут"),
@@ -13,7 +28,6 @@ class ZsoFirstCreateForm(forms.ModelForm):
             attrs={
                 "step": 0.1,
                 "placeholder": _("1.2"),
-                "autofocus": True,
                 "class": "form-control",
             }
         ),
@@ -33,7 +47,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
     )
 
     i_min = forms.FloatField(
-        label=_("Минимальное значение градиента потока подземных вод"),
+        label=_("Градиент потока подземных вод"),
         label_suffix="",
         min_value=0.0,
         max_value=1.0,
@@ -64,7 +78,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
     )
 
     alfa_min = forms.FloatField(
-        label=_("Минимальное значение направления потока подземных вод"),
+        label=_("Направление потока подземных вод"),
         label_suffix="",
         required=True,
         min_value=0.0,
@@ -95,10 +109,10 @@ class ZsoFirstCreateForm(forms.ModelForm):
     )
 
     m_min = forms.FloatField(
-        label=_("Минимальное значение мощности водоносного пласта"),
+        label=_("Мощность водоносного пласта"),
         label_suffix="",
         required=True,
-        help_text=_("метры"),
+        help_text=_("м"),
         widget=forms.NumberInput(
             attrs={
                 "step": 1.0,
@@ -121,7 +135,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
         ),
     )
     por_min = forms.FloatField(
-        label=_("Минимальное значение пористости водовмещающих пород"),
+        label=_("Пористость водовмещающих пород"),
         label_suffix="",
         required=True,
         help_text=_("безразмерный"),
@@ -153,7 +167,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
         required=True,
         min_value=1,
         max_value=10,
-        help_text=_("штук"),
+        help_text=_("ед"),
         widget=forms.NumberInput(
             attrs={
                 "step": 1,
@@ -169,7 +183,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
         required=True,
         min_value=1,
         max_value=200,
-        help_text=_("штук"),
+        help_text=_("ед"),
         widget=forms.NumberInput(
             attrs={
                 "step": 1,
@@ -182,7 +196,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
         label=_("Длина грани блока модели"),
         label_suffix="",
         required=True,
-        help_text=_("метры"),
+        help_text=_("м"),
         widget=forms.NumberInput(
             attrs={
                 "step": 1,
@@ -192,7 +206,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
         ),
     )
     n_x = forms.IntegerField(
-        label=_("Размер модели по оси X в блоках"),
+        label=_("Размер модели"),
         label_suffix="",
         required=True,
         min_value=1,
@@ -241,12 +255,12 @@ class ZsoFirstCreateForm(forms.ModelForm):
         min_value=1,
         max_value=400,
         help_text=_(
-            "Штуки. Например для расчета ЗСО-II при временном шаге 1, параметр надо установить равный 200"
+            "ед"
         ),
         widget=forms.NumberInput(
             attrs={
                 "step": 1,
-                "placeholder": _("200"),
+                "placeholder": _("200 для расчета ЗСО-II при временном шаге = 1"),
                 "class": "form-control",
             }
         ),
@@ -263,7 +277,6 @@ class ZsoFirstCreateForm(forms.ModelForm):
         label=_("Тип распределения параметров в интервале"),
         required=True,
         widget=forms.Select(attrs={"class": "form-control"}),
-        help_text=_("Выбор типа распределения параметров в интервале min - max"),
     )
 
     # валидатор
@@ -313,6 +326,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
     class Meta:
         model = Zso
         fields = [
+            "project_name",
             "k_f_min",
             "k_f_max",
             "i_min",

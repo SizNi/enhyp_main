@@ -2,7 +2,6 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% bootstrap_css %}
-
 {% bootstrap_messages %}
 
 {% block content %}
@@ -10,27 +9,113 @@
     <h1 class="my-4">{% translate 'Расчет ЗСО' %}</h1>
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      {% for field in create_form %}
-        {% if forloop.counter0|divisibleby:2 %}
-          <div class="row">
-        {% endif %}
+
+      <!-- Поле project_name -->
+      <div class="row">
         <div class="col-md-6">
           <div class="form-group">
-            {{ field.label_tag }}
-            {{ field }}
-            {% if field.help_text %}
-              <small class="form-text text-muted">{{ field.help_text }}</small>
+            {{ create_form.project_name.label_tag }}
+            {{ create_form.project_name }}
+            {% if create_form.project_name.help_text %}
+              <small class="form-text text-muted">{{ create_form.project_name.help_text }}</small>
             {% endif %}
-            {% for error in field.errors %}
+            {% for error in create_form.project_name.errors %}
               <small class="form-text" style="color: red;">{{ error }}</small>
             {% endfor %}
           </div>
         </div>
-        {% if forloop.counter|divisibleby:2 or forloop.last %}
-          </div>
-        {% endif %}
-      {% endfor %}
+      </div>
 
+      <table class="table">
+        <thead> 
+          <tr>
+            <th>{% translate "Название параметра"%}</th>
+            <th>{% translate "Минимальное значение"%}</th>
+            <th>{% translate "Максимальное значение"%}</th>
+            <th>{% translate "Размерность"%}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ create_form.k_f_min.label }}</td>
+            <td>{{ create_form.k_f_min }}</td>
+            <td>{{ create_form.k_f_max }}</td>
+            <td>{{ create_form.k_f_min.help_text }}</td>
+          </tr>
+          <tr>
+            <td>{{ create_form.i_min.label }}</td>
+            <td>{{ create_form.i_min }}</td>
+            <td>{{ create_form.i_max }}</td>
+            <td>{{ create_form.i_min.help_text }}</td>
+          </tr>
+          <tr>
+            <td>{{ create_form.alfa_min.label }}</td>
+            <td>{{ create_form.alfa_min }}</td>
+            <td>{{ create_form.alfa_max }}</td>
+            <td>{{ create_form.alfa_min.help_text }}</td>
+          </tr>
+          <tr>
+            <td>{{ create_form.m_min.label }}</td>
+            <td>{{ create_form.m_min }}</td>
+            <td>{{ create_form.m_max }}</td>
+            <td>{{ create_form.m_min.help_text }}</td>
+          </tr>
+          <tr>
+            <td>{{ create_form.por_min.label }}</td>
+            <td>{{ create_form.por_min }}</td>
+            <td>{{ create_form.por_max }}</td>
+            <td>{{ create_form.por_min.help_text }}</td>
+          </tr>
+          <tr>
+            <td>{{ create_form.type.label }}</td>
+            <td colspan="3">{{ create_form.type }}</td>
+          </tr>
+          <thead> 
+            <tr>
+              <th colspan="4">{% translate "Пространственно-временные характеристики модели"%}</th>
+            </tr>
+          </thead> 
+          <tr>
+            <td></td>
+            <td>{% translate "по оси X"%}</td>
+            <td>{% translate "по оси Y"%}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>{{ create_form.n_x.label }}</td>
+            <td>{{ create_form.n_x }}</td>
+            <td>{{ create_form.n_y}}</td>
+            <td>{{ create_form.n_x.help_text }}</td>
+          </tr>
+          <tr>
+            <td>{{ create_form.well_numbers.label }}</td>
+            <td colspan="2">{{ create_form.well_numbers }}</td>
+            <td>{{ create_form.well_numbers.help_text }}</td>
+          </tr>
+          <tr>
+            <td>{{ create_form.iteration_count.label }}</td>
+            <td colspan="2">{{ create_form.iteration_count }}</td>
+            <td>{{ create_form.iteration_count.help_text }}</td>
+          </tr>
+          <tr>
+            <td>{{ create_form.b_size.label }}</td>
+            <td colspan="2">{{ create_form.b_size }}</td>
+            <td>{{ create_form.b_size.help_text }}</td>
+          </tr>
+          <tr>
+            <td>{{ create_form.d_t.label }}</td>
+            <td colspan="2">{{ create_form.d_t }}</td>
+            <td>{{ create_form.d_t.help_text }}</td>
+          </tr>
+          <tr>
+            <td>{{ create_form.n_step.label }}</td>
+            <td colspan="2">{{ create_form.n_step }}</td>
+            <td>{{ create_form.n_step.help_text }}</td>
+          </tr>
+          <!-- Добавьте остальные поля "min" и "max" здесь -->
+        </tbody>
+      </table>
+      
       <div class="form-group">
         <button class="btn btn-primary" role="button">{% translate 'Далее' %}</button>
       </div>

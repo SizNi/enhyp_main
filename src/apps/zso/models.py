@@ -6,6 +6,7 @@ class Zso(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name="zso", on_delete=models.CASCADE
     )
+    project_name = models.CharField(max_length=30, blank=True, null=True)
     k_f_min = models.FloatField()
     k_f_max = models.FloatField()
     i_min = models.FloatField()
