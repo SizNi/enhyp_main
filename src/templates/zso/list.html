@@ -7,35 +7,33 @@
 
 
     <h1 class="my-4">
-      {% translate "Ваши организации"%}
+      {% translate "Ваши проекты ЗСО"%}
     </h1>
       <div class="form-group">
-        <a href="{% url 'organization_create' %}" class="btn btn-info" role="button">{% translate "Добавить профиль организации"%}</a>
+        <a href="{% url 'zso_create' %}" class="btn btn-info" role="button">{% translate "Рассчитать ЗСО"%}</a>
       </div>
 <table class="table table-striped">
 
 <thead> 
   <tr>
-    <th>{% translate "Наименование организации"%}</th>
-    <th>{% translate "ИНН"%}</th>
-    <th>{% translate "Электронная почта"%}</th>
+    <th>{% translate "Название проекта"%}</th>
+    <th>{% translate "Дата создания"%}</th>
     <th></th>
   </tr>
 </thead>
 <tbody>
-  {% if organizations %}
-{% for organization in organizations %}
-    <tr>
-      <td>{{ organization.org_name }}</td>
-      <td>{{ organization.inn }}</td>
-      <td>{{ organization.email }}</td>
-      <td>
-        <a href="{% url 'organization_update' organization.id %}">{% translate "Изменить"%}</a>
-        <br>
-        <a href="{% url 'organization_delete' organization.id %}">{% translate "Удалить"%}</a>
-      </td>
-    </tr>
-{% endfor %}
+  {% if zso %}
+    {% for elem in zso %}
+      <tr>
+        <td>{{ elem.project_name }}</td>
+        <td>{{ elem.created_at|date:"d E Y в H:i" }}</td>
+        <td>
+          <a href="#">{% translate "Посмотреть"%}</a>
+          <br>
+          <a href="#">{% translate "Удалить"%}</a>
+        </td>
+      </tr>
+    {% endfor %}
 {% endif %}
 </tbody>
 </table>

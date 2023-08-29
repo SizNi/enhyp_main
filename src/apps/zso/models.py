@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+import json
 
 
 class Zso(models.Model):
@@ -29,3 +30,9 @@ class Zso(models.Model):
     n_step = models.IntegerField()
     type = models.CharField(max_length=30)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    def get_deserialized_name(self):
+        try:
+            return json.loads(self.project_name)
+        except json.JSONDecodeError:
+            return self.project_name

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, ListView
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -15,6 +15,29 @@ import base64
 
 def index(request):
     return HttpResponse("zso")
+
+
+@method_decorator(login_required, name="dispatch")
+class ZsoListView(ListView):
+    model = Zso
+    paginate_by = 10
+    template_name = ("zso/list.html",)
+
+    def get(self, request, *args, **kwargs):
+        user_zso = request.user.zso.all()
+        zso = [
+            {
+                "project_name": elem.get_deserialized_name(),
+                "created_at": elem.created_at,
+                "id": elem.id,
+            }
+            for elem in user_zso
+        ]
+        return render(
+            request,
+            template_name=self.template_name,
+            context={"zso": zso, "title": "ZSO"},
+        )
 
 
 @method_decorator(login_required, name="dispatch")
