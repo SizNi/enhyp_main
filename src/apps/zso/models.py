@@ -30,7 +30,7 @@ class Zso(models.Model):
     n_step = models.IntegerField()
     type = models.CharField(max_length=30)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     def get_deserialized_name(self):
         try:
             return json.loads(self.project_name)

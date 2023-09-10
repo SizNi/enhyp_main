@@ -9,9 +9,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
         max_length=100,
         label_suffix="",
         required=True,
-        help_text=_(
-            "поможет в дальнейшем ориентироваться по собственным проектам"
-        ),
+        help_text=_("поможет в дальнейшем ориентироваться по собственным проектам"),
         widget=forms.TextInput(
             attrs={
                 "autofocus": True,
@@ -254,9 +252,7 @@ class ZsoFirstCreateForm(forms.ModelForm):
         required=True,
         min_value=1,
         max_value=400,
-        help_text=_(
-            "ед"
-        ),
+        help_text=_("ед"),
         widget=forms.NumberInput(
             attrs={
                 "step": 1,

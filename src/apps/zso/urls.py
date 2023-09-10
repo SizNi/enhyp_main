@@ -11,4 +11,9 @@ urlpatterns = [
         name="zso_create_second",
     ),
     path("<int:pk>/watch/", views.ZsoWatchView.as_view(), name="zso_watch"),
+    path(
+        "<int:pk>/delete",
+        views.ZsoDeleteView.as_view(),
+        name="zso_delete",
+    ),
 ]

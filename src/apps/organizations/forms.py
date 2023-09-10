@@ -47,7 +47,7 @@ class CreateOrganizationForm(forms.ModelForm):
         help_text=_("ИНН в формате 10-12 цифр"),
         widget=forms.TextInput(
             attrs={
-                "placeholder": _("ИНН"),
+                "placeholder": _("7702455202"),
                 "class": "form-control",
             }
         ),

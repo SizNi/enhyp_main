@@ -7,7 +7,7 @@
 
 {% block content %}
   <div class="container wrapper flex-grow-1">
-    <h1 class="my-4">{% translate 'Расчет ЗСО' %}</h1>
+    <h1 class="my-4">{% translate 'Расчет проекта ЗСО' %}</h1>
     <form method="post" enctype="form-control" id="form">
       {% csrf_token %}
       <h5 class="card-title">{% translate 'Запустить перерасчет проекта'%} {{ name }}?</h5>

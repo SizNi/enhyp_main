@@ -1,7 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.views.generic import CreateView, UpdateView, ListView, TemplateView
+from django.views.generic import (
+    CreateView,
+    UpdateView,
+    ListView,
+    TemplateView,
+    DeleteView,
+)
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -11,6 +17,7 @@ from apps.zso.models import Zso
 from apps.zso.call_counter import counter
 import json
 import base64
+from django.urls import reverse_lazy
 
 
 def index(request):
@@ -155,7 +162,6 @@ class ZsoSecondCreateView(UpdateView):
 
 @method_decorator(login_required, name="dispatch")
 class ZsoWatchView(TemplateView):
-    
     def get(self, request, *args, **kwargs):
         zso_id = kwargs.get("pk")
         zso = Zso.objects.get(id=zso_id)
@@ -182,3 +188,10 @@ class ZsoWatchView(TemplateView):
             context = {}
             context["warning"] = "Что-то пошло не так"
             return render(request, "zso/mistake.html", context)
+
+
+@method_decorator(login_required, name="dispatch")
+class ZsoDeleteView(DeleteView):
+    model = Zso
+    template_name = "zso/delete.html"
+    success_url = reverse_lazy("zso_list")
