@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% bootstrap_css %}
+
+{% bootstrap_messages %}
+
+{% block content %}
+  <div class="container wrapper flex-grow-1">
+    <h1 class="my-4">{% translate 'Расчет ЗСО' %}</h1>
+    <form method="post" enctype="form-control" id="form">
+      {% csrf_token %}
+      <h5 class="card-title">{% translate 'Запустить перерасчет проекта'%} {{ name }}?</h5>
+      <div class="form-group">
+        <input class="btn btn-primary" type="submit" value="Рассчитать" id="submitButton" />
+        <small class="form-text text-muted">Расчет может занять довольно большое время, как расчет закончится - вас перекинет на страницу с результатом</small>
+      </div>
+    </form>
+  </div>
+  <script>
+    $(() => {
+      const $submitButton = $('#submitButton')
+      $submitButton.on('click', () => {
+        if ($submitButton.attr('disabled') === 'disabled') {
+          return
+        }
+        $submitButton.attr('disabled', 'disabled')
+        $submitButton.val('Считаем ...')
+        $('#form').submit()
+      })
+    })
+  </script>
+{% endblock %}

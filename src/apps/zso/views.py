@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.views.generic import CreateView, UpdateView, ListView
+from django.views.generic import CreateView, UpdateView, ListView, TemplateView
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -136,6 +136,37 @@ class ZsoSecondCreateView(UpdateView):
         zso.save()
         # получение результирующай картинки и датасета из обработчика
         image, main_dataset = counter(zso.id)
+        # преобразование датасета (картинка преобразуется в обработчике)
+        main_df_bytes = main_dataset.to_csv(index=False).encode("utf-8")
+        main_df_base64 = base64.b64encode(main_df_bytes).decode("utf-8")
+        # отправка на фронт
+        if image is not False:
+            image_data = base64.b64encode(image.getvalue()).decode("utf-8")
+            context = {}
+            context["image"] = image_data
+            context["df"] = main_df_base64
+            messages.success(request, _("Расчет завершен!"))
+            return render(request, "zso/result.html", context)
+        else:
+            context = {}
+            context["warning"] = "Что-то пошло не так"
+            return render(request, "zso/mistake.html", context)
+
+
+@method_decorator(login_required, name="dispatch")
+class ZsoWatchView(TemplateView):
+    
+    def get(self, request, *args, **kwargs):
+        zso_id = kwargs.get("pk")
+        zso = Zso.objects.get(id=zso_id)
+        context = {}
+        context["name"] = zso.project_name
+        return render(request, "zso/watch.html", context)
+
+    def post(self, request, *args, **kwargs):
+        zso_id = kwargs.get("pk")
+        # получение результирующай картинки и датасета из обработчика
+        image, main_dataset = counter(zso_id)
         # преобразование датасета (картинка преобразуется в обработчике)
         main_df_bytes = main_dataset.to_csv(index=False).encode("utf-8")
         main_df_base64 = base64.b64encode(main_df_bytes).decode("utf-8")

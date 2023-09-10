@@ -10,4 +10,5 @@ urlpatterns = [
         views.ZsoSecondCreateView.as_view(),
         name="zso_create_second",
     ),
+    path("<int:pk>/watch/", views.ZsoWatchView.as_view(), name="zso_watch"),
 ]

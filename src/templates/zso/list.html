@@ -28,7 +28,7 @@
         <td>{{ elem.project_name }}</td>
         <td>{{ elem.created_at|date:"d E Y в H:i" }}</td>
         <td>
-          <a href="#">{% translate "Посмотреть"%}</a>
+          <a href="{% url 'zso_watch' elem.id %}">{% translate "Посмотреть"%}</a>
           <br>
           <a href="#">{% translate "Удалить"%}</a>
         </td>
