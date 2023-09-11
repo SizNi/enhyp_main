@@ -105,7 +105,10 @@ class OrganizationUpdateView(UpdateView):
         form = UpdateOrganizationForm(
             request.POST, request.FILES, instance=organization
         )
-        old_logo = organization.logo
+        if organization.logo:
+            old_logo = organization.logo
+        else:
+            old_logo = False
         if form.is_valid():
             organization = form.save(commit=False)
             new_email = organization.email
@@ -115,7 +118,8 @@ class OrganizationUpdateView(UpdateView):
                 filename = f"logos/{uuid.uuid4().hex}_{logo.name}"
                 filename = default_storage.save(filename, logo)
                 organization.logo = filename
-                default_storage.delete(old_logo.path)
+                if old_logo:
+                    default_storage.delete(old_logo.path)
             except MultiValueDictKeyError:
                 pass
             organization.save()
