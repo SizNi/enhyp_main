@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Загрузка файла с шкалой прогресса</title>
+</head>
+<body>
+    <h1>Загрузка файла с шкалой прогресса</h1>
+    <input type="file" id="file-input">
+    <button id="upload-button">Загрузить</button>
+    <div id="progress-container" style="display: none;">
+        <progress id="progress-bar" max="100" value="0"></progress>
+    </div>
+    <div id="message"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#upload-button").click(function () {
+                const fileInput = document.getElementById("file-input");
+                const file = fileInput.files[0];
+                if (file) {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+
+                    $.ajax({
+                        url: "/crm/upload/",
+                        type: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        xhr: function () {
+                            const xhr = new window.XMLHttpRequest();
+                            xhr.upload.addEventListener("progress", function (e) {
+                                if (e.lengthComputable) {
+                                    const percent = (e.loaded / e.total) * 100;
+                                    $("#progress-container").show();
+                                    $("#progress-bar").attr("value", percent);
+                                }
+                            });
+                            return xhr;
+                        },
+                        success: function (data) {
+                            $("#message").text("Загрузка завершена: " + data.message);
+                        },
+                        error: function () {
+                            $("#message").text("Произошла ошибка при загрузке файла.");
+                        },
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

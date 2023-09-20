@@ -36,7 +36,6 @@ class WellSectionListView(ListView):
         )
 
 
-# переписать
 @method_decorator([csrf_exempt, login_required], name="dispatch")
 class WellSectionCreateView(TemplateView):
     template_name = "well_section/create_form.html"
