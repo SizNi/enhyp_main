@@ -1,7 +1,6 @@
 from django import forms
 import os
 from django.conf import settings
-from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -140,7 +139,7 @@ class CreateOrganizationForm(forms.ModelForm):
         widget=forms.ClearableFileInput(
             attrs={
                 "multiple": False,
-                "class": "form-control",
+                "class": "form-control-file",
             }
         ),
     )
@@ -259,7 +258,7 @@ class UpdateOrganizationForm(forms.ModelForm):
         widget=forms.FileInput(
             attrs={
                 "multiple": False,
-                "class": "form-control",
+                "class": "form-control-file"
             }
         ),
     )
@@ -301,7 +300,7 @@ class UpdateOrganizationLogoForm(forms.ModelForm):
         widget=forms.FileInput(
             attrs={
                 "multiple": False,
-                "class": "form-control",
+                "class": "form-control-file",
             }
         ),
     )
