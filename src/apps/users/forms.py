@@ -170,6 +170,7 @@ class RecoveryUserForm(forms.Form):
         label=_("Введите емейл, указанный при регистрации"),
         help_text=_("Емейл должен был быть подтвержден"),
         label_suffix="",
+        required=True,
         widget=forms.TextInput(
             attrs={
                 "placeholder": _("Электронная почта"),

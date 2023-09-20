@@ -16,7 +16,7 @@ def inclus(d, x, y, width, height, inclusions):
         "фосфориты": phosphorites,
         "фосфориты(в подошве слоя)": phosphorites,
     }
-    
+
     for elem in inclusions:
         if elem in inclusion_functions:
             inclusion_functions[elem](d, x, y, width, height)

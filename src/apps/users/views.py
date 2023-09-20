@@ -4,12 +4,17 @@ from django.contrib import messages
 from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponse
 from apps.users.models import CustomUser
-from apps.users.forms import LoginUserForm, CreateUserForm, UpdateUserForm, RecoveryUserForm
+from apps.users.forms import (
+    LoginUserForm,
+    CreateUserForm,
+    UpdateUserForm,
+    RecoveryUserForm,
+)
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from .confirmation import mail_confirmation
+from .confirmation import mail_confirmation, user_recovery
 from django.utils import timezone
 from datetime import timedelta
 
@@ -244,9 +249,43 @@ class UserEmailConfirmationView(TemplateView):
             )
             return redirect("home")
 
+
 class UserRecoveryView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = {}
         form = RecoveryUserForm()
         context["recovery_form"] = form
         return render(request, "users/recovery.html", context)
+
+    def post(self, request, *args, **kwargs):
+        context = {}
+        form = RecoveryUserForm(request.POST)
+        context["recovery_form"] = form
+        if form.is_valid():
+            email = form.cleaned_data.get("email")
+            try:
+                user = CustomUser.objects.get(email=email)
+                if user.confirmed == True:
+                    # тут отправка емейла для восстановления
+                    try:
+                        user_recovery(user)
+                        messages.info(request, _("Ссылка для восстановления отправлена вам на почту"))
+                        return redirect('home')
+                    except:
+                        messages.error(
+                        request,
+                        _("Что-то пошло не так, свяжитесь с администрацией"),
+                    )
+                        return redirect('home')
+                else:
+                    messages.error(
+                        request,
+                        _("Почта не была подтверждена, свяжитесь с администрацией"),
+                    )
+                    return render(request, "users/recovery.html", context)
+            except:
+                messages.error(
+                    request,
+                    _("Почта не найдена"),
+                )
+                return render(request, "users/recovery.html", context)
