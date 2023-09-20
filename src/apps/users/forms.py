@@ -163,3 +163,17 @@ class UpdateUserForm(forms.ModelForm):
         # Сделайте поле password1 необязательным
         self.fields["password1"].required = False
         self.fields["password2"].required = False
+
+
+class RecoveryUserForm(forms.Form):
+    email = forms.EmailField(
+        label=_("Введите емейл, указанный при регистрации"),
+        help_text=_("Емейл должен был быть подтвержден"),
+        label_suffix="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": _("Электронная почта"),
+                "class": "form-control",
+            }
+        ),
+    )

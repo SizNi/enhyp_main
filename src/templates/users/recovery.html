@@ -8,25 +8,25 @@
 {% block content %}
 <div class="container wrapper flex-grow-1">
     <h1 class="my-4">
-        {% translate 'Вход' %}
+        {% translate 'Восстановление пароля' %}
     </h1>
     <form method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
-        {% for field in login_form %}
+        {% for field in recovery_form %}
             {{field.label_tag}}
             {{field}}
             {% if field.help_text %}
                 <small class="form-text text-muted">{{field.help_text}}</small>
             {% endif %}
         {% endfor %}
-        {% for error in login_form.errors %}
+        {% for error in recovery_form.errors %}
             <small class="form-text" style="color: red;">{{error}}</small>
         {% endfor %}
         <div class="form-group">
-        <input class="btn btn-primary" type="submit" value="Войти">
+        <input class="btn btn-primary" type="submit" value="Восстановить">
         </div>
-        <a href="{% url 'user_recovery' %}">{% trans 'Забыл пароль' %}</a>
+        <a target="_blank" href="https://enhyp.ru">{% trans 'Забыл пароль' %}</a>
     </form>
 </div>
 {% endblock %}

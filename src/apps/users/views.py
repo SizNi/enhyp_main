@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponse
 from apps.users.models import CustomUser
-from apps.users.forms import LoginUserForm, CreateUserForm, UpdateUserForm
+from apps.users.forms import LoginUserForm, CreateUserForm, UpdateUserForm, RecoveryUserForm
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
@@ -243,3 +243,10 @@ class UserEmailConfirmationView(TemplateView):
                 request, _("У вас нет прав для изменения другого пользователя.")
             )
             return redirect("home")
+
+class UserRecoveryView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        context = {}
+        form = RecoveryUserForm()
+        context["recovery_form"] = form
+        return render(request, "users/recovery.html", context)
