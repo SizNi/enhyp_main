@@ -295,6 +295,7 @@ class UserRecoveryView(TemplateView):
                 return render(request, "users/recovery.html", context)
 
 
+# ввод нового пароля по ссылке восстановления
 class UserRecoverySecondView(UpdateView):
     def get(self, request, *args, **kwargs):
         context = {}
@@ -303,11 +304,11 @@ class UserRecoverySecondView(UpdateView):
         return render(request, "users/recovery_second.html", context)
 
     def post(self, request, *args, **kwargs):
-        context = {}
         form = SecondRecoveryUserForm(request.POST)
         conf_code = kwargs.get("recovery_code")
         if form.is_valid():
             user = CustomUser.objects.get(confirmation_code=conf_code)
+            # если почта была подтверждена - разрешаем сюда пойти
             if user.confirmed == True:
                 password = form.cleaned_data.get("password")
                 user.set_password(password)
@@ -315,6 +316,7 @@ class UserRecoverySecondView(UpdateView):
                 username = user.username
                 user.conf_code = None
                 user = authenticate(username=username, password=password)
+                # если юзер существует
                 if user is not None:
                     login(request, user)
                 else:
