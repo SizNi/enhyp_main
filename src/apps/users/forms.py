@@ -178,3 +178,23 @@ class RecoveryUserForm(forms.Form):
             }
         ),
     )
+
+
+class SecondRecoveryUserForm(forms.ModelForm):
+    password = forms.CharField(
+        label=_("Новый пароль"),
+        label_suffix="",
+        required=True,
+        help_text=_("Ваш пароль должен содержать " "как минимум 3 символа."),
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": _("Пароль"),
+                "autofocus": True,
+                "class": "form-control",
+            }
+        ),
+    )
+
+    class Meta:
+        model = get_user_model()
+        fields = ("password",)

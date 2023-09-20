@@ -9,6 +9,7 @@ from apps.users.forms import (
     CreateUserForm,
     UpdateUserForm,
     RecoveryUserForm,
+    SecondRecoveryUserForm,
 )
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
@@ -269,14 +270,17 @@ class UserRecoveryView(TemplateView):
                     # тут отправка емейла для восстановления
                     try:
                         user_recovery(user)
-                        messages.info(request, _("Ссылка для восстановления отправлена вам на почту"))
-                        return redirect('home')
+                        messages.info(
+                            request,
+                            _("Ссылка для восстановления отправлена вам на почту"),
+                        )
+                        return redirect("home")
                     except:
                         messages.error(
-                        request,
-                        _("Что-то пошло не так, свяжитесь с администрацией"),
-                    )
-                        return redirect('home')
+                            request,
+                            _("Что-то пошло не так, свяжитесь с администрацией"),
+                        )
+                        return redirect("home")
                 else:
                     messages.error(
                         request,
@@ -289,3 +293,44 @@ class UserRecoveryView(TemplateView):
                     _("Почта не найдена"),
                 )
                 return render(request, "users/recovery.html", context)
+
+
+class UserRecoverySecondView(UpdateView):
+    def get(self, request, *args, **kwargs):
+        context = {}
+        form = SecondRecoveryUserForm()
+        context["recovery_form"] = form
+        return render(request, "users/recovery_second.html", context)
+
+    def post(self, request, *args, **kwargs):
+        context = {}
+        form = SecondRecoveryUserForm(request.POST)
+        conf_code = kwargs.get("recovery_code")
+        if form.is_valid():
+            user = CustomUser.objects.get(confirmation_code=conf_code)
+            if user.confirmed == True:
+                password = form.cleaned_data.get("password")
+                user.set_password(password)
+                user.save()
+                username = user.username
+                user.conf_code = None
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    login(request, user)
+                else:
+                    messages.error(
+                        request,
+                        _("Что-то пошло не так, свяжитесь с администрацией"),
+                    )
+                    return redirect("home")
+                messages.info(
+                    request,
+                    _("Пароль изменен, вход произведен"),
+                )
+                return redirect("home")
+            else:
+                messages.error(
+                    request,
+                    _("Ссылка недействительна"),
+                )
+                return redirect("home")

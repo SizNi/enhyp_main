@@ -19,4 +19,9 @@ urlpatterns = [
         name="send_email_confirmation",
     ),
     path("recovery/", views.UserRecoveryView.as_view(), name="user_recovery"),
+    path(
+        "recovery/<str:recovery_code>/",
+        views.UserRecoverySecondView.as_view(),
+        name="user_recovery_url",
+    ),
 ]
