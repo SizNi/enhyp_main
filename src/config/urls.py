@@ -25,6 +25,7 @@ urlpatterns = (
         ),
         ######################
         path("test_mail/", views.TestMailView.as_view(), name="test_mail"),
+        path("crm/", include("apps.crm.urls"), name="crm_home"),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

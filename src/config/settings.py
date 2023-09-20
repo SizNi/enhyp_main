@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "apps.organizations.apps.OrganizationsConfig",
     "apps.well_section.apps.WellSectionConfig",
     "apps.well_passport.apps.WellPassportConfig",
+    "apps.crm.apps.CrmConfig",
     "bootstrap4",
 ]
 

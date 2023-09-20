@@ -23,13 +23,16 @@
           </li>
           {% if request.user.is_authenticated %}
             <li class="nav-item">
-              <a href="{% url 'well_section_list' %}" class="nav-link">{% translate 'Разрез скважины'%}</a>
+              <a href="{% url 'well_section_list' %}" class="nav-link">{% trans 'Разрез скважины'%}</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'well_passport_list' %}">{% trans 'Паспорт скважины' %}</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'zso_list' %}">{% trans 'ЗСО' %}</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'crm_home' %}" class="nav-link">{% trans 'Управление проектами'%}</a>
             </li>
           {% endif %}
         </ul>

@@ -58,6 +58,7 @@ class LoginView(TemplateView):
         return render(request, "users/login.html", context)
 
 
+@method_decorator(login_required, name="dispatch")
 class LogoutView(TemplateView):
     def get(self, request, *args, **kwargs):
         messages.info(request, _("Вы разлогинены"))
