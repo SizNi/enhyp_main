@@ -255,12 +255,7 @@ class UpdateOrganizationForm(forms.ModelForm):
         help_text=_(
             "Необязательное поле. Будет отображаться на титуле паспорта скважины"
         ),
-        widget=forms.FileInput(
-            attrs={
-                "multiple": False,
-                "class": "form-control-file"
-            }
-        ),
+        widget=forms.FileInput(attrs={"multiple": False, "class": "form-control-file"}),
     )
 
     # проверка логотипа
