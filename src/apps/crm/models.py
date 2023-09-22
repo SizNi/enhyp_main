@@ -27,6 +27,10 @@ class License(models.Model):
     note = models.CharField(max_length=200, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     end_at = models.DateTimeField(blank=True, null=True)
+    second_license_file = models.FileField(upload_to="crm/license", null=True)
+    second_note = models.CharField(max_length=200, null=True)
+    second_created_at = models.DateTimeField(blank=True, null=True)
+    second_end_at = models.DateTimeField(blank=True, null=True)
 
 
 class Gin(models.Model):
@@ -87,19 +91,6 @@ class Development(models.Model):
     development_status = models.BooleanField(default=False)
     development_file = models.FileField(upload_to="crm/development/project", null=True)
     eks_file = models.FileField(upload_to="crm/development/eks", null=True)
-    note = models.CharField(max_length=200, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    end_at = models.DateTimeField(blank=True, null=True)
-
-
-# вторая лицензия
-class SecondLicense(models.Model):
-    crm = models.OneToOneField(
-        Crm, on_delete=models.CASCADE, related_name="second_license"
-    )
-    license_name = models.CharField(max_length=12)
-    license_status = models.BooleanField(default=False)
-    license_file = models.FileField(upload_to="crm/second_license", null=True)
     note = models.CharField(max_length=200, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     end_at = models.DateTimeField(blank=True, null=True)
