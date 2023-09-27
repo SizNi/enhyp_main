@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% bootstrap_css %}
+{% bootstrap_messages %}
+{% block assets %} 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание проекта</title>
+    <style>
+        /* Установим префикс .my-page для стилей, чтобы ограничить их действие */
+        .my-page body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .my-page .container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 20vh;
+            flex-wrap: wrap;
+        }
+
+        .my-page .section {
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            padding: 0; /* Убираем внутренний отступ у секции */
+        }
+
+        .my-page .block {
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 10px;
+            padding: 20px;
+            height: 100%; /* Заполняем всю высоту секции */
+        }
+
+        .my-page .block:hover {
+            background-color: #f0f0f0;
+        }
+
+        .my-page .link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Стилизация кнопок */
+        .my-page .block button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .my-page .block button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Стилизация карточек */
+        .my-page .card {
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Выравнивание по горизонтали */
+            height: 100%;
+        }
+
+        .my-page .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .my-page .card-button {
+            margin-top: auto; /* Выравнивание кнопки к нижнему краю */
+        }
+
+        .my-page .btn-primary {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .my-page .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        /* Фиксированный размер карточек */
+        .my-page .card.h-100 {
+            height: 100%;
+        }
+
+        /* Добавление разделителей между карточками */
+        .my-page .col-divider {
+            margin: 0 10px;
+        }
+    </style>
+{% endblock%}
+{% block content %}
+    <div class="text-center">
+        <h1 class="my-4">{% translate 'Выберите шаблон проекта' %}</h1>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-3 col-divider">
+                <div class="section">
+                    <div class="card h-100">
+                        <h3 class="card-title">СНТ</h3>
+                        <div class="card-button">
+                            <a href="#" class="btn btn-primary">Создать</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-divider">
+                <div class="section">
+                    <div class="card h-100">
+                        <h3 class="card-title">До 100 м<sup>3</sup>/сут</h3>
+                        <div class="card-button">
+                            <a href="#" class="btn btn-primary">Создать</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-divider">
+                <div class="section">
+                    <div class="card h-100">
+                        <h3 class="card-title">От 100 до 500 м<sup>3</sup>/сут</h3>
+                        <div class="card-button">
+                            <a href="#" class="btn btn-primary">Создать</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="section">
+                    <div class="card h-100">
+                        <h3 class="card-title">Свыше 500 м<sup>3</sup>/сут</h3>
+                        <div class="card-button">
+                            <a href="#" class="btn btn-primary">Создать</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
