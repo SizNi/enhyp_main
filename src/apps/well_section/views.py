@@ -55,7 +55,7 @@ class WellSectionCreateView(TemplateView):
         zso_id = obj.id
         return JsonResponse({"url": f"/well_section/{zso_id}"})
 
-# @method_decorator(cache_page(900))
+
 @method_decorator(cache_page(900), name="dispatch")
 @method_decorator(login_required, name="dispatch")
 class WellSectionResultView(TemplateView):

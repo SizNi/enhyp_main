@@ -50,8 +50,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',
+    "django.middleware.cache.UpdateCacheMiddleware",
+    "django.middleware.cache.UpdateCacheMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -96,13 +96,13 @@ STATIC_URL = "static/"
 LOGIN_URL = "user_login"
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': BASE_DIR /'cache/',
-        'TIMEOUT': 900, # (15 минут)
-        'OPTIONS': {
-            'MAX_ENTRIES': 1000,  # Максимальное количество записей в кэше
-        }
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": BASE_DIR / "cache/",
+        "TIMEOUT": 900,  # (15 минут)
+        "OPTIONS": {
+            "MAX_ENTRIES": 1000,  # Максимальное количество записей в кэше
+        },
     }
 }
 
