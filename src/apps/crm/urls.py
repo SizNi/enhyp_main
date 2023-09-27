@@ -4,5 +4,5 @@ from apps.crm import views
 
 
 urlpatterns = [
-    path("", views.index, name="crm_home"),
+    path("", views.IndexView.as_view(), name="crm_home"),
 ]

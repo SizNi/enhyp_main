@@ -11,6 +11,7 @@ from well_section_counter.main_counter import main
 from apps.well_section.models import WellSection
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django.views.decorators.cache import cache_page
 
 
 @method_decorator(login_required, name="dispatch")
@@ -54,22 +55,21 @@ class WellSectionCreateView(TemplateView):
         zso_id = obj.id
         return JsonResponse({"url": f"/well_section/{zso_id}"})
 
-
+# @method_decorator(cache_page(900))
+@method_decorator(cache_page(900), name="dispatch")
 @method_decorator(login_required, name="dispatch")
 class WellSectionResultView(TemplateView):
     template_name = "well_section/result.html"
 
     def get(self, request, *args, **kwargs):
-        context = {}
         ws_id = kwargs.get("pk")
         ws = WellSection.objects.get(id=ws_id)
-        context["project_name"] = json.loads(ws.name)
+        context = {"project_name": json.loads(ws.name)}
         ws_data = {
             "layers": json.loads(ws.layers),
             "well_data": json.loads(ws.well_data),
         }
-        image = main(ws_data)
-        context["image"] = image
+        context = {"image": main(ws_data)}
         messages.success(self.request, "Разрез скважины успешно построен")
         return render(request, "well_section/result.html", context)
 

@@ -15,5 +15,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
 
 
-def index(request):
-    return HttpResponse("в разработке")
+@method_decorator(login_required, name="dispatch")
+class IndexView(TemplateView):
+    template_name = "crm/index.html"
