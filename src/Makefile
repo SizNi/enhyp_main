@@ -5,7 +5,7 @@ install:
 	poetry install
 
 start:
-	gunicorn task_manager.wsgi
+	gunicorn --workers=4 --bind=127.0.0.1:8000 config.wsgi:application
 
 new_app:
 	#django-admin startapp app_name
