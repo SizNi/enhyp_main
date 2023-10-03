@@ -22,7 +22,6 @@ fprettify = "^0.3.7"
 scipy = "^1.10.1"
 tqdm = "^4.65.0"
 bytesbufio = "^1.0.3"
-pycairo = "^1.23.0"
 ipython = "^8.9.0"
 docxtpl = "^0.16.6"
 qrcode = "^7.4.2"
@@ -34,8 +33,10 @@ msoffice2pdf = "^0.0.8"
 pypdf2 = "^3.0.1"
 img2pdf = "^0.4.4"
 reportlab = "3.5.2"
-drawsvg = "^2.3.0"
-
+pycairo = "^1.23.0"
+drawsvg = "^1.9.0"
+django-cache = "^0.3"
+gunicorn = "^21.2.0"
 
 [build-system]
 requires = ["poetry-core"]
