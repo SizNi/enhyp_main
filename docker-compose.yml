@@ -5,10 +5,24 @@ services:
     build:
       context: .
     # image: enhyp-app:latest  # Замените на имя образа вашего приложения
-    container_name: django_app
+    container_name: enhyp_app
     ports:
-      - "8000:8000"  # Проксируйте порт 8000 из контейнера на порт 8000 хоста
+      - "80:8000"  # хост:контейнер
     environment:
       - DEBUG=True  # Установите переменные окружения для вашего приложения Django
-    command: python src/manage.py runserver 0.0.0.0:8000
+      - DB_TYPE=postgress
+    command: python manage.py makemigrations && python manage.py migrate && python src/manage.py runserver 0.0.0.0:8000
     restart: always
+    depends_on:
+      - db  # Указываем зависимость от сервиса db (нашей базы данных PostgreSQL)
+
+  # Сервис для базы данных PostgreSQL
+  db:
+    image: postgres:13  # Используем образ PostgreSQL версии 13 (можете выбрать другую версию)
+    container_name: enhyp_db
+    environment:
+      POSTGRES_DB: enh_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password_123
+    ports:
+      - "5432:5432"
