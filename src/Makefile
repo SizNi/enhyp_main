@@ -50,3 +50,9 @@ dbstart:
 
 vue:
 	cd form && npm install && npm run build
+
+container:
+	cd .. &&docker build -t enhyp-app .
+
+run_container:
+	docker run -it --name enhyp enhyp-app /bin/bash

@@ -1,0 +1,14 @@
+version: '1'
+services:
+  # Сервис для приложения Django
+  web:
+    build:
+      context: .
+    # image: enhyp-app:latest  # Замените на имя образа вашего приложения
+    container_name: django_app
+    ports:
+      - "8000:8000"  # Проксируйте порт 8000 из контейнера на порт 8000 хоста
+    environment:
+      - DEBUG=True  # Установите переменные окружения для вашего приложения Django
+    command: python src/manage.py runserver 0.0.0.0:8000
+    restart: always
