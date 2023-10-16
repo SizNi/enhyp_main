@@ -11,7 +11,8 @@ services:
     environment:
       - DEBUG=True  # Установите переменные окружения для вашего приложения Django
       - DB_TYPE=postgres
-    command: python src/manage.py runserver 0.0.0.0:8000
+    command: ./docker-entrypoint.sh
+    # command: python src/manage.py runserver 0.0.0.0:8000
     # python src/manage.py makemigrations && python src/manage.py migrate &&
     restart: always
     depends_on:
