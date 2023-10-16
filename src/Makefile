@@ -56,3 +56,6 @@ container:
 
 run_container:
 	docker run -it --name enhyp enhyp-app /bin/bash
+
+docker_rebuild:
+	docker compose down && docker compose up --build

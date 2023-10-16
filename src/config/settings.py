@@ -24,6 +24,7 @@ ALLOWED_HOSTS = [
     "77.232.134.147",
     "127.0.0.1",
     "enhyp.webtm.ru",
+    "localhost",
 ]
 
 

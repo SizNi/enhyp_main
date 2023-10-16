@@ -55,6 +55,25 @@ class WellSectionCreateView(TemplateView):
         zso_id = obj.id
         return JsonResponse({"url": f"/well_section/{zso_id}"})
 
+# просто тестирование новой формы
+@method_decorator([csrf_exempt, login_required], name="dispatch")
+class WellSectionCreateView_2(TemplateView):
+    template_name = "well_section/index.html"
+
+    def post(self, request, *args, **kwargs):
+        # это в бд
+        data_json = json.loads(request.body)
+        print(request.body)
+        work_data = handler_front(data_json)
+        obj = WellSection()
+        obj.user = request.user
+        obj.name = json.dumps(work_data["project_name"])
+        obj.layers = json.dumps(work_data["layers"])
+        obj.well_data = json.dumps(work_data["well_data"])
+        obj.save()
+        zso_id = obj.id
+        return JsonResponse({"url": f"/well_section/{zso_id}"})
+
 
 @method_decorator(cache_page(900), name="dispatch")
 @method_decorator(login_required, name="dispatch")
