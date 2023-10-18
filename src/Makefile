@@ -59,3 +59,6 @@ run_container:
 
 docker_rebuild:
 	docker compose down && docker compose up --build
+
+docker_nocache:
+	docker compose build --no-cache
