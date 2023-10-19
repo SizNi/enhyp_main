@@ -3,7 +3,7 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - main # Измените на ветку, которую вы хотите отслеживать
+      - main
 
 jobs:
   deploy:

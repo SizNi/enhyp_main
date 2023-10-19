@@ -118,7 +118,7 @@ if DB_TYPE == "sqlite":
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-else:
+elif DB_TYPE == "postgres":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
