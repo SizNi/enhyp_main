@@ -11,9 +11,8 @@ services:
     environment:
       - DEBUG=True  # Установите переменные окружения для вашего приложения Django
       - DB_TYPE=postgres
+      - SECRET_KEY='django-insecure-(wv(*iq0s#t-c0+cayw!*bdkf#$_9_r9d7=r0icia-1ha5)@j#'
     command: ./docker-entrypoint.sh
-    # command: python src/manage.py runserver 0.0.0.0:8000
-    # python src/manage.py makemigrations && python src/manage.py migrate &&
     restart: always
     depends_on:
       - db  # Указываем зависимость от сервиса db (нашей базы данных PostgreSQL)
