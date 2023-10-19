@@ -120,7 +120,7 @@ if DB_TYPE:
                 "NAME": BASE_DIR / "db.sqlite3",
             }
         }
-    elif DB_TYPE == "postgresql":
+    elif DB_TYPE == "postgres":
         DATABASES = {
             "default": {
                 "ENGINE": "django.db.backends.postgresql",
@@ -132,7 +132,6 @@ if DB_TYPE:
             }
         }
     else:
-        print(DB_TYPE)
         raise ValueError("Unknown DB_TYPE")
 else:
     raise ValueError("DB_TYPE is not set")
