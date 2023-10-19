@@ -132,6 +132,7 @@ if DB_TYPE:
             }
         }
     else:
+        print(DB_TYPE)
         raise ValueError("Unknown DB_TYPE")
 else:
     raise ValueError("DB_TYPE is not set")
