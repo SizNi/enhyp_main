@@ -111,24 +111,31 @@ CACHES = {
     }
 }
 DB_TYPE = os.environ.get("DB_TYPE")
-if DB_TYPE == "sqlite":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+
+if DB_TYPE:
+    if DB_TYPE == "sqlite":
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": BASE_DIR / "db.sqlite3",
+            }
         }
-    }
-elif DB_TYPE == "postgres":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": "enh_db",
-            "USER": "admin",
-            "PASSWORD": "password_123",
-            "HOST": "db",
-            "PORT": "5432",
+    elif DB_TYPE == "postgresql":
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.postgresql",
+                "NAME": "enh_db",
+                "USER": "admin",
+                "PASSWORD": "password_123",
+                "HOST": "db",
+                "PORT": "5432",
+            }
         }
-    }
+    else:
+        raise ValueError("Unknown DB_TYPE")
+else:
+    raise ValueError("DB_TYPE is not set")
+    
 
 
 # Password validation
