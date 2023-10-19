@@ -1,0 +1,28 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main # Измените на ветку, которую вы хотите отслеживать
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup SSH
+      run: |
+        echo "$SSH_PRIVATE_KEY" > ssh_key
+        chmod 600 ssh_key
+        ssh-keyscan 77.232.134.147 >> ~/.ssh/known_hosts
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+    
+    - name: Deploy to Server
+      run: |
+        ssh -i ./ssh_key user@77.232.134.147 "cd /path/to/your/app && git pull origin main"
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
