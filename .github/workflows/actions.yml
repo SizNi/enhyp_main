@@ -3,7 +3,7 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - main
+      - deploy
 
 jobs:
   deploy:
@@ -24,7 +24,7 @@ jobs:
     
     - name: Deploy to Server
       run: |
-        ssh -i ./ssh_key actions@77.232.134.147 "cd .. && cd projects/enhyp_main/ && git pull origin main"
+        ssh -i ./ssh_key actions@77.232.134.147 "cd .. && cd projects/enhyp_main/ && git pull origin deploy"
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
