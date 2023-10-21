@@ -12,7 +12,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      # создание зранилища для ссх. На гитхабе лежит приватный, на сервере публичный
+      # создание хранилища для ссх. На гитхабе лежит приватный, на сервере публичный
     - name: Setup SSH
       run: |
         echo "$SSH_PRIVATE_KEY" > ssh_key
@@ -25,5 +25,11 @@ jobs:
     - name: Deploy to Server
       run: |
         ssh -i ./ssh_key actions@77.232.134.147 "cd .. && cd projects/enhyp_main/ && git pull origin main"
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Build and run Docker Compose
+      run: |
+        ssh -i ./ssh_key actions@77.232.134.147 "cd .. && cd projects/enhyp_main/ && docker-compose up -d"
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
