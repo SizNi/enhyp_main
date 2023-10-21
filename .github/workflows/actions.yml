@@ -12,7 +12,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
+      # создание зранилища для ссх. На гитхабе лежит приватный, на сервере публичный
     - name: Setup SSH
       run: |
         echo "$SSH_PRIVATE_KEY" > ssh_key
