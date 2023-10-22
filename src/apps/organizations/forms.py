@@ -16,7 +16,7 @@ class CreateOrganizationForm(forms.ModelForm):
         validators=[
             RegexValidator(
                 regex=r"^(ООО|ИП|АО|ОАО|ЗАО)\s",
-                message="Некорректное наименование организации",
+                message="Некорректное наименование организации. ООО 'Рога и Копыта' или ИП Иванов И.И.",
                 code="invalid_org_name",
             )
         ],
@@ -39,7 +39,7 @@ class CreateOrganizationForm(forms.ModelForm):
         validators=[
             RegexValidator(
                 regex=r"^\d{10,12}$",
-                message="ИНН должен состоять из 10, 11 или 12 цифр.",
+                message="ИНН должен состоять из 10-12 цифр.",
                 code="invalid_inn",
             )
         ],
@@ -76,6 +76,7 @@ class CreateOrganizationForm(forms.ModelForm):
                 "class": "form-control",
             }
         ),
+        error_messages={"unique": _("Введенный email занят.")},
     )
 
     # валидатор номера телефона
@@ -98,7 +99,7 @@ class CreateOrganizationForm(forms.ModelForm):
         max_length=100,
         label_suffix="",
         required=True,
-        help_text=_("Обязательное поле, будет отображено на титуле"),
+        help_text=_("Обязательное поле, будет отображено на титуле паспорта."),
         widget=forms.TextInput(
             attrs={
                 "placeholder": _("И.И. Иванов"),
@@ -111,7 +112,7 @@ class CreateOrganizationForm(forms.ModelForm):
         max_length=100,
         label_suffix="",
         required=True,
-        help_text=_("Обязательное поле, будет отображено в конце паспорта"),
+        help_text=_("Обязательное поле, будет отображено в конце паспорта."),
         widget=forms.TextInput(
             attrs={
                 "placeholder": _("Гидрогеолог"),
@@ -125,7 +126,7 @@ class CreateOrganizationForm(forms.ModelForm):
         max_length=100,
         label_suffix="",
         required=True,
-        help_text=_("Обязательное поле, будет отображено в конце паспорта"),
+        help_text=_("Обязательное поле, будет отображено в конце паспорта."),
         widget=forms.TextInput(
             attrs={
                 "placeholder": _("В.В. Ватутин"),

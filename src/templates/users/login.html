@@ -19,10 +19,11 @@
             {% if field.help_text %}
                 <small class="form-text text-muted">{{field.help_text}}</small>
             {% endif %}
+            {% if field.errors %}
+                <small class="form-text", style=" color: red;">{{ field.errors }}</small>
+            {% endif %}
         {% endfor %}
-        {% if field.errors %}
-          <small class="form-text", style=" color: red;">{{ field.errors }}</small>
-        {% endif %}
+
         <div class="form-group">
         <input class="btn btn-primary" type="submit" value="Войти">
         </div>

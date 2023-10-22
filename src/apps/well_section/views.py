@@ -54,6 +54,7 @@ class WellSectionCreateView(TemplateView):
         zso_id = obj.id
         return JsonResponse({"url": f"/well_section/{zso_id}"})
 
+
 # просто тестирование новой формы, потом перенести на основную вьюху
 @method_decorator([csrf_exempt, login_required], name="dispatch")
 class WellSectionCreateView_2(TemplateView):

@@ -135,7 +135,6 @@ if DB_TYPE:
         raise ValueError("Unknown DB_TYPE")
 else:
     raise ValueError("DB_TYPE is not set")
-    
 
 
 # Password validation

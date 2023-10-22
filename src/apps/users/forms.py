@@ -19,7 +19,7 @@ class LoginUserForm(forms.ModelForm):
                 "class": "form-control",
             }
         ),
-        error_messages={"unique": _("Пользователь с таким именем" " уже есть")},
+        error_messages={"required": "Это поле обязательно для заполнения."},
     )
     password = forms.CharField(
         label=_("Пароль"),
@@ -33,6 +33,7 @@ class LoginUserForm(forms.ModelForm):
                 "class": "form-control",
             }
         ),
+        error_messages={"required": "Это поле обязательно для заполнения."},
     )
 
     class Meta:

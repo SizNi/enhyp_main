@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponse
 from apps.users.models import CustomUser
@@ -46,15 +47,15 @@ class LoginView(TemplateView):
                 login(request, user)
                 messages.info(request, _("Вы залогинены"))
                 return redirect(next_url)
+            else:
+                form.add_error(None, "Неверное имя пользователя или пароль")
+                context["errors"] = form.errors
         else:
             context["errors"] = form.errors
             context["login_form"] = form
             messages.error(
                 request,
-                _(
-                    "Пожалуйста, введите правильные имя пользователя и пароль."
-                    "Оба поля могут быть чувствительны к регистру."
-                ),
+                _("Неверное имя пользователя или пароль"),
             )
             return render(request, "users/login.html", context)
         context["login_form"] = form
