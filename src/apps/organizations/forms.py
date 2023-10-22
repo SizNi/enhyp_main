@@ -169,7 +169,7 @@ class UpdateOrganizationForm(forms.ModelForm):
         validators=[
             RegexValidator(
                 regex=r"^(ООО|ИП|АО|ОАО|ЗАО)\s",
-                message="Некорректное наименование организации",
+                message="Некорректное наименование организации. ООО 'Рога и Копыта' или ИП Иванов И.И.",
                 code="invalid_org_name",
             )
         ],

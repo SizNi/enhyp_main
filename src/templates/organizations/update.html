@@ -23,6 +23,17 @@
       </div>
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
+      {% if update_form.errors %}
+        <div class="alert alert-danger">
+          <ul>
+            {% for field, errors in update_form.errors.items %}
+              {% for error in errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
       <div class="row">
         <div class="col-md-6">
           {% for field in update_form.visible_fields %}
@@ -54,9 +65,6 @@
           {% endif %}
         </div>
       </div>
-      {% for error in update_form.errors %}
-        <small class="form-text text-danger">{{ error }}</small>
-      {% endfor %}
       <div class="form-group">
         <input class="btn btn-primary" type="submit" value="{% translate 'Изменить' %}" />
       </div>
