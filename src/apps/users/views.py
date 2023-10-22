@@ -46,13 +46,17 @@ class LoginView(TemplateView):
                 login(request, user)
                 messages.info(request, _("Вы залогинены"))
                 return redirect(next_url)
-        messages.error(
-            request,
-            _(
-                "Пожалуйста, введите правильные имя пользователя и пароль."
-                "Оба поля могут быть чувствительны к регистру."
-            ),
-        )
+        else:
+            context["errors"] = form.errors
+            context["login_form"] = form
+            messages.error(
+                request,
+                _(
+                    "Пожалуйста, введите правильные имя пользователя и пароль."
+                    "Оба поля могут быть чувствительны к регистру."
+                ),
+            )
+            return render(request, "users/login.html", context)
         context["login_form"] = form
         context["next"] = next_url
         return render(request, "users/login.html", context)
@@ -102,6 +106,7 @@ class CreateView(CreateView):
                     print(f"Ошибка отправки почты: {e}")
                 return redirect("home")
         else:
+            context["errors"] = form.errors
             context["registration_form"] = form
             return render(request, "users/create.html", context)
 

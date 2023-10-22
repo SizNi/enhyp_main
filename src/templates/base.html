@@ -20,9 +20,6 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarToggleExternalContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#">{% trans 'Возможности' %}</a>
-          </li>
           {% if request.user.is_authenticated %}
             <li class="nav-item">
               <a href="{% url 'well_section_list' %}" class="nav-link">{% trans 'Разрез скважины'%}</a>

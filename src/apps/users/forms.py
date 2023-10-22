@@ -74,6 +74,7 @@ class CreateUserForm(UserCreationForm):
                 "class": "form-control",
             }
         ),
+        error_messages={"unique": _("Данный email занят")},
     )
     password1 = forms.CharField(
         label=_("Пароль"),
@@ -130,6 +131,7 @@ class UpdateUserForm(forms.ModelForm):
                 "class": "form-control",
             }
         ),
+        error_messages={"unique": _("Данный email занят")},
     )
     password1 = forms.CharField(
         label=_("Новый пароль"),

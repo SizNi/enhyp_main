@@ -16,6 +16,9 @@
           {% if field.help_text %}
           <small class="form-text text-muted">{{field.help_text}}</small>
           {% endif %}
+          {% if field.errors %}
+          <small class="form-text", style=" color: red;">{{ field.errors }}</small>
+          {% endif %}
 
       {% endfor %}
       {% for error in create_form.errors %}
