@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% block assets %}
+        <title>Разрез скважины</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;300;600&family=Nunito+Sans:wght@300;400&display=swap" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/gh/lestajs/core@latest/dist/lesta.global.js"></script>
+        <script src="{% static 'well_section/bundlers/fabula.global.js' %}"></script>
+        <link href="{% static 'well_section/bundlers/fabula.global.css' %}" rel="stylesheet" />
+        <style>
+            #root {
+                font-family: 'Nunito Sans';
+            }
+        </style>
+{% endblock%}
+{% block content %}
+        <div id="root"></div>
+        <script type="module">
+          import entry from "{% static 'well_section/first/index.js' %}"
+          fabula.create(lesta, '#root', entry)
+          fabula.init()
+        </script>
+{% endblock %}
+

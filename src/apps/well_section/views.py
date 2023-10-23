@@ -58,7 +58,7 @@ class WellSectionCreateView(TemplateView):
 # просто тестирование новой формы, потом перенести на основную вьюху
 @method_decorator([csrf_exempt, login_required], name="dispatch")
 class WellSectionCreateView_2(TemplateView):
-    template_name = "well_section/index.html"
+    template_name = "well_section/form.html"
 
     def post(self, request, *args, **kwargs):
         # это в бд
