@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from well_section_counter.handler import handler_front
+from well_section_counter.handler import handler_front, handler_front_2
 from well_section_counter.main_counter import main
 from apps.well_section.models import WellSection
 from django.contrib import messages
@@ -62,16 +62,11 @@ class WellSectionCreateView_2(TemplateView):
 
     def post(self, request, *args, **kwargs):
         # это в бд
+        # print(request)
         data_json = json.loads(request.body)
-        work_data = handler_front(data_json)
-        obj = WellSection()
-        obj.user = request.user
-        obj.name = json.dumps(work_data["project_name"])
-        obj.layers = json.dumps(work_data["layers"])
-        obj.well_data = json.dumps(work_data["well_data"])
-        obj.save()
-        zso_id = obj.id
-        return JsonResponse({"url": f"/well_section/{zso_id}"})
+        work_data = handler_front_2(data_json)
+        # print(work_data)
+        return JsonResponse({"url": f"/well_section/"})
 
 
 @method_decorator(cache_page(900), name="dispatch")

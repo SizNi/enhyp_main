@@ -4,6 +4,7 @@ from well_section_counter.main_counter import main
 # обработчик получаемого с фронта в бек
 def handler_front(data):
     result_data = {}
+    print(data)
     # заполнение данных скважины
     casing_data = data.get("casingString", [])
     columns = {}
@@ -64,4 +65,79 @@ def handler_front(data):
         result_data["layers"] = layers
         if data["well"]["project_name"]:
             result_data["project_name"] = data["well"]["project_name"]
+        print(result_data)
+        return result_data
+
+
+# обработчик получаемого с фронта в бек для новой формы
+def handler_front_2(data):
+    result_data = {}
+    # заполнение данных скважины
+    columns = {}
+    well = data.get("well", {})
+    construction = well.get("construction", [])
+    i = 1
+    if construction.get("columns", []):
+        columns_data = construction.get("columns", [])
+        for elem in columns_data:
+            columns[i] = {
+                "id": i,
+                "D": int(elem["d"]),
+                "from": float(elem["from"]),
+                "till": float(elem["to"]),
+                "type": "обсадная",
+            }
+            i += 1
+    # добавление фильтровой колонны------------------------досюда исправил
+    if construction.get("filter_columns", []):
+        filter_columns = construction.get("filter_columns", [])
+        for elem in filter_columns:
+            columns[i] = {
+                "id": i,
+                "D": int(elem["d"]),
+                "from": float(elem["from"]),
+                "till": float(elem["to"]),
+            }
+            if elem["type"] == "Фильтровая колонна":
+                columns[i]["type"] = "фильтровая"
+                if elem["filters"]:
+                    columns[i]["filter"] = {}
+                    for j in range(len(elem["filters"])):
+                        interval = {
+                            "id": j + 1,
+                            "from": float(elem["filters"][j]["from"]),
+                            "till": float(elem["filters"][j]["to"]),
+                        }
+                        columns[i]["filter"][j + 1] = interval
+            else:
+                columns[i]["type"] = "О.С."
+            i += 1
+    # добавление оснастки
+    result_data["well_data"] = {
+        "columns": columns,
+        "pump_type": str(data["well"]["data"]["pump_type"]),
+        "pump_depth": float(data["well"]["data"]["pump_depth"]),
+        "static_lvl": float(data["well"]["data"]["static_lvl"]),
+        "dynamic_lvl": float(data["well"]["data"]["dynamic_lvl"]),
+        "well_depth": float(data["well"]["depth"]),
+    }
+    # заполнение геологических слоев
+    layers_data = data.get("layers", [])
+    layers = {}
+    i = 1
+    if layers_data:
+        for elem in layers_data:
+            layers[i] = {
+                "id": i,
+                "name": elem["name"],
+                "thick": float(elem["to"])
+                - float(elem["from"]),
+                "sediments": tuple(elem["sediments"]),
+                "interlayers": tuple(elem["interlayers"]),
+                "inclusions": tuple(elem["inclusions"]),
+            }
+        result_data["layers"] = layers
+        if data["well"]["project_name"]:
+            result_data["project_name"] = data["well"]["project_name"]
+        print(result_data)
         return result_data

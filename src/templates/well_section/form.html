@@ -20,9 +20,13 @@
 {% block content %}
         <div id="root"></div>
         <script type="module">
-          import entry from "{% static 'well_section/first/index.js' %}"
-          fabula.create(lesta, '#root', entry)
-          fabula.init()
+          fabula.create(lesta, '#root')
+          fetch("{% static 'well_section/WS_form_config/form.json' %}")
+          .then(res => res.json())
+          .then(entry => {
+            fabula.init(entry)
+          })
         </script>
 {% endblock %}
+
 
