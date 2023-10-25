@@ -88,7 +88,7 @@ def handler_front_2(data):
                 "type": "обсадная",
             }
             i += 1
-    # добавление фильтровой колонны------------------------досюда исправил
+    # добавление фильтровой колонны
     if construction.get("filter_columns", []):
         filter_columns = construction.get("filter_columns", [])
         for elem in filter_columns:
@@ -98,6 +98,8 @@ def handler_front_2(data):
                 "from": float(elem["from"]),
                 "till": float(elem["to"]),
             }
+            # выбор типа фильтровой колонны
+            # нумерация колонн сквозная
             if elem["type"] == "Фильтровая колонна":
                 columns[i]["type"] = "фильтровая"
                 if elem["filters"]:
@@ -122,11 +124,11 @@ def handler_front_2(data):
         "well_depth": float(data["well"]["depth"]),
     }
     # заполнение геологических слоев
-    layers_data = data.get("layers", [])
     layers = {}
     i = 1
-    if layers_data:
-        for elem in layers_data:
+    if well.get("layers", []):
+        layers_data = well.get("layers", [])
+        for elem in layers_data["layer"]:
             layers[i] = {
                 "id": i,
                 "name": elem["name"],
@@ -136,8 +138,9 @@ def handler_front_2(data):
                 "interlayers": tuple(elem["interlayers"]),
                 "inclusions": tuple(elem["inclusions"]),
             }
-        result_data["layers"] = layers
-        if data["well"]["project_name"]:
-            result_data["project_name"] = data["well"]["project_name"]
-        print(result_data)
-        return result_data
+            i += 1
+    result_data["layers"] = layers
+    # добавление названия проекта
+    if data["well"]["name"]:
+        result_data["project_name"] = data["well"]["name"]
+    return result_data
