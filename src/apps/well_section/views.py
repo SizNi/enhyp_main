@@ -45,6 +45,7 @@ class WellSectionCreateView(TemplateView):
     def post(self, request, *args, **kwargs):
         # это в бд
         data_json = json.loads(request.body)
+        print(data_json)
         work_data = handler_front(data_json)
         obj = WellSection()
         obj.user = request.user
