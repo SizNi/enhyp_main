@@ -1,0 +1,12 @@
+var t;(0,(t=globalThis.parcelRequireda87).register)("69HwY",function(e,s){Object.defineProperty(e.exports,"__esModule",{value:!0,configurable:!0}),Object.defineProperty(e.exports,"default",{get:()=>a,set:void 0,enumerable:!0,configurable:!0});var p=t("lWmiX"),l=t("bFEhs"),a={template:`
+   <div class="l-container l-mw">
+      <h2 class="lstPopupHd"></h2>
+      <div class="lstPopupNav"></div>
+      <ul class="lstPopupList l-fx"></ul>
+      <div class="lstPopupResult"></div>
+      <div class="l-fx l-gap">
+        <div class="lstPopupCancel"></div>
+        <div class="lstPopupApply"></div>
+      </div>
+  </div>`,params:{nav:[]},props:{params:{text:{},list:{},buttonsText:{}},proxies:{list:{},selected:{}},methods:{onapply:{},onclose:{}}},proxies:{nav:"#"},nodes(){return{lstPopupHd:{textContent:this.param.text},lstPopupNav:{component:{src:p.default,proxies:{value:()=>this.proxy.nav,disabled:{},error:{}},params:{options:{buttons:this.param.nav}},methods:{change:this.method.filter}}},lstPopupList:{_html:()=>this.method.render(),onclick:t=>{if(t.target.closest(".lstPopupList > li")){let e=+t.target.dataset.index;this.method.update(this.proxy.list[e],e)}}},lstPopupResult:{component:{src:p.default,params:{size:"mini"},proxies:{value:()=>this.proxy.selected},methods:{change:this.method.update}}},lstPopupApply:{component:{src:l.default,params:{text:()=>this.param.buttonsText?.apply||"Apply"},methods:{change:()=>this.method.onapply&&this.method.onapply(this.proxy.selected)}}},lstPopupCancel:{component:{src:l.default,params:{text:()=>this.param.buttonsText?.cancel||"Cancel"},methods:{change:()=>this.method.onclose()}}}}},methods:{update(t,e){let s=this.proxy.selected,p=s.indexOf(t);-1===p?s.push(t):s.splice(p,1),this.node.lstPopupResult.method.update(s),this.node.lstPopupList.children[e]?.classList.toggle("active")},filter(t){this.proxy.nav=t,this.proxy.list="#"===t?this.param.list:this.param.list.filter(e=>e.charAt(0).toUpperCase()===t)},render(){return this.proxy.list.reduce((t,e,s)=>t+`
+        <li class="${this.proxy.selected.includes(e)?" active":""}" data-index="${s}" size="mini">${e}</li>`,"")}},created(){var t;let e;this.param.nav=(t=this.proxy.list,e=[],t.forEach(t=>{let s=t.charAt(0).toUpperCase();e.includes(s)||e.push(s.toUpperCase())}),e.unshift("#"),e)}}});

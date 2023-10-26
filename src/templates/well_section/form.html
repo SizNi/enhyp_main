@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% block assets %}
+        <title>Разрез скважины</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@200;300;600&family=Nunito+Sans:wght@300;400&display=swap" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/gh/lestajs/core@latest/dist/lesta.global.js"></script>
+        <script src="{% static 'well_section/bundlers/fabula.global.js' %}"></script>
+        <link href="{% static 'well_section/bundlers/fabula.global.css' %}" rel="stylesheet" />
+        <style>
+            #root {
+                font-family: 'Nunito Sans';
+            }
+        </style>
+{% endblock%}
+{% block content %}
+        <div id="root"></div>
+        <script type="module">
+          const { createForm, jsonToFormData } = fabula
+          const form = createForm({
+            lesta,
+            root: document.querySelector('#root'),
+            elements: {
+              custom: () => {}
+            },
+            async onRequest(data) {
+              // console.log(data)
+              // for (const pair of jsonToFormData(data).entries()) { преобразование в форм-дату
+              //   console.log(pair.at(0)+ ' - ' + pair.at(1))
+              // }
+              // return jsonToFormData(data) // выбор формата отправки
+              return JSON.stringify(data)
+            },
+            async onResponse(res) {
+              console.log(res)
+              const data = await res.json()
+              window.location.href = data.url
+            }
+          })
+          // const { get, set, add, remove } = form.element
+          form.mount("{% static 'well_section/WS_form_config/form.json' %}") // form.mount('/form.json', options) || form.mount(jsonfile)
+          // form.unmount()
+        </script>
+{% endblock %}
+
+

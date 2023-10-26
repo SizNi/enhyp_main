@@ -3,7 +3,7 @@ from .models import WellSection
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 import json
 from well_section_counter.handler import handler_front
@@ -37,9 +37,10 @@ class WellSectionListView(ListView):
         )
 
 
+# добавить на фронте обработчик ссылки
 @method_decorator([csrf_exempt, login_required], name="dispatch")
 class WellSectionCreateView(TemplateView):
-    template_name = "well_section/create_form.html"
+    template_name = "well_section/form.html"
 
     def post(self, request, *args, **kwargs):
         # это в бд
@@ -51,27 +52,9 @@ class WellSectionCreateView(TemplateView):
         obj.layers = json.dumps(work_data["layers"])
         obj.well_data = json.dumps(work_data["well_data"])
         obj.save()
-        zso_id = obj.id
-        return JsonResponse({"url": f"/well_section/{zso_id}"})
-
-
-# просто тестирование новой формы, потом перенести на основную вьюху
-@method_decorator([csrf_exempt, login_required], name="dispatch")
-class WellSectionCreateView_2(TemplateView):
-    template_name = "well_section/index.html"
-
-    def post(self, request, *args, **kwargs):
-        # это в бд
-        data_json = json.loads(request.body)
-        work_data = handler_front(data_json)
-        obj = WellSection()
-        obj.user = request.user
-        obj.name = json.dumps(work_data["project_name"])
-        obj.layers = json.dumps(work_data["layers"])
-        obj.well_data = json.dumps(work_data["well_data"])
-        obj.save()
-        zso_id = obj.id
-        return JsonResponse({"url": f"/well_section/{zso_id}"})
+        obj_id = obj.id
+        url = reverse_lazy("well_section_result", args=[obj_id])
+        return JsonResponse({"url": url, "status": 200})
 
 
 @method_decorator(cache_page(900), name="dispatch")
