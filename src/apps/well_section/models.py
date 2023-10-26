@@ -7,7 +7,7 @@ class WellSection(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name="well_section", on_delete=models.CASCADE
     )
-    name = models.CharField(max_length=30)
+    name = models.TextField()
     layers = models.TextField()
     well_data = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
