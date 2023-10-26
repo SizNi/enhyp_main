@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 import json
-from well_section_counter.handler import handler_front, handler_front_2
+from well_section_counter.handler import handler_front
 from well_section_counter.main_counter import main
 from apps.well_section.models import WellSection
 from django.contrib import messages
@@ -45,7 +45,7 @@ class WellSectionCreateView(TemplateView):
     def post(self, request, *args, **kwargs):
         # это в бд
         data_json = json.loads(request.body)
-        work_data = handler_front_2(data_json)
+        work_data = handler_front(data_json)
         obj = WellSection()
         obj.user = request.user
         obj.name = json.dumps(work_data["project_name"])
