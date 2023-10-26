@@ -1,7 +1,0 @@
-(0,globalThis.parcelRequireda87.register)("lWmiX",function(e,t){Object.defineProperty(e.exports,"__esModule",{value:!0,configurable:!0}),Object.defineProperty(e.exports,"default",{get:()=>s,set:void 0,enumerable:!0,configurable:!0});var s={template:'<div class="lstLbl l-label"></div><fieldset class="lstBtns l-fx"></fieldset>',props:{proxies:{value:{},disabled:{},error:{}},params:{size:{default:"small"},name:{default:""},type:{type:"string"},text:{},options:{// width: {},
-// buttons: {
-//   type: 'array',
-//   default: []
-// }
-default:{}}},methods:{change:{}}},nodes(){return{lstLbl:{textContent:()=>this.param.text},lstBtns:{name:this.param.name,_class:{radio:"radio"===this.param.type},_html:()=>this.method.render(),onclick:e=>{if(e.target.closest(".lstBtns > button")){let t=+e.target.dataset.index,s=this.param.options.buttons||this.proxy.value;this.method.change(s[t],t)}}}}},methods:{render(){let e=this.param.options.buttons||this.proxy.value,t=e=>Array.isArray(this.proxy.value)?this.proxy.value.includes(e):this.proxy.value===e;return e?.reduce((e,s,a)=>e+`
-        <button class="${t(s)?" active":""}" data-index="${a}" size="${this.param.size}">${s}</button>`,"")},update(e){this.proxy.value=e}}}});

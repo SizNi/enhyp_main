@@ -12,7 +12,7 @@
     "clearMessage": "Вы хотите очистить все поля в форме?"
   },
   "server": {
-    "url": "/well_section/create_test/",
+    "url": "/well_section/create/",
     "method": "POST",
     "headers": {
       "Accept": "application/json",

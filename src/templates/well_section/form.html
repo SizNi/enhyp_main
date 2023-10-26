@@ -20,12 +20,30 @@
 {% block content %}
         <div id="root"></div>
         <script type="module">
-          fabula.create(lesta, '#root')
-          fetch("{% static 'well_section/WS_form_config/form.json' %}")
-          .then(res => res.json())
-          .then(entry => {
-            fabula.init(entry)
+          const { createForm, jsonToFormData } = fabula
+          const form = createForm({
+            lesta,
+            root: document.querySelector('#root'),
+            elements: {
+              custom: () => {}
+            },
+            async onRequest(data) {
+              // console.log(data)
+              // for (const pair of jsonToFormData(data).entries()) { преобразование в форм-дату
+              //   console.log(pair.at(0)+ ' - ' + pair.at(1))
+              // }
+              // return jsonToFormData(data) // выбор формата отправки
+              return JSON.stringify(data)
+            },
+            async onResponse(res) {
+              console.log(res)
+              const data = await res.json()
+              window.location.href = data.url
+            }
           })
+          // const { get, set, add, remove } = form.element
+          form.mount("{% static 'well_section/WS_form_config/form.json' %}") // form.mount('/form.json', options) || form.mount(jsonfile)
+          // form.unmount()
         </script>
 {% endblock %}
 

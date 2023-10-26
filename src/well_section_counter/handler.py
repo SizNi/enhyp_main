@@ -117,11 +117,11 @@ def handler_front_2(data):
     # добавление оснастки
     result_data["well_data"] = {
         "columns": columns,
-        "pump_type": str(data["well"]["data"]["pump_type"]),
-        "pump_depth": float(data["well"]["data"]["pump_depth"]),
-        "static_lvl": float(data["well"]["data"]["static_lvl"]),
-        "dynamic_lvl": float(data["well"]["data"]["dynamic_lvl"]),
-        "well_depth": float(data["well"]["depth"]),
+        "pump_type": str(data["well"]["data"]["pump_type"]) if data["well"]["data"]["pump_type"] else None,
+        "pump_depth": float(data["well"]["data"]["pump_depth"]) if data["well"]["data"]["pump_depth"] else None,
+        "static_lvl": float(data["well"]["data"]["static_lvl"]) if data["well"]["data"]["static_lvl"] else None,
+        "dynamic_lvl": float(data["well"]["data"]["dynamic_lvl"]) if data["well"]["data"]["dynamic_lvl"] else None,
+        "well_depth": float(data["well"]["depth"]) if data["well"]["depth"] else None,
     }
     # заполнение геологических слоев
     layers = {}
