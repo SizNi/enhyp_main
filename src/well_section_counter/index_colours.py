@@ -4,6 +4,10 @@
 # переделать на словарь
 colours = {
     "Q": "#fcf4d8",
+    "₽": "#f3f1b4",
+    "₽\u2083": "#f3f1b4",
+    "₽\u2082": "#fdf5c7",
+    "₽\u2081": "#f3e86d",
     "J\u2083": "#daeef9",
     "J\u2082": "#b5d0ec",
     "J\u2081": "#b5c8e9",
@@ -39,6 +43,11 @@ colours = {
     "Ꞓ\u2083": "#ccf0e2",
     "Ꞓ\u2082": "#c0edd4",
     "Ꞓ\u2081": "#a5dbbf",
+    "Є\u2083": "#ccf0e2",
+    "Є\u2082": "#c0edd4",
+    "Є\u2081": "#a5dbbf",
+    "Ꞓ": "#9ec3bb",
+    "Є": "#9ec3bb",
 }
 
 
@@ -64,5 +73,5 @@ def convertation(index):
             if digit in range(1, 4):
                 unicode_digit = chr(8320 + digit)
                 text = f"{text[0:2]}\u208B{unicode_digit}{text[4:]}"
-    text = text.replace("K1", "K\u2081").replace("P1", "P\u2081")
+    text = text.replace("K1", "K\u2081").replace("P1", "P\u2081").replace("Ꞓ", "Є")
     return text
