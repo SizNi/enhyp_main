@@ -54,7 +54,7 @@ class WellSectionCreateView(TemplateView):
         obj.save()
         obj_id = obj.id
         url = reverse_lazy("well_section_result", args=[obj_id])
-        return JsonResponse({"url": url, "status":200})
+        return JsonResponse({"url": url, "status": 200})
 
 
 @method_decorator(cache_page(900), name="dispatch")

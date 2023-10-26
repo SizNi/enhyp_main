@@ -49,10 +49,18 @@ def handler_front(data):
     # добавление оснастки
     result_data["well_data"] = {
         "columns": columns,
-        "pump_type": str(data["well"]["data"]["pump_type"]) if data["well"]["data"]["pump_type"] else None,
-        "pump_depth": float(data["well"]["data"]["pump_depth"]) if data["well"]["data"]["pump_depth"] else None,
-        "static_lvl": float(data["well"]["data"]["static_lvl"]) if data["well"]["data"]["static_lvl"] else None,
-        "dynamic_lvl": float(data["well"]["data"]["dynamic_lvl"]) if data["well"]["data"]["dynamic_lvl"] else None,
+        "pump_type": str(data["well"]["data"]["pump_type"])
+        if data["well"]["data"]["pump_type"]
+        else None,
+        "pump_depth": float(data["well"]["data"]["pump_depth"])
+        if data["well"]["data"]["pump_depth"]
+        else None,
+        "static_lvl": float(data["well"]["data"]["static_lvl"])
+        if data["well"]["data"]["static_lvl"]
+        else None,
+        "dynamic_lvl": float(data["well"]["data"]["dynamic_lvl"])
+        if data["well"]["data"]["dynamic_lvl"]
+        else None,
         "well_depth": float(data["well"]["depth"]) if data["well"]["depth"] else None,
     }
     # заполнение геологических слоев
@@ -64,8 +72,7 @@ def handler_front(data):
             layers[i] = {
                 "id": i,
                 "name": elem["name"],
-                "thick": float(elem["to"])
-                - float(elem["from"]),
+                "thick": float(elem["to"]) - float(elem["from"]),
                 "sediments": tuple(elem["sediments"]),
                 "interlayers": tuple(elem["interlayers"]),
                 "inclusions": tuple(elem["inclusions"]),
