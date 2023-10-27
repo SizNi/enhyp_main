@@ -65,7 +65,7 @@ def convertation(index):
     text = index
     if len(index) >= 2:
         digit = int(index[1]) if index[1].isdigit() else None
-        if digit in range(1, 4):
+        if digit in range(1, 5):
             unicode_digit = chr(8320 + digit)
             text = f"{index[0]}{unicode_digit}{index[2:]}"
         if len(index) >= 4 and index[3].isdigit():
