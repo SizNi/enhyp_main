@@ -191,7 +191,7 @@ def loams(d, x, y, width, height):
         y_start -= delta_y
         x_start += delta_x
     # в зависимости от высоты и ширины получается два варианта:
-    if width >= height:  # ширина больше высоты
+    if width >= height * 0.6:  # ширина больше высоты
         # переназначаем начальные значения
         x_low_start = ((y - height) * koef - y_start) * tg_30 + delta_x
         # движемся по верхней грани вправо, по нижней грани - тоже вправо
@@ -323,7 +323,7 @@ def sandy_loams(d, x, y, width, height):
         y_start -= delta_y
         x_start += delta_x
     # в зависимости от высоты и ширины получается два варианта:
-    if width >= height:  # ширина больше высоты
+    if width >= height * 0.6:  # ширина больше высоты (ошибок нет)
         # переназначаем начальные значения
         x_low_start = ((y - height) * koef - y_start) * tg_30 + delta_x
         # движемся по верхней грани вправо, по нижней грани - тоже вправо
@@ -345,7 +345,7 @@ def sandy_loams(d, x, y, width, height):
         y_right_start = (
             delta_y - (delta_x - (x_start + delta_x - (x + width) * koef)) / tg_30
         )
-    else:  # высота больше ширины
+    else:  # высота больше ширины (здесь тоже ошибок нет)
         y_right_start = (
             delta_y - (delta_x - (x_start + delta_x - (x + width) * koef)) / tg_30
         )
