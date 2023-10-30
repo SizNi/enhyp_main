@@ -517,11 +517,11 @@ def well(d, well_dt):
             158 * koef,
             (257 - st_lvl * scale_m + 4) * koef,
             158 * koef,
-            (257 - st_lvl * scale_m + 20) * koef,
+            (257 - st_lvl * scale_m + 30) * koef,
             close=False,
             stroke="white",
         )
-        d.append(draw.Text("С.У. " + str(st_lvl), 40, path=p, text_anchor="middle"))
+        d.append(draw.Text("С.У. " + str(st_lvl), 40, path=p, text_anchor="start"))
         p = draw.Lines(
             151 * koef,
             (257 - st_lvl * scale_m) * koef,
@@ -537,12 +537,13 @@ def well(d, well_dt):
         dn_lvl = well_dt["well_data"]["dynamic_lvl"]
         p = draw.Lines(
             158 * koef,
-            (257 - dn_lvl * scale_m - 20) * koef,
+            (257 - dn_lvl * scale_m - 25) * koef,
             158 * koef,
-            (257 - dn_lvl * scale_m - 4) * koef,
+            (257 - dn_lvl * scale_m - 1) * koef,
             close=False,
             stroke="white",
         )
+        print(str(dn_lvl))
         d.append(draw.Text("Д.У. " + str(dn_lvl), 40, path=p, text_anchor="middle"))
         p = draw.Lines(
             151 * koef,
