@@ -5,8 +5,6 @@ from well_section_counter.format import frmt
 from well_section_counter.inclusion import inclus
 from well_section_counter.fixtures import well_data_4
 import drawSvg as draw
-from PIL import Image
-from io import BytesIO
 
 
 # размер листа А4 при плотности пикселей 300 dpi
@@ -147,12 +145,13 @@ def rectangle(d, x, y, x1, y1, text, direction):
                 stroke="white",
             )
         d.append(draw.Text([text], 40, path=p, text_anchor="middle"))
+    # Подпись глубины слоев
     elif direction == "h_low":
         p = draw.Lines(
             (x) * koef,
-            (y + y1 + 2) * koef,
+            (y + y1 + 1) * koef,
             (x + x1) * koef,
-            (y + y1 + 2) * koef,
+            (y + y1 + 1) * koef,
             close=False,
             stroke="white",
         )
@@ -392,9 +391,9 @@ def well(d, well_dt):
             # отрисовка конструкции и глубин для колонн
             p = draw.Lines(
                 163 * koef,
-                (257 - column["till"] * scale_m + 2) * koef,
+                (257 - column["till"] * scale_m + 1) * koef,
                 185.5 * koef,
-                (257 - column["till"] * scale_m + 2) * koef,
+                (257 - column["till"] * scale_m + 1) * koef,
                 close=False,
                 stroke="black",
             )
@@ -402,9 +401,9 @@ def well(d, well_dt):
             d.append(draw.Text(text, 40, path=p, text_anchor="middle"))
             p = draw.Lines(
                 185.5 * koef,
-                (257 - column["till"] * scale_m + 2) * koef,
+                (257 - column["till"] * scale_m + 1) * koef,
                 208 * koef,
-                (257 - column["till"] * scale_m + 2) * koef,
+                (257 - column["till"] * scale_m + 1) * koef,
                 close=False,
                 stroke="white",
             )
@@ -444,9 +443,9 @@ def well(d, well_dt):
             d.append(r)
             p = draw.Lines(
                 163 * koef,
-                (257 - column["till"] * scale_m + 2) * koef,
+                (257 - column["till"] * scale_m + 1) * koef,
                 185.5 * koef,
-                (257 - column["till"] * scale_m + 2) * koef,
+                (257 - column["till"] * scale_m + 1) * koef,
                 close=False,
                 stroke="black",
             )
@@ -454,9 +453,9 @@ def well(d, well_dt):
             d.append(draw.Text(text, 40, path=p, text_anchor="middle"))
             p = draw.Lines(
                 185.5 * koef,
-                (257 - column["till"] * scale_m + 2) * koef,
+                (257 - column["till"] * scale_m + 1) * koef,
                 208 * koef,
-                (257 - column["till"] * scale_m + 2) * koef,
+                (257 - column["till"] * scale_m + 1) * koef,
                 close=False,
                 stroke="white",
             )
@@ -474,9 +473,9 @@ def well(d, well_dt):
             # добавление данных по диаметру обсадных колонн
             p = draw.Lines(
                 163 * koef,
-                (257 - column["till"] * scale_m + 2) * koef,
+                (257 - column["till"] * scale_m + 1) * koef,
                 185.5 * koef,
-                (257 - column["till"] * scale_m + 2) * koef,
+                (257 - column["till"] * scale_m + 1) * koef,
                 close=False,
                 stroke="white",
             )
@@ -493,9 +492,9 @@ def well(d, well_dt):
             # добавление данных по глубинам
             p = draw.Lines(
                 185.5 * koef,
-                (y_start - (column["till"] - column["from"]) * scale_m + 2) * koef,
+                (y_start - (column["till"] - column["from"]) * scale_m + 1) * koef,
                 208 * koef,
-                (y_start - (column["till"] - column["from"]) * scale_m + 2) * koef,
+                (y_start - (column["till"] - column["from"]) * scale_m + 1) * koef,
                 close=False,
                 stroke="white",
             )
