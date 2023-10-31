@@ -390,9 +390,18 @@ def well(d, well_dt):
                 208 * koef,
                 (257 - column["till"] * scale_m + 1) * koef,
                 close=False,
-                stroke="white",
+                stroke="black",
             )
             d.append(draw.Text(str(column["till"]), 40, path=p, text_anchor="middle"))
+            p = draw.Lines(
+                163 * koef,
+                (257 - column["till"] * scale_m) * koef,
+                208 * koef,
+                (257 - column["till"] * scale_m) * koef,
+                close=False,
+                stroke="black",
+            )
+            d.append(p)
             filter = column["filter"]
             for f_elem in filter:
                 # отрисовка градиента фильтра и интервалов
