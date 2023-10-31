@@ -5,6 +5,7 @@ from well_section_counter.format import frmt
 from well_section_counter.inclusion import inclus
 from well_section_counter.fixtures import well_data_4
 import drawSvg as draw
+import textwrap
 
 
 # размер листа А4 при плотности пикселей 300 dpi
@@ -55,16 +56,16 @@ def header(d):
     rectangle(d, 10, 297 - 15, 12, -25, "Масштаб", "v")
     rectangle(d, 22, 297 - 15, 12, -25, "№ слоя", "v")
     rectangle(d, 34, 297 - 15, 12, -25, "Возраст", "v")
-    rectangle(d, 46, 297 - 15, 30, -25, "Описание     пород", "h")
-    rectangle(d, 76, 297 - 15, 30, -25, "Разрез   скважины", "h")
-    rectangle(d, 106, 297 - 15, 45, -10, "Залегание слоя, м", "h")
-    rectangle(d, 106, 297 - 25, 15, -15, "От", "h")
-    rectangle(d, 121, 297 - 25, 15, -15, "До", "h")
-    rectangle(d, 136, 297 - 25, 15, -15, "Мощность", "h")
+    rectangle(d, 46, 297 - 15, 30, -25, "Описание     пород", "h_head")
+    rectangle(d, 76, 297 - 15, 30, -25, "Разрез   скважины", "h_head")
+    rectangle(d, 106, 297 - 15, 45, -10, "Залегание слоя, м", "h_head")
+    rectangle(d, 106, 297 - 25, 15, -15, "От", "h_head")
+    rectangle(d, 121, 297 - 25, 15, -15, "До", "h_head")
+    rectangle(d, 136, 297 - 25, 15, -15, "Мощность, м", "h_head")
     rectangle(d, 151, 297 - 15, 12, -25, "Уровень, м", "v")
-    rectangle(d, 163, 297 - 15, 45, -10, "Конструкция скважины", "h")
-    rectangle(d, 163, 297 - 25, 22.5, -15, "Диаметр, мм", "h")
-    rectangle(d, 185.5, 297 - 25, 22.5, -15, "Глубина, м", "h")
+    rectangle(d, 163, 297 - 15, 45, -10, "Конструкция скважины", "h_head")
+    rectangle(d, 163, 297 - 25, 22.5, -15, "Диаметр, мм", "h_head")
+    rectangle(d, 185.5, 297 - 25, 22.5, -15, "Глубина, м", "h_head")
 
 
 # риусет масштабную линейку слева
@@ -123,9 +124,9 @@ def rectangle(d, x, y, x1, y1, text, direction):
         direction != "f"
         and (len(text) <= x1 / 2.1 or direction == "v")
         and direction != "h_low"
+        and direction != "h_head"
     ):
         # расположение текста в завимости от ориентации текста
-
         if direction == "v":
             p = draw.Lines(
                 (x + x1 / 2 + 1) * koef,
@@ -156,92 +157,76 @@ def rectangle(d, x, y, x1, y1, text, direction):
             stroke="white",
         )
         d.append(draw.Text([text], 40, path=p, text_anchor="middle"))
-    # по хорошему это можно было сделать с помощью textwrap, но по факту я написал аналог
-    # с добавлением знака переноса строки и без разрыва от запятых и точек
-    elif direction == "h":
-        number_str = math.ceil(abs((len(text) * 2.1) / x1))
-        # коррекция размера текста (если строк много),
-        # по хорошему надо доработать динамическую градацию размера
-        # с изменением количества строк в зависимости от размера шрифта
-        if number_str * 5 >= -0.8 * y1:
+    # Название столбоцв для шапки
+    elif direction == "h_head":
+        # изменение шрифта в зависимости от размера блока в шапке
+        if x1 >= 45:
+            text_separate = 25
+            text_size = 40
+        elif x1 > 22.5 and x1 < 45:
+            text_separate = 16
+            text_size = 40
+        elif x1 > 15 and x1 <= 22.5:
+            text_separate = 16
             text_size = 30
-            if number_str == 1:
-                central_koef = 6.2
-            else:
-                central_koef = 2
+        elif x1 <= 15:
+            text_separate = 8
+            text_size = 30
+        number_str = len(textwrap.wrap(text, text_separate, break_long_words=False, break_on_hyphens=False))
+        # центирование блока текста в прямоугольнике в зависимости от количества строк
+        if number_str == 1:
+            central_koef = 6.2
         else:
-            text_size = 30
-            central_koef = 2.5
-        i = 0
+            central_koef = 5
+        # разбиение текста по строкам
+        new_text = "\n".join(textwrap.wrap(text, text_separate, break_long_words=False, break_on_hyphens=False))
         # Первоначальное положение строки
-        # строится в зависимости от расстояния межу строками
-        # и высотой шрифта
-        step = y1 / 2 + (5 - central_koef) / 2 * number_str
-        text_start_step = 0
-        text_step = round(len(text) / abs(number_str))
-        text_end_step = text_step
-        # ввод строк внутрь квадрата
-        # -1 нужен чтоб не было проблем с выходом за пределы итератора
-        # из-за округления
-        while i < number_str - 1:
-            p = draw.Lines(
+        start_text = y1 / 2 + (5 - central_koef) / 2 * number_str
+        # расположение первоначальной строки (привязывается к линии)
+        p = draw.Lines(
                 (x) * koef,
-                (y + step) * koef,
+                (y + start_text) * koef,
                 (x + x1) * koef,
-                (y + step) * koef,
+                (y + start_text) * koef,
                 close=False,
                 stroke="white",
             )
-            # коррекция конца строки
-            if str(text[text_end_step + 1]) == ",":
-                text_end_step += 2
-                insert = str(text[text_start_step:text_end_step])
-                text_start_step += 2
-            elif str(text[text_end_step]) == ":":
-                text_end_step += 1
-                insert = str(text[text_start_step:text_end_step])
-                text_start_step += 1
-            elif str(text[text_end_step]) == " ":
-                insert = str(text[text_start_step : text_end_step - 1])
-            elif str(text[text_end_step - 1]) == " ":
-                insert = str(text[text_start_step : text_end_step - 1])
-            elif str(text[text_end_step]) == ",":
-                insert = str(text[text_start_step : text_end_step + 1])
-            elif str(text[text_end_step]) == ".":
-                insert = str(text[text_start_step : text_end_step + 1])
-            else:
-                insert = str(text[text_start_step:text_end_step]) + "-"
-            # коррекция начала строки
-            if str(text[text_start_step]) == ",":
-                insert = insert[2:]
-            elif str(text[text_start_step]) == " ":
-                insert = insert[1:]
-            elif str(text[text_start_step]) == ".":
-                insert = insert[2:]
-            d.append(draw.Text([insert], text_size, path=p, text_anchor="middle"))
-            # смещение относительно первоначальной строки
-            y += -5
-            i += 1
-            text_start_step += text_step
-            text_end_step += text_step
-        # добавление остатка строки
-        p = draw.Lines(
-            (x) * koef,
-            (y + step) * koef,
-            (x + x1) * koef,
-            (y + step) * koef,
-            close=False,
-            stroke="white",
-        )
-        if str(text[text_start_step]) == ",":
-            insert = text[text_start_step + 2 :]
-        elif str(text[text_start_step]) == " ":
-            insert = text[text_start_step + 1 :]
-        elif str(text[text_start_step]) == ".":
-            insert = text[text_start_step + 2 :]
+        d.append(draw.Text(new_text, text_size, path=p, text_anchor="middle"))
+    elif direction == "h":
+        text_separate = 18
+        # изменение размера текста для маленьких блоков:
+        if y - y1 <= 30:
+            text_size = 20
+            text_separate = 30
+            central_koef = 4.5
+            number_str = len(textwrap.wrap(text, text_separate, break_long_words=False, break_on_hyphens=False))
         else:
-            insert = text[text_start_step:]
-        d.append(draw.Text([insert], text_size, path=p, text_anchor="middle"))
+            number_str = len(textwrap.wrap(text, text_separate, break_long_words=False, break_on_hyphens=False))
+            if number_str * 5 >= -0.8 * y1:
+                text_size = 30
+                # центирование блока текста в прямоугольнике
+                if number_str == 1:
+                    central_koef = 6.2
+                else:
+                    central_koef = 4
+            elif number_str * 5 < -0.8 * y1:
+                text_size = 30
+                central_koef = 4
+        # разбиение текста по строкам
+        new_text = "\n".join(textwrap.wrap(text, text_separate, break_long_words=False, break_on_hyphens=False))
+        # Первоначальное положение строки
+        start_text = y1 / 2 + (5 - central_koef) / 2 * number_str
+        # расположение первоначальной строки (привязывается к линии)
+        p = draw.Lines(
+                (x) * koef,
+                (y + start_text) * koef,
+                (x + x1) * koef,
+                (y + start_text) * koef,
+                close=False,
+                stroke="white",
+            )
+        d.append(draw.Text(new_text, text_size, path=p, text_anchor="middle"))
+        
 
 
 # создание слоя
@@ -542,7 +527,6 @@ def well(d, well_dt):
             close=False,
             stroke="white",
         )
-        print(str(dn_lvl))
         d.append(draw.Text("Д.У. " + str(dn_lvl), 40, path=p, text_anchor="middle"))
         p = draw.Lines(
             151 * koef,
