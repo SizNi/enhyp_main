@@ -172,25 +172,33 @@ def rectangle(d, x, y, x1, y1, text, direction):
         elif x1 <= 15:
             text_separate = 8
             text_size = 30
-        number_str = len(textwrap.wrap(text, text_separate, break_long_words=False, break_on_hyphens=False))
+        number_str = len(
+            textwrap.wrap(
+                text, text_separate, break_long_words=False, break_on_hyphens=False
+            )
+        )
         # центирование блока текста в прямоугольнике в зависимости от количества строк
         if number_str == 1:
             central_koef = 6.2
         else:
             central_koef = 5
         # разбиение текста по строкам
-        new_text = "\n".join(textwrap.wrap(text, text_separate, break_long_words=False, break_on_hyphens=False))
+        new_text = "\n".join(
+            textwrap.wrap(
+                text, text_separate, break_long_words=False, break_on_hyphens=False
+            )
+        )
         # Первоначальное положение строки
         start_text = y1 / 2 + (5 - central_koef) / 2 * number_str
         # расположение первоначальной строки (привязывается к линии)
         p = draw.Lines(
-                (x) * koef,
-                (y + start_text) * koef,
-                (x + x1) * koef,
-                (y + start_text) * koef,
-                close=False,
-                stroke="white",
-            )
+            (x) * koef,
+            (y + start_text) * koef,
+            (x + x1) * koef,
+            (y + start_text) * koef,
+            close=False,
+            stroke="white",
+        )
         d.append(draw.Text(new_text, text_size, path=p, text_anchor="middle"))
     elif direction == "h":
         text_separate = 18
@@ -199,9 +207,17 @@ def rectangle(d, x, y, x1, y1, text, direction):
             text_size = 20
             text_separate = 30
             central_koef = 4.5
-            number_str = len(textwrap.wrap(text, text_separate, break_long_words=False, break_on_hyphens=False))
+            number_str = len(
+                textwrap.wrap(
+                    text, text_separate, break_long_words=False, break_on_hyphens=False
+                )
+            )
         else:
-            number_str = len(textwrap.wrap(text, text_separate, break_long_words=False, break_on_hyphens=False))
+            number_str = len(
+                textwrap.wrap(
+                    text, text_separate, break_long_words=False, break_on_hyphens=False
+                )
+            )
             if number_str * 5 >= -0.8 * y1:
                 text_size = 30
                 # центирование блока текста в прямоугольнике
@@ -213,20 +229,23 @@ def rectangle(d, x, y, x1, y1, text, direction):
                 text_size = 30
                 central_koef = 4
         # разбиение текста по строкам
-        new_text = "\n".join(textwrap.wrap(text, text_separate, break_long_words=False, break_on_hyphens=False))
+        new_text = "\n".join(
+            textwrap.wrap(
+                text, text_separate, break_long_words=False, break_on_hyphens=False
+            )
+        )
         # Первоначальное положение строки
         start_text = y1 / 2 + (5 - central_koef) / 2 * number_str
         # расположение первоначальной строки (привязывается к линии)
         p = draw.Lines(
-                (x) * koef,
-                (y + start_text) * koef,
-                (x + x1) * koef,
-                (y + start_text) * koef,
-                close=False,
-                stroke="white",
-            )
+            (x) * koef,
+            (y + start_text) * koef,
+            (x + x1) * koef,
+            (y + start_text) * koef,
+            close=False,
+            stroke="white",
+        )
         d.append(draw.Text(new_text, text_size, path=p, text_anchor="middle"))
-        
 
 
 # создание слоя
@@ -390,9 +409,18 @@ def well(d, well_dt):
                 208 * koef,
                 (257 - column["till"] * scale_m + 1) * koef,
                 close=False,
-                stroke="white",
+                stroke="black",
             )
             d.append(draw.Text(str(column["till"]), 40, path=p, text_anchor="middle"))
+            p = draw.Lines(
+                163 * koef,
+                (257 - column["till"] * scale_m) * koef,
+                208 * koef,
+                (257 - column["till"] * scale_m) * koef,
+                close=False,
+                stroke="black",
+            )
+            d.append(p)
             filter = column["filter"]
             for f_elem in filter:
                 # отрисовка градиента фильтра и интервалов
