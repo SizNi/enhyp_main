@@ -6,14 +6,18 @@ services:
       context: .
     # image: enhyp-app:latest  # Замените на имя образа вашего приложения
     container_name: enhyp_app
-    ports:
-      - "80:8000"  # хост:контейнер
+    #ports:
+      # - "80:80"  # хост:контейнер
+    expose: # определяет порт, открытый для других контейнеров
+      - 8000
     environment:
       - DEBUG=True  # Установите переменные окружения для вашего приложения Django
       - DB_TYPE=postgres
       - SECRET_KEY='django-insecure-(wv(*iq0s#t-c0+cayw!*bdkf#$_9_r9d7=r0icia-1ha5)@j#'
     command: ./docker-entrypoint.sh
     restart: always
+    volumes:
+      - static_volume:/app/staticfiles
     depends_on:
       - db  # Указываем зависимость от сервиса db (нашей базы данных PostgreSQL)
 
@@ -30,3 +34,17 @@ services:
       - "5432:5432"
     volumes:
       - .db_data:/var/lib/postgresql
+
+  # Сервис для Nginx
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/app/staticfiles
+    ports:
+      - 1337:80
+    depends_on:
+      - web
+
+volumes:
+  db_data:
+  static_volume:
