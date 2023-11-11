@@ -86,6 +86,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://*.enhyp.webtm.ru/",
+    "http://*.127.0.0.1",
+    "http://127.0.0.1:1337",
+]
+
 AUTH_USER_MODEL = "users.CustomUser"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

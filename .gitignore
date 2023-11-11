@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 **/__pycache__/
+**/cache/
+staticfiles/*
 
 # C extensions
 *.so
@@ -28,7 +30,7 @@ share/python-wheels/
 *.egg
 MANIFEST
 .env
-src/cache/
+
 
 
 # PyInstaller

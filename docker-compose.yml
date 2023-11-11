@@ -17,7 +17,7 @@ services:
     command: ./docker-entrypoint.sh
     restart: always
     volumes:
-      - static_volume:/app/staticfiles
+      - static_volume:/app/src/staticfiles
     depends_on:
       - db  # Указываем зависимость от сервиса db (нашей базы данных PostgreSQL)
 
@@ -39,7 +39,7 @@ services:
   nginx:
     build: ./nginx
     volumes:
-      - static_volume:/app/staticfiles
+      - static_volume:/app/src/staticfiles
     ports:
       - 1337:80
     depends_on:
