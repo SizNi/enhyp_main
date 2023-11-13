@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% bootstrap_css %}
+
+{% bootstrap_messages %}
+{% block assets %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 400px;
+            width: 70%; /* Ширина карты */
+            float: left;
+        }
+
+        #sidebar {
+            width: 30%; /* Ширина бокового меню */
+            float: left;
+            overflow-y: auto;
+            padding: 10px;
+            box-shadow: 5px 0 5px -5px #333;
+        }
+    </style>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+{% endblock%}  
+{% block content %}
+<div id="map" style="height: 400px;"></div>
+<div id="sidebar">
+  <div id="sidebar-content"></div>
+</div>
+
+<script>
+    var map = L.map('map').setView([51.505, -0.09], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Данные маркеров, переданные из Django
+    var markersData = {{ markers_data|safe }};
+
+    var markers = [];
+
+    for (var i = 0; i < markersData.length; i++) {
+        var marker = L.marker([markersData[i].lat, markersData[i].lng]).bindPopup('<b>Маркер ' + (i + 1) + '</b><br>' + markersData[i].info);
+        marker.addTo(map);
+
+        marker.on('click', function (event) {
+            event.target.openPopup();
+            document.getElementById('sidebar').innerHTML = '<h2>Информация о маркере</h2><p>' + event.target.getPopup().getContent() + '</p>';
+        });
+
+        markers.push(marker);
+    }
+</script>
+
+
+
+
+{% endblock %}

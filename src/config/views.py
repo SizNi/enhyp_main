@@ -2,6 +2,7 @@ from django.views.generic import TemplateView
 from django.http import FileResponse, HttpResponse
 from django.conf import settings
 from django.views import View
+from django.shortcuts import render
 import os
 
 
@@ -19,24 +20,19 @@ class PassportExampleView(View):
             return HttpResponse("PDF not found", status=404)
 
 
-##############################
-from django.shortcuts import render, redirect
-from django.core.mail import send_mail
+class MapView(TemplateView):
+    template_name = "map.html"
 
+    def get_context_data(self, **kwargs):
+        # Ваши данные из модели Django, содержащие координаты и информацию о маркерах
+        markers_data = [
+            {"lat": 51.5, "lng": -0.09, "info": "Тут такая инфа"},
+            {"lat": 51.505, "lng": -0.1, "info": "А тут другая"},
+            {"lat": 51.51, "lng": -0.1, "info": "А тут ее нет"},
+            {"lat": 51.505, "lng": -0.09, "info": "А тут и не будет"},
+        ]
+        return {"markers_data": markers_data}
 
-class TestMailView(View):
     def get(self, request, *args, **kwargs):
-        context = {}
-        return render(request, "test_mail.html", context)
-
-    def post(self, request, *args, **kwargs):
-        print(
-            send_mail(
-                "Subject here",
-                "Here is the message.",
-                settings.EMAIL_HOST_USER,
-                ["wwwwwwwww@list.ru"],
-                fail_silently=False,
-            )
-        )
-        return redirect("home")
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
