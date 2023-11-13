@@ -26,6 +26,8 @@
         <td>
           <a href="{% url 'well_section_result' elem.id %}">{% translate "Посмотреть"%}</a>
           <br>
+          <a href="{% url 'well_section_update' elem.id %}">{% translate "Изменить"%}</a>
+          <br>
           <a href="{% url 'well_section_delete' elem.id %}">{% translate "Удалить"%}</a>
         </td>
       </tr>

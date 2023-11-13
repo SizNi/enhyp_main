@@ -1,4 +1,4 @@
-from django.views.generic import ListView, TemplateView, DeleteView
+from django.views.generic import ListView, TemplateView, DeleteView, UpdateView, View
 from .models import WellSection
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -80,3 +80,29 @@ class WellSectionDeleteView(DeleteView):
     model = WellSection
     template_name = "well_section/delete.html"
     success_url = reverse_lazy("well_section_list")
+
+
+# доработать
+@method_decorator([csrf_exempt, login_required], name="dispatch")
+class WellSectionUpdateView(TemplateView):
+    model = WellSection
+    template_name = "well_section/update.html"  # Укажите ваш шаблон
+    success_url = "/success/"  # Укажите URL для редиректа после успешного обновления
+
+    def put(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        # Получение данных из запроса
+        data_json = json.loads(request.body)
+        work_data = handler_front(data_json)
+
+        # Обновление данных объекта
+        self.object.name = json.dumps(work_data["project_name"])
+        self.object.layers = json.dumps(work_data["layers"])
+        self.object.well_data = json.dumps(work_data["well_data"])
+        self.object.save()
+
+        # Формирование URL для редиректа
+        url = reverse_lazy("well_section_result", args=[self.object.id])
+
+        return JsonResponse({"url": url, "status": 200})

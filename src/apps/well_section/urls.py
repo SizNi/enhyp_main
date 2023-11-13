@@ -12,4 +12,9 @@ urlpatterns = [
         views.WellSectionDeleteView.as_view(),
         name="well_section_delete",
     ),
+    path(
+        "<int:pk>/update",
+        views.WellSectionUpdateView.as_view(),
+        name="well_section_update",
+    ),
 ]

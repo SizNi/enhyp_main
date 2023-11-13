@@ -8,6 +8,7 @@
 <!-- Leaflet CSS и JS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-draggable"></script>
 
 <!-- Leaflet Control Geocoder CSS и JS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
@@ -62,16 +63,17 @@
 
     for (var i = 0; i < markersData.length; i++) {
         var color = getColorForParameter(markersData[i].param);
-        
+
         var circleMarker = L.circleMarker([markersData[i].lat, markersData[i].lng], {
             radius: 6,
             weight: 1,
             color: "black",
             fillColor: color,
-            fillOpacity: 0.8
-        }).bindPopup('<b>Маркер ' + (i + 1) + '</b><br>' + 
-                      'Информация: ' + markersData[i].info + '<br>' +
-                      'Параметр: ' + markersData[i].param);
+            fillOpacity: 0.8,
+            draggable: true, // Устанавливаем флаг перетаскиваемости
+        }).bindPopup('<b>Маркер ' + (i + 1) + '</b><br>' +
+            'Информация: ' + markersData[i].info + '<br>' +
+            'Параметр: ' + markersData[i].param);
 
         circleMarker.addTo(map);
 
@@ -80,7 +82,19 @@
             document.getElementById('sidebar').innerHTML = '<h2>Информация о маркере</h2><p>' + event.target.getPopup().getContent() + '</p>';
         });
 
+        // Добавляем обработчик события при окончании перетаскивания
+        circleMarker.on('dragend', function (event) {
+            var marker = event.target;
+            var position = marker.getLatLng();
+
+            // Обновляем информацию о маркере или выполняем другие действия
+            console.log('Маркер перемещен на:', position);
+        });
+
         circleMarkers.push(circleMarker);
+
+        // Делаем маркер перетаскиваемым
+        new L.Draggable(circleMarker).enable();
     }
 
     function getColorForParameter(param) {
