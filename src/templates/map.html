@@ -5,8 +5,13 @@
 
 {% bootstrap_messages %}
 {% block assets %}
+<!-- Leaflet CSS и JS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- Leaflet Control Geocoder CSS и JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -34,29 +39,67 @@
 </div>
 
 <script>
-    var map = L.map('map').setView([51.505, -0.09], 13);
+    var map = L.map('map', {
+        attributionControl: false
+    }).setView([51.505, -0.09], 13);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+    var baseLayers = {
+        'OSM': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }),
+        'Sat_1': L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3'], attribution: '© Google' }),
+        'Sat_2': L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {attribution: '© OpenTopoMap contributors', maxZoom: 17}),
+        // Добавьте другие слои по необходимости
+    };
 
-    // Данные маркеров, переданные из Django
+    L.control.layers(baseLayers).addTo(map);
+
+    // Выберите слой по умолчанию
+    baseLayers['OSM'].addTo(map);
+
+
     var markersData = {{ markers_data|safe }};
 
-    var markers = [];
+    var circleMarkers = [];
 
     for (var i = 0; i < markersData.length; i++) {
-        var marker = L.marker([markersData[i].lat, markersData[i].lng]).bindPopup('<b>Маркер ' + (i + 1) + '</b><br>' + markersData[i].info);
-        marker.addTo(map);
+        var color = getColorForParameter(markersData[i].param);
+        
+        var circleMarker = L.circleMarker([markersData[i].lat, markersData[i].lng], {
+            radius: 6,
+            weight: 1,
+            color: "black",
+            fillColor: color,
+            fillOpacity: 0.8
+        }).bindPopup('<b>Маркер ' + (i + 1) + '</b><br>' + 
+                      'Информация: ' + markersData[i].info + '<br>' +
+                      'Параметр: ' + markersData[i].param);
 
-        marker.on('click', function (event) {
+        circleMarker.addTo(map);
+
+        circleMarker.on('click', function (event) {
             event.target.openPopup();
             document.getElementById('sidebar').innerHTML = '<h2>Информация о маркере</h2><p>' + event.target.getPopup().getContent() + '</p>';
         });
 
-        markers.push(marker);
+        circleMarkers.push(circleMarker);
+    }
+
+    function getColorForParameter(param) {
+        // Условия для определения цвета в зависимости от параметра
+        switch (param) {
+            case 'J':
+                return 'blue';
+            case 'C':
+                return 'gray';
+            case 'Q':
+                return 'yellow';
+            default:
+                return 'green'; // Цвет по умолчанию
+        }
     }
 </script>
+
+
+
 
 
 
