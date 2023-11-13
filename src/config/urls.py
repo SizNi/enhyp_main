@@ -7,8 +7,6 @@ from django.conf.urls.static import static
 urlpatterns = (
     [
         path("map/", views.MapView.as_view(), name="map"),
-        path("map_2/", views.MapView2.as_view(), name="map_2"),
-        path("map_2/points.geojson", views.MapView2Points.as_view(), name="map_2_points"),
         path("admin/", admin.site.urls),
         path("", views.Index.as_view(), name="home"),
         path("users/", include("apps.users.urls"), name="users"),
