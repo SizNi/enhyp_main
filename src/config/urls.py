@@ -3,10 +3,10 @@ from django.urls import path, include
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
-from config.views import TestMailView
 
 urlpatterns = (
     [
+        path("map/", views.MapView.as_view(), name="map"),
         path("admin/", admin.site.urls),
         path("", views.Index.as_view(), name="home"),
         path("users/", include("apps.users.urls"), name="users"),
@@ -23,8 +23,6 @@ urlpatterns = (
             views.PassportExampleView.as_view(),
             name="passport_example",
         ),
-        ######################
-        path("test_mail/", views.TestMailView.as_view(), name="test_mail"),
         path("crm/", include("apps.crm.urls"), name="crm_home"),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
