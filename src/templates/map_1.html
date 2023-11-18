@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Wells{% endblock %}
+{% block assets %}
+<link rel="stylesheet" href="{% static 'map_2/ol.css' %}">
+<style>
+    .map {
+        width: 100%;
+        height: 600px;
+    }
+
+    .map .ol-rotate {
+        top: 3em;
+    }
+
+    .map {
+        width: 80%;
+        height: 100%;
+        float: left;
+    }
+
+    .fullscreen:-webkit-full-screen {
+        height: 100%;
+        margin: 0;
+    }
+
+    .fullscreen:fullscreen {
+        height: 100%;
+    }
+
+    .fullscreen {
+        margin-bottom: 10px;
+        width: 100%;
+        height: 500px;
+    }
+
+    .sidepanel {
+        background: #1F6B75;
+        width: 20%;
+        height: 100%;
+        float: left;
+    }
+
+    .sidepanel-title {
+        width: 100%;
+        font-size: 3em;
+        color: #ffffff;
+        display: block;
+        text-align: center;
+    }
+
+    .ol-tooltip {
+        position: absolute;
+        background-color: white;
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+        filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #cccccc;
+        bottom: 17px;
+        left: -50px;
+        min-width: 470px;
+    }
+
+    .ol-tooltip:after,
+    .ol-tooltip:before {
+        top: 100%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+
+    .ol-tooltip:after {
+        border-top-color: white;
+        border-width: 10px;
+        left: 48px;
+        margin-left: -10px;
+    }
+
+    .ol-tooltip:before {
+        border-top-color: #cccccc;
+        border-width: 11px;
+        left: 48px;
+        margin-left: -11px;
+    }
+
+    .ol-tooltip p {
+        margin-top: 0;
+        margin-bottom: 0;
+</style>
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <h1>Скважины ({{ wells.count }})</h1>
+    <div id="fullscreen" class="fullscreen">
+      <div id="map" class="map"></div>
+      <div class="sidepanel">
+        <span class="sidepanel-title">Информация</span>
+      </div>
+    </div>
+    <div id="tooltip" class="ol-tooltip">
+      <div id="tooltip-content"></div>
+    </div>
+    <div id="mouse-position"></div>
+    
+    <form>
+      <label for="projection">Projection</label>
+      <select id="projection">
+        <option value="EPSG:4326">EPSG:4326</option>
+        <option value="EPSG:3857">EPSG:3857</option>
+      </select>
+      <label for="precision">Precision</label>
+      <input id="precision" type="number" min="0" max="12" value="4" />
+    </form>
+    Choose a predefined style from the list below or edit it as JSON manually.
+    <select id="style-select">
+      <option value="icons">Icons</option>
+      <option value="triangles">Triangles, color related to population</option>
+      <option value="triangles-latitude">Triangles, color related to latitude</option>
+      <option value="circles">Circles, size related to population</option>
+      <option value="circles-zoom">Circles, size related to zoom</option>
+      <option value="rotating-bars">Rotating bars</option>
+    </select>
+    <small>
+      <span id="style-valid" style="display: none; color: forestgreen">✓ style is valid</span>
+      <span id="style-invalid" style="display: none; color: grey">✗ <span>style not yet valid...</span></span>
+      &nbsp;
+    </small>
+    <textarea style="width: 100%;
+                     height: 4rem;
+                     font-family: monospace;
+                     font-size: small"
+              id="style-editor"></textarea>
+    <script type="module" src="{% static 'map_1/main.js' %}"></script>
+  {% endblock content %}
