@@ -100,8 +100,8 @@ class MapSave(View):
             file_path = "static/map_1/points.geojson"
 
             # Записываем данные в файл
-            #with open(file_path, "w") as file:
-                #json.dump(geojson_data, file, indent=2)
+            # with open(file_path, "w") as file:
+            # json.dump(geojson_data, file, indent=2)
 
             return JsonResponse({"success": True})
         except Exception as e:
