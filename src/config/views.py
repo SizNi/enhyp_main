@@ -97,7 +97,7 @@ class MapSave(View):
             # print(geojson_data)
 
             # Путь к файлу points.geojson
-            file_path = "static/map_1/points.geojson"
+            file_path = "static/map_2/points.geojson"
 
             # Записываем данные в файл
             # with open(file_path, "w") as file:
