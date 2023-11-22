@@ -39,7 +39,8 @@ class LoginView(TemplateView):
         context = {}
         form = LoginUserForm(request.POST)
         next_url = request.POST.get("next", "/")
-
+        if not next_url:
+            next_url = reverse_lazy("home")
         if form.is_valid():
             username = request.POST["username"]
             password = request.POST["password"]

@@ -17,6 +17,7 @@ import Draw from 'https://cdn.skypack.dev/ol/interaction/Draw.js';
 import { Fill, Stroke, Style, Circle as CircleStyle } from 'https://cdn.skypack.dev/ol/style.js';
 import XYZ from 'https://cdn.skypack.dev/ol/source/XYZ.js';
 import Control from 'https://cdn.skypack.dev/ol/control/Control.js';
+import { razvexpLayer } from func.js
 
 // Добавление контролов Zoom
 const zoomInButton = document.createElement("button");
@@ -147,6 +148,7 @@ const vectorSource = new Vector({
   format: new GeoJSON(),
   wrapX: true,
 });
+
 const baseStyle = new Style({
   stroke: new Stroke({
     color: 'black',
@@ -199,6 +201,7 @@ const minStyle = new Style({
     }),
   }),
 });
+
 const exploLayer = new VectorLayer({
   source: vectorSource,
   style: function (feature) {
@@ -214,6 +217,7 @@ const exploLayer = new VectorLayer({
     }
   },
 });
+
 const razvLayer = new VectorLayer({
   source: vectorSource,
   style: function (feature) {
@@ -550,3 +554,5 @@ map.addLayer(drawLayer);
 map.addOverlay(tooltip);
 map.addControl(scaleLineControl);
 animate();
+
+export { vectorSource }
