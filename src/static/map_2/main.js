@@ -8,16 +8,40 @@ import {
   Translate,
   defaults as defaultInteractions,
 } from 'https://cdn.skypack.dev/ol/interaction.js';
-import TileLayer from 'https://cdn.skypack.dev/ol/layer/Tile.js';
-import OSM from 'https://cdn.skypack.dev/ol/source/OSM.js';
 import Vector from 'https://cdn.skypack.dev/ol/source/Vector.js';
 import MousePosition from 'https://cdn.skypack.dev/ol/control/MousePosition.js';
 import { toStringHDMS } from 'https://cdn.skypack.dev/ol/coordinate.js';
 import Overlay from 'https://cdn.skypack.dev/ol/Overlay.js';
 import ScaleLine from 'https://cdn.skypack.dev/ol/control/ScaleLine.js';
 import Draw from 'https://cdn.skypack.dev/ol/interaction/Draw.js';
-import { LineString } from 'https://cdn.skypack.dev/ol/geom.js';
 import { Fill, Stroke, Style, Circle as CircleStyle } from 'https://cdn.skypack.dev/ol/style.js';
+import XYZ from 'https://cdn.skypack.dev/ol/source/XYZ.js';
+import Control from 'https://cdn.skypack.dev/ol/control/Control.js';
+
+// Добавление контролов Zoom
+const zoomInButton = document.createElement("button");
+zoomInButton.innerHTML = "+";
+zoomInButton.addEventListener("click", function () {
+  const view = map.getView();
+  const currentZoom = view.getZoom();
+  view.setZoom(currentZoom + 1);
+});
+
+const zoomOutButton = document.createElement("button");
+zoomOutButton.innerHTML = "-";
+zoomOutButton.addEventListener("click", function () {
+  const view = map.getView();
+  const currentZoom = view.getZoom();
+  view.setZoom(currentZoom - 1);
+});
+
+const zoomButtonsContainer = document.createElement("div");
+zoomButtonsContainer.id = "zoom-buttons-container";
+zoomButtonsContainer.className = "ol-control ol-unselectable";
+zoomButtonsContainer.appendChild(zoomInButton);
+zoomButtonsContainer.appendChild(zoomOutButton);
+
+// Добавление контейнера с кнопками в элемент управления на карту
 
 // Оверлей отображения длины линейки
 const lengthOverlay = new Overlay({
@@ -89,7 +113,6 @@ let measure = false;
 
 document.getElementById('drawLineButton').addEventListener('click', function () {
   measure = !measure;
-  console.log(measure);
   document.getElementById('drawLineButton').innerText = measure ? 'Выключить линейку' : 'Линейка';
   updateMeasureState();
 });
@@ -118,65 +141,152 @@ function animate() {
   map.render();
   window.requestAnimationFrame(animate);
 }
-// добавление точек и слоя для них
+// добавление слоев для точек
 const vectorSource = new Vector({
   url: '/map/points',
   format: new GeoJSON(),
   wrapX: true,
 });
-
-const vectorLayer = new VectorLayer({
+const baseStyle = new Style({
+  stroke: new Stroke({
+    color: 'black',
+    width: 4,
+  }),
+  image: new CircleStyle({
+    radius: 5,
+    fill: new Fill({
+      color: [255, 0, 0, 0.7],
+    }),
+  }),
+});
+const exploStyle = new Style({
+  image: new CircleStyle({
+    radius: 5,
+    fill: new Fill({
+      color: [17, 30, 108, 0.7],
+    }),
+  }),
+});
+const razvStyle = new Style({
+  image: new CircleStyle({
+    radius: 5,
+    fill: new Fill({
+      color: [14, 77, 146, 0.7],
+    }),
+  }),
+});
+const regStyle = new Style({
+  image: new CircleStyle({
+    radius: 5,
+    fill: new Fill({
+      color: [0, 128, 255, 0.7],
+    }),
+  }),
+});
+const razvexpStyle = new Style({
+  image: new CircleStyle({
+    radius: 5,
+    fill: new Fill({
+      color: [0, 49, 82, 0.7],
+    }),
+  }),
+});
+const minStyle = new Style({
+  image: new CircleStyle({
+    radius: 5,
+    fill: new Fill({
+      color: [0, 128, 129, 0.7],
+    }),
+  }),
+});
+const exploLayer = new VectorLayer({
   source: vectorSource,
   style: function (feature) {
     const typo = feature.get('typo');
-    let color, radius;
-
-    switch (typo) {
-      case 'эксплуатационный':
-        color = [17, 30, 108, 0.7]; // Синий цвет с прозрачностью
-        radius = 5;
-        break;
-      case 'разведочный':
-        color = [14, 77, 146, 0.7]; // Зеленый цвет с прозрачностью
-        radius = 5;
-        break;
-      case 'режимный':
-        color = [0, 128, 255, 0.7]; // Светло-голубой цвет с прозрачностью
-        radius = 5;
-        break;
-      case 'разведочно-эксплуатационный':
-        color = [0, 49, 82, 0.7]; // Пурпурный цвет с прозрачностью
-        radius = 5;
-        break;
-      case 'минеральный':
-        color = [0, 128, 129, 0.7]; // Оранжевый цвет с прозрачностью
-        radius = 5;
-        break;
-      default:
-        // Если есть другие типы, установите цвет и радиус по умолчанию
-        color = [255, 0, 0, 0.7]; // Красный цвет с прозрачностью
-        radius = 5;
+    if (typo === 'эксплуатационный') {
+      const combinedStyle = new Style({
+        stroke: baseStyle.getStroke(),
+        image: exploStyle.getImage(),
+      });
+      return combinedStyle
+    } else {
+      return null; // Возвращаем null для скрытия точек других типов
     }
-
-    return new Style({
-      fill: new Fill({
-        color: color, // Устанавливаем цвет с учетом прозрачности
-      }),
-      stroke: new Stroke({
-        color: 'black',
-        width: 4,
-      }),
-      image: new CircleStyle({
-        radius: radius,
-        fill: new Fill({
-          color: color, // Устанавливаем цвет с учетом прозрачности
-        }),
-      }),
-    });
   },
 });
+const razvLayer = new VectorLayer({
+  source: vectorSource,
+  style: function (feature) {
+    const typo = feature.get('typo');
+    if (typo === 'разведочный') {
+      const combinedStyle = new Style({
+        stroke: baseStyle.getStroke(),
+        image: razvStyle.getImage(),
+      });
+      return combinedStyle
+    } else {
+      return null; // Возвращаем null для скрытия точек других типов
+    }
+  },
+});
+const regLayer = new VectorLayer({
+  source: vectorSource,
+  style: function (feature) {
+    const typo = feature.get('typo');
+    if (typo === 'режимный') {
+      const combinedStyle = new Style({
+        stroke: baseStyle.getStroke(),
+        image: regStyle.getImage(),
+      });
+      return combinedStyle
+    } else {
+      return null; // Возвращаем null для скрытия точек других типов
+    }
+  },
+});
+const razvexpLayer = new VectorLayer({
+  source: vectorSource,
+  style: function (feature) {
+    const typo = feature.get('typo');
+    if (typo === 'разведочно-эксплуатационный') {
+      const combinedStyle = new Style({
+        stroke: baseStyle.getStroke(),
+        image: razvexpStyle.getImage(),
+      });
+      return combinedStyle
+    } else {
+      return null; // Возвращаем null для скрытия точек других типов
+    }
+  },
+});
+const minLayer = new VectorLayer({
+  source: vectorSource,
+  style: function (feature) {
+    const typo = feature.get('typo');
+    if (typo === 'минеральный') {
+      const combinedStyle = new Style({
+        stroke: baseStyle.getStroke(),
+        image: minStyle.getImage(),
+      });
+      return combinedStyle
+    } else {
+      return null; // Возвращаем null для скрытия точек других типов
+    }
+  },
+});
+const otherLayer = new VectorLayer({
+  source: vectorSource,
+  style: function (feature) {
+    const types = ['эксплуатационный', 'разведочный', 'режимный', 'минеральный'];
+    const typo = feature.get('typo');
 
-// ...
+    if (types.includes(typo)) {
+      return null;
+    } else {
+      return baseStyle;
+    }
+  },
+});
 
 // настройка координат
 const mousePositionControl = new MousePosition({
@@ -201,7 +311,6 @@ let editingEnabled = false;
 
 document.getElementById('editButton').addEventListener('click', function () {
   editingEnabled = !editingEnabled;
-  console.log(editingEnabled);
   editButton.innerText = editingEnabled ? 'Выключить редактирование' : 'Редактировать';
   updateEditingState();
 });
@@ -214,7 +323,7 @@ function updateEditingState() {
     select.getFeatures().clear();
   }
 }
-console.log(editingEnabled);
+
 
 // инициализация карты
 const map = new Map({
@@ -222,8 +331,104 @@ const map = new Map({
   controls: defaultInteractions().extend([mousePositionControl, scaleLineControl]),
   target: 'map',
   layers: [
-    new TileLayer({
-      source: new OSM(),
+    new ol.layer.Group({
+      title: 'Картографическая основа',
+      layers: [
+        new ol.layer.Group({
+          title: 'OSM',
+          type: 'base',
+          combine: false,
+          visible: true,
+          layers: [
+            new ol.layer.Tile({
+              source: new ol.source.OSM(),
+            }),
+          ]
+        }),
+      ]
+    }),
+    new ol.layer.Group({
+      title: 'Спутниковые снимки',
+      layers: [
+        new ol.layer.Group({
+          title: 'ArcGIS',
+          type: 'sputnik',
+          combine: false,
+          visible: true,
+          layers: [
+            new ol.layer.Tile({
+              source: new XYZ({
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                maxZoom: 19, // Уровень максимального масштаба
+              }),
+            }),
+          ]
+        }),
+      ]
+    }),
+    new ol.layer.Group({
+      title: 'Данные',
+      layers: [
+        new ol.layer.Group({
+          title: 'Скважины',
+          layers: [
+            new ol.layer.Group({
+              title: 'Эксплуатационные',
+              type: 'well',
+              combine: false,
+              visible: true,
+              layers: [
+                exploLayer,
+              ]
+            }),
+            new ol.layer.Group({
+              title: 'Разведочные',
+              type: 'well',
+              combine: false,
+              visible: true,
+              layers: [
+                razvLayer,
+              ]
+            }),
+            new ol.layer.Group({
+              title: 'Разведочно-эксплуатационные',
+              type: 'well',
+              combine: false,
+              visible: true,
+              layers: [
+                razvexpLayer,
+              ]
+            }),
+            new ol.layer.Group({
+              title: 'Режимные',
+              type: 'well',
+              combine: false,
+              visible: true,
+              layers: [
+                regLayer,
+              ]
+            }),
+            new ol.layer.Group({
+              title: 'Минеральные',
+              type: 'well',
+              combine: false,
+              visible: true,
+              layers: [
+                minLayer,
+              ]
+            }),
+            new ol.layer.Group({
+              title: 'Другие',
+              type: 'well',
+              combine: false,
+              visible: true,
+              layers: [
+                otherLayer,
+              ]
+            }),
+          ]
+        }),
+      ]
     }),
   ],
   view: new View({
@@ -232,10 +437,17 @@ const map = new Map({
   }),
 });
 
-var tooltipContainer = document.getElementById('tooltip');
-var tooltipContent = document.getElementById('tooltip-content');
+var layerSwitcher = new ol.control.LayerSwitcher({
+  collapsed: true,
+  groupSelectStyle: 'group',
+  tipLabel: 'Legend', // Optional label for button
 
-var tooltip = new Overlay({
+});
+
+let tooltipContainer = document.getElementById('tooltip');
+let tooltipContent = document.getElementById('tooltip-content');
+
+let tooltip = new Overlay({
   element: tooltipContainer,
   autoPan: false,
   autoPanAnimation: {
@@ -243,21 +455,21 @@ var tooltip = new Overlay({
   },
 });
 
-var featureId = '';
+let featureId = '';
 
 map.on('pointermove', function (evt) {
   if (measure) {
     // Если рисование линии активно, не выполняем код для скважин
     return;
   }
-  var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+  let feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
     if (featureId == feature.get('pk')) {
       return feature;
     }
     featureId = feature.get('pk');
-    var coordinates = feature.getGeometry().getCoordinates();
-    var extra = feature.get('extra');
-    var nameGwk = extra?.name_gwk || 'Н/Д';
+    let coordinates = feature.getGeometry().getCoordinates();
+    let extra = feature.get('extra');
+    let nameGwk = extra?.name_gwk || 'Н/Д';
     tooltipContent.innerHTML = '<b>Краткая информация<br>Номер:</b> ' + feature.get('name') + '<br>' + '<b>Тип:</b> ' + feature.get('typo') + '<br>' + '<b>ГВК:</b> ' + nameGwk + '<br>';
     tooltip.setPosition(coordinates);
     return feature;
@@ -285,7 +497,7 @@ function updateInfoPanel() {
       <hr>
       ${selectedFeatures.map((selectedFeature) => {
       const featureProperties = selectedFeature.getProperties();
-      var nameGwk = featureProperties.extra && featureProperties.extra.name_gwk ? featureProperties.extra.name_gwk : 'Н/Д';
+      let nameGwk = featureProperties.extra && featureProperties.extra.name_gwk ? featureProperties.extra.name_gwk : 'Н/Д';
       return `
           <strong>Номер ГВК:</strong> ${nameGwk}<br>
           <strong>Внутренний номер:</strong> ${featureProperties.name}<br>
@@ -328,11 +540,13 @@ function updateCoordinates(featureId, coordinates) {
     body: JSON.stringify(data),
   });
 }
-
+map.addControl(new Control({ element: zoomButtonsContainer }));
+map.addControl(layerSwitcher);
+// map.addLayer(satelliteLayer);
 map.addOverlay(lengthOverlay);
 map.addInteraction(drawLine);
 map.addLayer(drawLayer);
-map.addLayer(vectorLayer);
+// map.addLayer(vectorLayer);
 map.addOverlay(tooltip);
 map.addControl(scaleLineControl);
 animate();
