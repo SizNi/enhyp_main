@@ -6,10 +6,6 @@ from django.conf.urls.static import static
 
 urlpatterns = (
     [
-<<<<<<< HEAD
-        path("map/", views.MapView.as_view(), name="map"),
-=======
->>>>>>> deploy
         path("map_2/", views.MapView_2.as_view(), name="map_2"),
         path("map/points", views.PointsView.as_view(), name="points"),
         path("admin/", admin.site.urls),
