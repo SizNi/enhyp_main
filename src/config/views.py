@@ -42,6 +42,7 @@ class MapView_1(TemplateView):
         return render(request, self.template_name, context)
 
 
+@method_decorator([csrf_exempt], name="dispatch")
 class PointsView(View):
     def get(self, request, *args, **kwargs):
         file_path = (
@@ -53,6 +54,7 @@ class PointsView(View):
         return JsonResponse(geojson_data, safe=False)
 
 
+@method_decorator([csrf_exempt], name="dispatch")
 class MapView_2(TemplateView):
     template_name = "map_2.html"
 
@@ -69,6 +71,7 @@ class MapView_2(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         return render(request, self.template_name, context)
+<<<<<<< HEAD
 
 
 class MapView(TemplateView):
@@ -87,3 +90,5 @@ class MapView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         return render(request, self.template_name, context)
+=======
+>>>>>>> deploy
