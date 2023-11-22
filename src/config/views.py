@@ -42,10 +42,11 @@ class MapView_1(TemplateView):
         return render(request, self.template_name, context)
 
 
+@method_decorator([csrf_exempt], name="dispatch")
 class PointsView(View):
     def get(self, request, *args, **kwargs):
         file_path = (
-            "static/map_1/points.geojson"  # Замените на реальный путь к вашему файлу
+            "static/map_2/points.geojson"  # Замените на реальный путь к вашему файлу
         )
         with open(file_path, "rb") as f:
             geojson_data = json.load(f)
@@ -53,6 +54,7 @@ class PointsView(View):
         return JsonResponse(geojson_data, safe=False)
 
 
+@method_decorator([csrf_exempt], name="dispatch")
 class MapView_2(TemplateView):
     template_name = "map_2.html"
 
@@ -69,40 +71,3 @@ class MapView_2(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         return render(request, self.template_name, context)
-
-
-class MapView(TemplateView):
-    template_name = "map.html"
-
-    def get_context_data(self, **kwargs):
-        # Ваши данные из модели Django, содержащие координаты и информацию о маркерах
-        markers_data = [
-            {"lat": 51.5, "lng": -0.09, "info": "Тут такая инфа", "param": "J"},
-            {"lat": 51.505, "lng": -0.1, "info": "А тут другая", "param": "C"},
-            {"lat": 51.51, "lng": -0.1, "info": "А тут ее нет", "param": "C"},
-            {"lat": 51.505, "lng": -0.09, "info": "А тут и не будет", "param": "Q"},
-        ]
-        return {"markers_data": markers_data}
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        return render(request, self.template_name, context)
-
-
-@method_decorator([csrf_exempt], name="dispatch")
-class MapSave(View):
-    def post(self, request, *args, **kwargs):
-        try:
-            geojson_data = json.loads(request.body)
-            # print(geojson_data)
-
-            # Путь к файлу points.geojson
-            file_path = "static/map_2/points.geojson"
-
-            # Записываем данные в файл
-            # with open(file_path, "w") as file:
-            # json.dump(geojson_data, file, indent=2)
-
-            return JsonResponse({"success": True})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
