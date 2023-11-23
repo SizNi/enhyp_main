@@ -30,7 +30,6 @@ class LoginView(TemplateView):
         context = {}
         form = LoginUserForm()
         next_url = request.GET.get("next", "/")
-        print(next_url)
         context["next"] = next_url
         context["login_form"] = form
         return render(request, "users/login.html", context)

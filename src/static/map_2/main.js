@@ -1,4 +1,3 @@
-import GeoJSON from 'https://cdn.skypack.dev/ol/format/GeoJSON.js';
 import Map from 'https://cdn.skypack.dev/ol/Map.js';
 import VectorLayer from 'https://cdn.skypack.dev/ol/layer/Vector.js';
 import View from 'https://cdn.skypack.dev/ol/View.js';
@@ -17,7 +16,8 @@ import Draw from 'https://cdn.skypack.dev/ol/interaction/Draw.js';
 import { Fill, Stroke, Style, Circle as CircleStyle } from 'https://cdn.skypack.dev/ol/style.js';
 import XYZ from 'https://cdn.skypack.dev/ol/source/XYZ.js';
 import Control from 'https://cdn.skypack.dev/ol/control/Control.js';
-import { razvexpLayer } from func.js
+import { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer } from './layers.js';
+
 
 // Добавление контролов Zoom
 const zoomInButton = document.createElement("button");
@@ -142,155 +142,6 @@ function animate() {
   map.render();
   window.requestAnimationFrame(animate);
 }
-// добавление слоев для точек
-const vectorSource = new Vector({
-  url: '/map/points',
-  format: new GeoJSON(),
-  wrapX: true,
-});
-
-const baseStyle = new Style({
-  stroke: new Stroke({
-    color: 'black',
-    width: 4,
-  }),
-  image: new CircleStyle({
-    radius: 5,
-    fill: new Fill({
-      color: [255, 0, 0, 0.7],
-    }),
-  }),
-});
-const exploStyle = new Style({
-  image: new CircleStyle({
-    radius: 5,
-    fill: new Fill({
-      color: [17, 30, 108, 0.7],
-    }),
-  }),
-});
-const razvStyle = new Style({
-  image: new CircleStyle({
-    radius: 5,
-    fill: new Fill({
-      color: [14, 77, 146, 0.7],
-    }),
-  }),
-});
-const regStyle = new Style({
-  image: new CircleStyle({
-    radius: 5,
-    fill: new Fill({
-      color: [0, 128, 255, 0.7],
-    }),
-  }),
-});
-const razvexpStyle = new Style({
-  image: new CircleStyle({
-    radius: 5,
-    fill: new Fill({
-      color: [0, 49, 82, 0.7],
-    }),
-  }),
-});
-const minStyle = new Style({
-  image: new CircleStyle({
-    radius: 5,
-    fill: new Fill({
-      color: [0, 128, 129, 0.7],
-    }),
-  }),
-});
-
-const exploLayer = new VectorLayer({
-  source: vectorSource,
-  style: function (feature) {
-    const typo = feature.get('typo');
-    if (typo === 'эксплуатационный') {
-      const combinedStyle = new Style({
-        stroke: baseStyle.getStroke(),
-        image: exploStyle.getImage(),
-      });
-      return combinedStyle
-    } else {
-      return null; // Возвращаем null для скрытия точек других типов
-    }
-  },
-});
-
-const razvLayer = new VectorLayer({
-  source: vectorSource,
-  style: function (feature) {
-    const typo = feature.get('typo');
-    if (typo === 'разведочный') {
-      const combinedStyle = new Style({
-        stroke: baseStyle.getStroke(),
-        image: razvStyle.getImage(),
-      });
-      return combinedStyle
-    } else {
-      return null; // Возвращаем null для скрытия точек других типов
-    }
-  },
-});
-const regLayer = new VectorLayer({
-  source: vectorSource,
-  style: function (feature) {
-    const typo = feature.get('typo');
-    if (typo === 'режимный') {
-      const combinedStyle = new Style({
-        stroke: baseStyle.getStroke(),
-        image: regStyle.getImage(),
-      });
-      return combinedStyle
-    } else {
-      return null; // Возвращаем null для скрытия точек других типов
-    }
-  },
-});
-const razvexpLayer = new VectorLayer({
-  source: vectorSource,
-  style: function (feature) {
-    const typo = feature.get('typo');
-    if (typo === 'разведочно-эксплуатационный') {
-      const combinedStyle = new Style({
-        stroke: baseStyle.getStroke(),
-        image: razvexpStyle.getImage(),
-      });
-      return combinedStyle
-    } else {
-      return null; // Возвращаем null для скрытия точек других типов
-    }
-  },
-});
-const minLayer = new VectorLayer({
-  source: vectorSource,
-  style: function (feature) {
-    const typo = feature.get('typo');
-    if (typo === 'минеральный') {
-      const combinedStyle = new Style({
-        stroke: baseStyle.getStroke(),
-        image: minStyle.getImage(),
-      });
-      return combinedStyle
-    } else {
-      return null; // Возвращаем null для скрытия точек других типов
-    }
-  },
-});
-const otherLayer = new VectorLayer({
-  source: vectorSource,
-  style: function (feature) {
-    const types = ['эксплуатационный', 'разведочный', 'режимный', 'минеральный'];
-    const typo = feature.get('typo');
-
-    if (types.includes(typo)) {
-      return null;
-    } else {
-      return baseStyle;
-    }
-  },
-});
 
 // настройка координат
 const mousePositionControl = new MousePosition({
@@ -353,12 +204,10 @@ const map = new Map({
     }),
     new ol.layer.Group({
       title: 'Спутниковые снимки',
+      visible: false,
       layers: [
         new ol.layer.Group({
           title: 'ArcGIS',
-          type: 'sputnik',
-          combine: false,
-          visible: true,
           layers: [
             new ol.layer.Tile({
               source: new XYZ({
@@ -366,6 +215,28 @@ const map = new Map({
                 maxZoom: 19, // Уровень максимального масштаба
               }),
             }),
+          ]
+        }),
+        new ol.layer.Group({
+          title: 'Google',
+          layers: [
+            new ol.layer.Tile({
+              source: new XYZ({
+                url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+                maxZoom: 20,
+              }),
+            }),
+          ]
+        }),
+      ]
+    }),
+    new ol.layer.Group({
+      title: 'Дополнительные слои',
+      visible: false,
+      layers: [
+        new ol.layer.Group({
+          title: 'Абсолютные отметки (пока нету)',
+          layers: [
           ]
         }),
       ]
@@ -546,13 +417,9 @@ function updateCoordinates(featureId, coordinates) {
 }
 map.addControl(new Control({ element: zoomButtonsContainer }));
 map.addControl(layerSwitcher);
-// map.addLayer(satelliteLayer);
 map.addOverlay(lengthOverlay);
 map.addInteraction(drawLine);
 map.addLayer(drawLayer);
-// map.addLayer(vectorLayer);
 map.addOverlay(tooltip);
 map.addControl(scaleLineControl);
 animate();
-
-export { vectorSource }
