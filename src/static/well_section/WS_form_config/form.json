@@ -1,330 +1,337 @@
 {
-  "mainHead": "Скважина",
-  "local": {
-    "cancel": "Отменить",
-    "apply": "Применить",
-    "submit": "Отправить",
-    "clear": "Очистить",
-    "confirm": "Подтвердить",
-    "requestMessage": "Отправка...",
-    "sentMessage": "Успешно отправлено.",
-    "errorMessage": "Ошибка",
-    "clearMessage": "Вы хотите очистить все поля в форме?"
-  },
-  "server": {
-    "url": "/well_section/create/",
-    "method": "POST",
-    "headers": {
-      "Accept": "application/json",
-      "Content-Type": "application/json"
+  "name": "well",
+  "heading": "Скважина",
+  "dialogs": [{
+    "name": "clear",
+    "title": "Очищение формы",
+    "text": "Вы уверены, что хотите отчистить форму?",
+    "allow": {
+      "text": "Ок"
+    },
+    "reject": {
+      "text": "Закрыть"
     }
-  },
-  "form": {
-    "name": "well",
-    "elements": [
-      {
-        "name": "name",
-        "component": "input",
-        "text": "Название проекта",
-        "type": "text",
-        "value": "",
-        "required": true
-      },
-      {
-        "name": "depth",
-        "component": "input",
-        "text": "Глубина скважины",
-        "type": "number",
-        "step": "1.0",
-        "min": "0",
-        "required": true
-      }
-    ],
-    "children": [
-      {
-        "name": "construction",
-        "head": "Конструкция скважины",
-        "children": [
-          {
-            "name": "columns",
-            "head": "Обсадная колонна",
-            "error": "Поле “До” должно быть больше поля “От”",
-            "collection": {
-              "minlength": 1,
-              "maxlength": 10
-            },
-            "elements": [
-              {
-                "component": "input",
-                "name": "d",
-                "text": "Диаметр колонны, мм",
-                "type": "number",
-                "min": "0",
-                "value": 0
-              },
-              {
-                "component": "input",
-                "name": "from",
-                "text": "От, м",
-                "type": "number",
-                "step": "1.0",
-                "min": "0",
-                "value": 0
-              },
-              {
-                "component": "input",
-                "name": "to",
-                "text": "До, м",
-                "type": "number",
-                "step": "1.0",
-                "min": "0",
-                "required": true,
-                "value": 0,
-                "validation": "value > _values.well.construction.columns[index].from && value <= _values.well.depth",
-                "error": "Значение не должно превышать глубины скважины."
-              }
-            ]
+  }],
+  "buttons": [{
+      "name": "clear",
+      "text": "Отчистить"
+    },{
+      "name": "load",
+      "text": "Загрузить",
+      "icon": "<svg fill=\"#222222\" height=\"800px\" width=\"800px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" \n\t viewBox=\"0 0 490 490\" xml:space=\"preserve\">\n<g>\n\t<g>\n\t\t<g>\n\t\t\t<path d=\"M227.8,174.1v53.7h-53.7c-9.5,0-17.2,7.7-17.2,17.2s7.7,17.2,17.2,17.2h53.7v53.7c0,9.5,7.7,17.2,17.2,17.2\n\t\t\t\ts17.1-7.7,17.1-17.2v-53.7h53.7c9.5,0,17.2-7.7,17.2-17.2s-7.7-17.2-17.2-17.2h-53.7v-53.7c0-9.5-7.7-17.2-17.1-17.2\n\t\t\t\tS227.8,164.6,227.8,174.1z\"/>\n\t\t\t<path d=\"M71.7,71.7C25.5,118,0,179.5,0,245s25.5,127,71.8,173.3C118,464.5,179.6,490,245,490s127-25.5,173.3-71.8\n\t\t\t\tC464.5,372,490,310.4,490,245s-25.5-127-71.8-173.3C372,25.5,310.5,0,245,0C179.6,0,118,25.5,71.7,71.7z M455.7,245\n\t\t\t\tc0,56.3-21.9,109.2-61.7,149s-92.7,61.7-149,61.7S135.8,433.8,96,394s-61.7-92.7-61.7-149S56.2,135.8,96,96s92.7-61.7,149-61.7\n\t\t\t\tS354.2,56.2,394,96S455.7,188.7,455.7,245z\"/>\n\t\t</g>\n\n</g>\n</svg>",
+      "iconPosition": "end"
+    },{
+      "name": "save",
+      "text": "Сохранить"
+    },{
+      "name": "submit",
+      "text": "Отправить",
+      "type": "primary",
+      "validation": true
+    }],
+  "elements": [
+    {
+      "name": "name",
+      "component": "input",
+      "text": "Название проекта",
+      "type": "text",
+      "required": true,
+      "autocomplete": "off"
+    },
+    {
+      "name": "depth",
+      "component": "input",
+      "text": "Глубина скважины",
+      "type": "number",
+      "step": "1.0",
+      "min": "0",
+      "required": true
+    }
+  ],
+  "children": [
+    {
+      "name": "construction",
+      "heading": "Конструкция скважины",
+      "children": [
+        {
+          "name": "columns",
+          "heading": "Обсадная колонна",
+          "error": "Поле “До” должно быть больше поля “От”",
+          "collection": {
+            "minlength": 1,
+            "maxlength": 10
           },
-          {
-            "name": "filter_columns",
-            "head": "Фильтровая колонна",
-            "error": "Поле “До” должно быть больше поля “От” и не должно превышать глубины скважины",
-            "hidden": "_values.well.construction.filter_columns[index].type === \"Фильтровая колонна\"",
-            "collection": {
-              "minlength": 1,
-              "maxlength": 10
+          "elements": [
+            {
+              "component": "input",
+              "name": "d",
+              "text": "Диаметр колонны, мм",
+              "type": "number",
+              "min": "0",
+              "value": 0
             },
-            "elements": [
-              {
-                "component": "input",
-                "name": "d",
-                "text": "Диаметр колонны, мм",
-                "type": "number",
-                "min": "0",
-                "value": 0
+            {
+              "component": "input",
+              "name": "from",
+              "text": "От, м",
+              "type": "number",
+              "step": "1.0",
+              "min": "0",
+              "value": 0
+            },
+            {
+              "component": "input",
+              "name": "to",
+              "text": "До, м",
+              "type": "number",
+              "step": "1.0",
+              "min": "0",
+              "required": true,
+              "value": 0,
+              "validation": "value > _values.well.construction.columns[index].from && value <= _values.well.depth",
+              "error": "Значение не должно превышать глубины скважины."
+            }
+          ]
+        },
+        {
+          "name": "filter_columns",
+          "heading": "Фильтровая колонна",
+          "error": "Поле “До” должно быть больше поля “От” и не должно превышать глубины скважины",
+          "hidden": "_values.well.construction.filter_columns[index].type === \"Фильтровая колонна\"",
+          "collection": {
+            "minlength": 1,
+            "maxlength": 10
+          },
+          "elements": [
+            {
+              "component": "input",
+              "name": "d",
+              "text": "Диаметр колонны, мм",
+              "type": "number",
+              "min": "0",
+              "value": 0
+            },
+            {
+              "component": "input",
+              "name": "from",
+              "text": "От, м",
+              "type": "number",
+              "step": "1.0",
+              "min": "0",
+              "value": 0
+            },
+            {
+              "component": "input",
+              "name": "to",
+              "text": "До, м",
+              "type": "number",
+              "step": "1.0",
+              "min": "0",
+              "required": true,
+              "value": 0,
+              "validation": "value <= _values.well.depth",
+              "error": "Значение не должно превышать глубины скважины."
+            },
+            {
+              "component": "buttons",
+              "name": "type",
+              "text": "Тип колонны",
+              "value": "Открытый ствол",
+              "buttons": [
+                "Открытый ствол",
+                "Фильтровая колонна"
+              ],
+              "type": "radio",
+              "width": "100%"
+            }
+          ],
+          "children": [
+            {
+              "name": "filters",
+              "heading": "Рабочие интервалы",
+              "error": "Поля должны лежать в интервале установки фильтровой колонны, при этом поле “До” больше поля “От”",
+              "collection": {
+                "minlength": 1,
+                "maxlength": 10
               },
-              {
-                "component": "input",
-                "name": "from",
-                "text": "От, м",
-                "type": "number",
-                "step": "1.0",
-                "min": "0",
-                "value": 0
-              },
-              {
-                "component": "input",
-                "name": "to",
-                "text": "До, м",
-                "type": "number",
-                "step": "1.0",
-                "min": "0",
-                "required": true,
-                "value": 0,
-                "validation": "value <= _values.well.depth",
-                "error": "Значение не должно превышать глубины скважины."
-              },
-              {
-                "component": "buttons",
-                "name": "type",
-                "text": "Тип колонны",
-                "value": "Открытый ствол",
-                "buttons": [
-                  "Открытый ствол",
-                  "Фильтровая колонна"
-                ],
-                "type": "radio",
-                "row": true
-              }
-            ],
-            "children": [
-              {
-                "name": "filters",
-                "head": "Рабочие интервалы",
-                "error": "Поля должны лежать в интервале установки фильтровой колонны, при этом поле “До” больше поля “От”",
-                "collection": {
-                  "minlength": 1,
-                  "maxlength": 10
+              "elements": [
+                {
+                  "component": "input",
+                  "name": "from",
+                  "text": "От, м",
+                  "type": "number",
+                  "step": "1.0",
+                  "min": "0",
+                  "value": 0,
+                  "validation": "value >= _values.well.construction.filter_columns[currentIndex.filter_columns].from"
                 },
-                "elements": [
-                  {
-                    "component": "input",
-                    "name": "from",
-                    "text": "От, м",
-                    "type": "number",
-                    "step": "1.0",
-                    "min": "0",
-                    "value": 0,
-                    "validation": "value >= _values.well.construction.filter_columns[currentIndex.filter_columns].from"
-                  },
-                  {
-                    "component": "input",
-                    "name": "to",
-                    "text": "До, м",
-                    "type": "number",
-                    "step": "1.0",
-                    "min": "0",
-                    "required": true,
-                    "value": 0,
-                    "validation": "value <= _values.well.depth",
-                    "error": "Значение не должно превышать глубины скважины."
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "data",
-        "head": "Оснастка",
-        "error": "Глубина установки насоса не должна превышать глубину скважины, а Динамический уровень должен быть больше или равен Статическому уровню",
-        "elements": [
-          {
-            "component": "input",
-            "name": "pump_type",
-            "text": "Название насоса"
+                {
+                  "component": "input",
+                  "name": "to",
+                  "text": "До, м",
+                  "type": "number",
+                  "step": "1.0",
+                  "min": "0",
+                  "required": true,
+                  "value": 0,
+                  "validation": "value <= _values.well.depth",
+                  "error": "Значение не должно превышать глубины скважины."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "data",
+      "heading": "Оснастка",
+      "error": "Глубина установки насоса не должна превышать глубину скважины, а Динамический уровень должен быть больше или равен Статическому уровню",
+      "elements": [
+        {
+          "component": "input",
+          "name": "pump_type",
+          "text": "Название насоса"
+        },
+        {
+          "component": "input",
+          "name": "pump_depth",
+          "text": "Глубина установки насоса, м",
+          "type": "number",
+          "step": "1.0",
+          "min": "0",
+          "validation": "value <= _values.well.depth"
+        },
+        {
+          "component": "input",
+          "name": "static_lvl",
+          "text": "Статический уровень, м",
+          "type": "number",
+          "step": "1.0",
+          "min": "0",
+          "validation": "value <= _values.well.data.dynamic_lvl && value <= _values.well.depth"
+        },
+        {
+          "component": "input",
+          "name": "dynamic_lvl",
+          "text": "Динамический уровень, м",
+          "type": "number",
+          "step": "1.0",
+          "min": "0",
+          "validation": "value >= _values.well.data.static_lvl && value <= _values.well.depth"
+        }
+      ]
+    },
+    {
+      "name": "layers",
+      "heading": "Геологическое строение",
+      "children": [
+        {
+          "name": "layer",
+          "heading": "Горизонт",
+          "collection": {
+            "minlength": 1,
+            "maxlength": 10
           },
-          {
-            "component": "input",
-            "name": "pump_depth",
-            "text": "Глубина установки насоса, м",
-            "type": "number",
-            "step": "1.0",
-            "min": "0",
-            "validation": "value <= _values.well.depth"
-          },
-          {
-            "component": "input",
-            "name": "static_lvl",
-            "text": "Статический уровень, м",
-            "type": "number",
-            "step": "1.0",
-            "min": "0",
-            "validation": "value <= _values.well.data.dynamic_lvl && value <= _values.well.depth"
-          },
-          {
-            "component": "input",
-            "name": "dynamic_lvl",
-            "text": "Динамический уровень, м",
-            "type": "number",
-            "step": "1.0",
-            "min": "0",
-            "validation": "value >= _values.well.data.static_lvl && value <= _values.well.depth"
-          }
-        ]
-      },
-      {
-        "name": "layers",
-        "head": "Геологическое строение",
-        "children": [
-          {
-            "name": "layer",
-            "head": "Горизонт",
-            "collection": {
-              "minlength": 1,
-              "maxlength": 10
+          "error": "Геологические слои должны залегать в интервале глубины скважины без наложения. На всякий случай знак палеогена - ₽, а кембрия - Ꞓ. Пример индекса: C2pd-mc",
+          "elements": [
+            {
+              "name": "name",
+              "component": "input",
+              "info": "N - неогеновые\n₽ - палеогеновые\nJ - юрские\nK - меловые\nT - триасовые\nP - пермские\nC - каменноугольные\nD - девонские\nS - силурские\nO - ордовикские\nꞒ - кембриджские",
+              "text": "Индекс",
+              "type": "text",
+              "required": true,
+              "autocomplete": "off"
             },
-            "error": "Геологические слои должны залегать в интервале глубины скважины без наложения. На всякий случай знак палеогена - ₽, а кембрия - Ꞓ. Пример индекса: C2pd-mc",
-            "elements": [
-              {
-                "name": "name",
-                "component": "input",
-                "title": "N - неогеновые\n₽ - палеогеновые\nJ - юрские\nK - меловые\nT - триасовые\nP - пермские\nC - каменноугольные\nD - девонские\nS - силурские\nO - ордовикские\nꞒ - кембриджские",
-                "text": "Индекс",
-                "type": "text",
-                "required": true
-              },
-              {
-                "component": "input",
-                "name": "from",
-                "text": "От, м",
-                "disabled": true,
-                "type": "number",
-                "step": "1.0",
-                "min": "0",
-                "binding": "_values.well.layers.layer[index-1]?.to || 0"
-              },
-              {
-                "component": "input",
-                "name": "to",
-                "text": "До, м",
-                "type": "number",
-                "step": "1.0",
-                "min": "0",
-                "required": true,
-                "binding": "index === length - 1 ? _values.well.depth : value",
-                "validation": "value > _values.well.layers.layer[index].from && value <= _values.well.depth"
-              },
-              {
-                "name": "sediments",
-                "component": "nest",
-                "text": "Тип отложений",
-                "type": "multiple",
-                "windowType": "dialog",
-                "required": true,
-                "value": [],
-                "list": [
-                  "пески",
-                  "пески мелкие",
-                  "пески средние",
-                  "пески крупные",
-                  "суглинки",
-                  "супеси",
-                  "глины",
-                  "известняки",
-                  "мергели",
-                  "песчаники",
-                  "доломиты",
-                  "мел",
-                  "гнейсы",
-                  "граниты"
-                ]
-              },
-              {
-                "name": "interlayers",
-                "component": "nest",
-                "text": "Тип прослоев",
-                "type": "multiple",
-                "windowType": "dialog",
-                "value": [],
-                "list": [
-                  "пески",
-                  "пески мелкие",
-                  "пески средние",
-                  "пески крупные",
-                  "суглинки",
-                  "супеси",
-                  "глины",
-                  "известняки",
-                  "мергели",
-                  "песчаники",
-                  "доломиты",
-                  "мел",
-                  "гнейсы",
-                  "граниты"
-                ]
-              },
-              {
-                "name": "inclusions",
-                "component": "nest",
-                "text": "Типы вкраплений",
-                "type": "multiple",
-                "windowType": "dialog",
-                "value": [],
-                "list": [
-                  "глыбы",
-                  "валуны",
-                  "галька",
-                  "щебень",
-                  "гравий",
-                  "фосфориты (в подошве слоя)"
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+            {
+              "component": "input",
+              "name": "from",
+              "text": "От, м",
+              "disabled": true,
+              "type": "number",
+              "step": "1.0",
+              "min": "0",
+              "binding": "_values.well.layers.layer[index-1]?.to || 0"
+            },
+            {
+              "component": "input",
+              "name": "to",
+              "text": "До, м",
+              "type": "number",
+              "step": "1.0",
+              "min": "0",
+              "required": true,
+              "binding": "index === length - 1 ? _values.well.depth : value",
+              "validation": "value > _values.well.layers.layer[index].from && value <= _values.well.depth"
+            },
+            {
+              "name": "sediments",
+              "component": "nest",
+              "text": "Тип отложений",
+              "type": "multiple",
+              "required": true,
+              "default": [],
+              "list": [
+                "пески",
+                "пески мелкие",
+                "пески средние",
+                "пески крупные",
+                "суглинки",
+                "супеси",
+                "глины",
+                "известняки",
+                "мергели",
+                "песчаники",
+                "доломиты",
+                "мел",
+                "гнейсы",
+                "граниты"
+              ]
+            },
+            {
+              "name": "interlayers",
+              "component": "nest",
+              "text": "Тип прослоев",
+              "type": "multiple",
+              "default": [],
+              "width": "30%",
+              "list": [
+                "пески",
+                "пески мелкие",
+                "пески средние",
+                "пески крупные",
+                "суглинки",
+                "супеси",
+                "глины",
+                "известняки",
+                "мергели",
+                "песчаники",
+                "доломиты",
+                "мел",
+                "гнейсы",
+                "граниты"
+              ]
+            },
+            {
+              "name": "inclusions",
+              "component": "nest",
+              "text": "Типы вкраплений",
+              "type": "multiple",
+              "default": [],
+              "maxlength": 2,
+              "list": [
+                "глыбы",
+                "валуны",
+                "галька",
+                "щебень",
+                "гравий",
+                "фосфориты (в подошве слоя)"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
