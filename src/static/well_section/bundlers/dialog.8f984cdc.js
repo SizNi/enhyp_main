@@ -1,7 +1,7 @@
 var e;(0,(e=globalThis.parcelRequireda87).register)("bCUam",function(t,l){Object.defineProperty(t.exports,"__esModule",{value:!0,configurable:!0}),Object.defineProperty(t.exports,"default",{get:()=>o,set:void 0,enumerable:!0,configurable:!0});var a=e("7ZQJ3"),o={template:`
   <dialog class="lstDialog l-scrollbar">
     <div class="lstClose"></div>
-    <h2 class="lstDialogHd"></h2>
+    <h3 class="lstDialogHd"></h3>
     <p class="lstDialogTxt"></p>
     <div section="content"></div>
     <div class="l-fx l-jc-end">

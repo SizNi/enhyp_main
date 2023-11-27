@@ -2,7 +2,7 @@ import { Fill, Stroke, Style, Circle as CircleStyle } from 'https://cdn.skypack.
 import VectorLayer from 'https://cdn.skypack.dev/ol/layer/Vector.js';
 
 // Данные с точками
-const vectorSource = new ol.source.Vector({
+const pointSource = new ol.source.Vector({
     url: '/map/points',
     format: new ol.format.GeoJSON(),
     wrapX: true,
@@ -62,7 +62,7 @@ const minStyle = new Style({
 });
 
 const exploLayer = new VectorLayer({
-    source: vectorSource,
+    source: pointSource,
     style: function (feature) {
         const typo = feature.get('typo');
         if (typo === 'эксплуатационный') {
@@ -78,7 +78,7 @@ const exploLayer = new VectorLayer({
 });
 
 const razvLayer = new VectorLayer({
-    source: vectorSource,
+    source: pointSource,
     style: function (feature) {
         const typo = feature.get('typo');
         if (typo === 'разведочный') {
@@ -93,7 +93,7 @@ const razvLayer = new VectorLayer({
     },
 });
 const regLayer = new VectorLayer({
-    source: vectorSource,
+    source: pointSource,
     style: function (feature) {
         const typo = feature.get('typo');
         if (typo === 'режимный') {
@@ -108,7 +108,7 @@ const regLayer = new VectorLayer({
     },
 });
 const razvexpLayer = new VectorLayer({
-    source: vectorSource,
+    source: pointSource,
     style: function (feature) {
         const typo = feature.get('typo');
         if (typo === 'разведочно-эксплуатационный') {
@@ -123,7 +123,7 @@ const razvexpLayer = new VectorLayer({
     },
 });
 const minLayer = new VectorLayer({
-    source: vectorSource,
+    source: pointSource,
     style: function (feature) {
         const typo = feature.get('typo');
         if (typo === 'минеральный') {
@@ -138,7 +138,7 @@ const minLayer = new VectorLayer({
     },
 });
 const otherLayer = new VectorLayer({
-    source: vectorSource,
+    source: pointSource,
     style: function (feature) {
         const types = ['эксплуатационный', 'разведочный', 'режимный', 'минеральный'];
         const typo = feature.get('typo');

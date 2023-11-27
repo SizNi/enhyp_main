@@ -3,8 +3,7 @@
   "heading": "Скважина",
   "dialogs": [{
     "name": "clear",
-    "title": "Очищение формы",
-    "text": "Вы уверены, что хотите отчистить форму?",
+    "title": "Вы уверены, что хотите очистить форму?",
     "allow": {
       "text": "Ок"
     },
@@ -14,7 +13,7 @@
   }],
   "buttons": [{
       "name": "clear",
-      "text": "Отчистить"
+      "text": "Очистить"
     },{
       "name": "load",
       "text": "Загрузить",
@@ -196,7 +195,7 @@
         {
           "component": "input",
           "name": "pump_depth",
-          "text": "Глубина установки насоса, м",
+          "text": "Глубина установки, м",
           "type": "number",
           "step": "1.0",
           "min": "0",
@@ -233,7 +232,7 @@
             "minlength": 1,
             "maxlength": 10
           },
-          "error": "Геологические слои должны залегать в интервале глубины скважины без наложения. На всякий случай знак палеогена - ₽, а кембрия - Ꞓ. Пример индекса: C2pd-mc",
+          "error": "Геологические слои должны залегать в интервале глубины скважины без наложения.\nНа всякий случай знак палеогена - ₽, а кембрия - Ꞓ. Пример индекса: C2pd-mc",
           "elements": [
             {
               "name": "name",
@@ -258,12 +257,15 @@
               "component": "input",
               "name": "to",
               "text": "До, м",
+              "width": "30%",
               "type": "number",
               "step": "1.0",
               "min": "0",
               "required": true,
               "binding": "index === length - 1 ? _values.well.depth : value",
               "validation": "value > _values.well.layers.layer[index].from && value <= _values.well.depth"
+            },{
+              "column": 12
             },
             {
               "name": "sediments",
@@ -271,6 +273,7 @@
               "text": "Тип отложений",
               "type": "multiple",
               "required": true,
+              "column": 4,
               "default": [],
               "list": [
                 "пески",
@@ -295,7 +298,7 @@
               "text": "Тип прослоев",
               "type": "multiple",
               "default": [],
-              "width": "30%",
+              "column": 4,
               "list": [
                 "пески",
                 "пески мелкие",
@@ -319,6 +322,7 @@
               "text": "Типы вкраплений",
               "type": "multiple",
               "default": [],
+              "column": 4,
               "maxlength": 2,
               "list": [
                 "глыбы",

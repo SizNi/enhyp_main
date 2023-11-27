@@ -46,7 +46,29 @@ class MapView_1(TemplateView):
 class PointsView(View):
     def get(self, request, *args, **kwargs):
         file_path = (
-            "static/map_2/points.geojson"  # Замените на реальный путь к вашему файлу
+            "static/map_2/points.geojson"
+        )
+        with open(file_path, "rb") as f:
+            geojson_data = json.load(f)
+
+        return JsonResponse(geojson_data, safe=False)
+
+@method_decorator([csrf_exempt], name="dispatch")
+class FieldsView(View):
+    def get(self, request, *args, **kwargs):
+        file_path = (
+            "static/map_2/fields.json"
+        )
+        with open(file_path, "rb") as f:
+            geojson_data = json.load(f)
+
+        return JsonResponse(geojson_data, safe=False)
+
+@method_decorator([csrf_exempt], name="dispatch")
+class VZUView(View):
+    def get(self, request, *args, **kwargs):
+        file_path = (
+            "static/map_2/VZU.json"
         )
         with open(file_path, "rb") as f:
             geojson_data = json.load(f)
@@ -57,16 +79,6 @@ class PointsView(View):
 @method_decorator([csrf_exempt], name="dispatch")
 class MapView_2(TemplateView):
     template_name = "map_2.html"
-
-    def get_context_data(self, **kwargs):
-        # Ваши данные из модели Django, содержащие координаты и информацию о маркерах
-        markers_data = [
-            {"lat": 51.5, "lng": -0.09, "info": "Тут такая инфа", "param": "J"},
-            {"lat": 51.505, "lng": -0.1, "info": "А тут другая", "param": "C"},
-            {"lat": 51.51, "lng": -0.1, "info": "А тут ее нет", "param": "C"},
-            {"lat": 51.505, "lng": -0.09, "info": "А тут и не будет", "param": "Q"},
-        ]
-        return {"markers_data": markers_data}
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()

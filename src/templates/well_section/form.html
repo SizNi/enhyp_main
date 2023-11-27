@@ -17,7 +17,7 @@
   </style>
 {% endblock %}
 {% block content %}
-  <div id="root"></div>
+  <div id="root" class="lstUI"></div>
   <script type="module">
           import { createApp, deliver, replicate, delay, loadModule } from "{% static 'well_section/lesta.esm.js' %}"
           const root = document.querySelector('#root')
@@ -52,7 +52,7 @@ app.mountForm({
     actions: {
       clear() {
         this.method.update({})
-        return { type: 'warning', message: 'Форма отчищена' }
+        return { type: 'warning', message: 'Форма очищена' }
       }
     },
     buttons: {
@@ -71,16 +71,16 @@ app.mountForm({
       },
       async submit(values) {
         console.log(values)
-        // const res = await fetch('https://foo', {
-        //   method: "POST",
-        //   headers: {
-        //     Accept: "application/json",
-        //     'Content-Type': "application/json"
-        //   },
-        //   body: JSON.stringify(values)
-        // })
-        // const data = await res.json()
-        // if (data.url) window.location.href = data.url
+        const res = await fetch("/well_section/create/", {
+           method: "POST",
+           headers: {
+             Accept: "application/json",
+             'Content-Type': "application/json"
+           },
+          body: JSON.stringify(values)
+        })
+        const data = await res.json()
+        if (data.url) window.location.href = data.url
       }
     }
   }

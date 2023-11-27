@@ -1,114 +1,21 @@
 import Map from 'https://cdn.skypack.dev/ol/Map.js';
-import VectorLayer from 'https://cdn.skypack.dev/ol/layer/Vector.js';
 import View from 'https://cdn.skypack.dev/ol/View.js';
 import { transform } from 'https://cdn.skypack.dev/ol/proj.js';
 import {
-  Select,
-  Translate,
   defaults as defaultInteractions,
 } from 'https://cdn.skypack.dev/ol/interaction.js';
-import Vector from 'https://cdn.skypack.dev/ol/source/Vector.js';
 import MousePosition from 'https://cdn.skypack.dev/ol/control/MousePosition.js';
 import { toStringHDMS } from 'https://cdn.skypack.dev/ol/coordinate.js';
 import Overlay from 'https://cdn.skypack.dev/ol/Overlay.js';
 import ScaleLine from 'https://cdn.skypack.dev/ol/control/ScaleLine.js';
-import Draw from 'https://cdn.skypack.dev/ol/interaction/Draw.js';
-import { Fill, Stroke, Style, Circle as CircleStyle } from 'https://cdn.skypack.dev/ol/style.js';
 import XYZ from 'https://cdn.skypack.dev/ol/source/XYZ.js';
 import Control from 'https://cdn.skypack.dev/ol/control/Control.js';
 import { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer } from './layers.js';
+import { zoomButtonsContainer, selectLayer, dragBox } from './controls.js';
+import { fieldsLayer } from './fields.js';
+import { VZULayer } from './VZU.js';
 
 
-// Добавление контролов Zoom
-const zoomInButton = document.createElement("button");
-zoomInButton.innerHTML = "+";
-zoomInButton.addEventListener("click", function () {
-  const view = map.getView();
-  const currentZoom = view.getZoom();
-  view.setZoom(currentZoom + 1);
-});
-
-const zoomOutButton = document.createElement("button");
-zoomOutButton.innerHTML = "-";
-zoomOutButton.addEventListener("click", function () {
-  const view = map.getView();
-  const currentZoom = view.getZoom();
-  view.setZoom(currentZoom - 1);
-});
-
-const zoomButtonsContainer = document.createElement("div");
-zoomButtonsContainer.id = "zoom-buttons-container";
-zoomButtonsContainer.className = "ol-control ol-unselectable";
-zoomButtonsContainer.appendChild(zoomInButton);
-zoomButtonsContainer.appendChild(zoomOutButton);
-
-// Добавление контейнера с кнопками в элемент управления на карту
-
-// Оверлей отображения длины линейки
-const lengthOverlay = new Overlay({
-  element: document.getElementById('length-display'),
-  positioning: 'bottom-center',
-  stopEvent: false,
-});
-
-function updateLengthOverlay(length) {
-  const lengthFormatted = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(length / 1000);
-  lengthOverlay.getElement().innerText = `Длина: ${lengthFormatted} км`;
-  lengthOverlay.setPosition(map.getCoordinateFromPixel(drawLine.sketchCoords_[0]));
-  console.log(lengthFormatted);
-}
-
-// слой рисования линейки
-const drawLayer = new VectorLayer({
-  source: new Vector(),
-  style: new Style({
-    fill: new Fill({
-      color: 'rgba(255, 255, 255, 0.2)',
-    }),
-    stroke: new Stroke({
-      color: '#ffcc33',
-      width: 2,
-    }),
-    image: new CircleStyle({
-      radius: 7,
-      fill: new Fill({
-        color: '#ffcc33',
-      }),
-    }),
-  }),
-});
-
-const drawLine = new Draw({
-  source: drawLayer.getSource(),
-  type: 'LineString',
-});
-drawLine.setActive(false);
-
-// Событие начала рисования линии
-drawLine.on('drawstart', function (event) {
-  // Добавляем слушатель события pointermove при начале рисования
-  map.on('pointermove', pointerMoveHandler);
-});
-
-// Событие завершения рисования линии
-drawLine.on('drawend', function (event) {
-  // Удаляем слушатель события pointermove после завершения рисования
-  map.un('pointermove', pointerMoveHandler);
-
-  const feature = event.feature;
-  const geometry = feature.getGeometry();
-  const length = geometry.getLength();
-  updateLengthOverlay(length);
-});
-// Обработчик события pointermove при рисовании линии
-function pointerMoveHandler(evt) {
-  const feature = drawLine.sketchFeature_;
-  if (feature) {
-    const geometry = feature.getGeometry();
-    const length = geometry.getLength();
-    updateLengthOverlay(length);
-  }
-}
 // обработчки для кнопки рисования линейки
 let measure = false;
 
@@ -143,7 +50,7 @@ function animate() {
   window.requestAnimationFrame(animate);
 }
 
-// настройка координат
+// настройка отображения координат
 const mousePositionControl = new MousePosition({
   coordinateFormat: function (coordinate) {
     return toStringHDMS(coordinate, 4);
@@ -154,8 +61,8 @@ const mousePositionControl = new MousePosition({
 });
 
 // настройка выбора и перетаскивания
-let select = new Select();
-let translate = new Translate({
+let select = new ol.interaction.Select();
+let translate = new ol.interaction.Translate({
   features: select.getFeatures(),
 });
 
@@ -178,7 +85,6 @@ function updateEditingState() {
     select.getFeatures().clear();
   }
 }
-
 
 // инициализация карты
 const map = new Map({
@@ -244,6 +150,18 @@ const map = new Map({
     new ol.layer.Group({
       title: 'Данные',
       layers: [
+        new ol.layer.Group({
+          title: 'Месторождения',
+            layers: [
+              fieldsLayer,
+          ]
+        }),
+        new ol.layer.Group({
+          title: 'Водозаборы',
+          layers: [
+            VZULayer,
+          ]
+        }),        
         new ol.layer.Group({
           title: 'Скважины',
           layers: [
@@ -330,30 +248,48 @@ let tooltip = new Overlay({
   },
 });
 
-let featureId = '';
-
 map.on('pointermove', function (evt) {
   if (measure) {
-    // Если рисование линии активно, не выполняем код для скважин
     return;
   }
-  let feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
-    if (featureId == feature.get('pk')) {
-      return feature;
-    }
-    featureId = feature.get('pk');
-    let coordinates = feature.getGeometry().getCoordinates();
-    let extra = feature.get('extra');
-    let nameGwk = extra?.name_gwk || 'Н/Д';
-    tooltipContent.innerHTML = '<b>Краткая информация<br>Номер:</b> ' + feature.get('name') + '<br>' + '<b>Тип:</b> ' + feature.get('typo') + '<br>' + '<b>ГВК:</b> ' + nameGwk + '<br>';
-    tooltip.setPosition(coordinates);
-    return feature;
-  });
-  if (!feature && featureId !== '') {
-    featureId = '';
+
+  let features = map.getFeaturesAtPixel(evt.pixel);
+
+  if (features && features.length > 0) {
+    let tooltipText = '<b>Краткая информация:</b><br>';
+
+    features.forEach((feature) => {
+      let coordinates;
+      let extra;
+      let nameGwk;
+
+      if (feature.getGeometry().getType() === 'Point') {
+        coordinates = feature.getGeometry().getCoordinates();
+        extra = feature.get('extra');
+        nameGwk = extra?.name_gwk || 'Н/Д';
+        tooltipText += '<b>Номер:</b> ' + feature.get('name') + '<br>' +
+          '<b>Тип:</b> ' + feature.get('typo') + '<br>' +
+          '<b>ГВК:</b> ' + nameGwk + '<br>';
+      } else if (feature.getGeometry().getType() === 'Polygon' || feature.getGeometry().getType() === 'MultiPolygon') {
+        coordinates = evt.coordinate;
+        const properties = feature.getProperties();
+
+        if ('field_name' in properties) {
+          tooltipText += '<b>Месторождение:</b> ' + feature.get('field_name') + '<br>';
+        } else if ('intake_name' in properties) {
+          tooltipText += '<b>Владелец ВЗУ:</b> ' + feature.get('intake_name') + '<br>';
+        }
+      }
+      tooltip.setPosition(coordinates);
+    });
+
+    tooltipContent.innerHTML = tooltipText;
+  } else {
     tooltip.setPosition(undefined);
   }
 });
+
+
 
 const infoPanel = document.getElementById('info-panel');
 select.getFeatures().on('add', function (event) {
@@ -368,20 +304,42 @@ function updateInfoPanel() {
   const selectedFeatures = select.getFeatures().getArray();
   if (selectedFeatures.length > 0) {
     const infoHTML = `
-      <h2>Информация</h2>
+      <h2>Информация:</h2>
       <hr>
       ${selectedFeatures.map((selectedFeature) => {
       const featureProperties = selectedFeature.getProperties();
       let nameGwk = featureProperties.extra && featureProperties.extra.name_gwk ? featureProperties.extra.name_gwk : 'Н/Д';
-      return `
-          <strong>Номер ГВК:</strong> ${nameGwk}<br>
-          <strong>Внутренний номер:</strong> ${featureProperties.name}<br>
-          <strong>Тип:</strong> ${featureProperties.typo}<br>
-          <strong>А.О. устья:</strong> ${featureProperties.head}<br>
-          <strong>Водозабор:</strong> ${featureProperties.intake}<br>
-          <strong>Месторождение:</strong> ${featureProperties.field}<br>
-          <hr>
-        `;
+
+      let info = '';
+      if (featureProperties.geometry.getType() === 'Point') {
+        // Если точка
+        info += `
+            <strong>Номер ГВК:</strong> ${nameGwk}<br>
+            <strong>Внутренний номер:</strong> ${featureProperties.name}<br>
+            <strong>Тип:</strong> ${featureProperties.typo}<br>
+            <strong>А.О. устья:</strong> ${featureProperties.head}<br>
+            <strong>Водозабор:</strong> ${featureProperties.intake}<br>
+            <strong>Месторождение:</strong> ${featureProperties.field}<br>
+            <hr>
+          `;
+      } else if (featureProperties.geometry.getType() === 'Polygon' || featureProperties.geometry.getType() === 'MultiPolygon') {
+        // Если полигон
+        if ('field_name' in featureProperties) {
+          // Если есть свойство field_name, значит это полигон с информацией о месторождении
+          info += `
+              <strong>Месторождение:</strong> ${featureProperties.field_name}<br>
+              <hr>
+            `;
+        } else if ('intake_name' in featureProperties) {
+          // Если есть свойство intake_name, значит это полигон с информацией о ВЗУ
+          info += `
+              <strong>Владелец ВЗУ:</strong> ${featureProperties.intake_name}<br>
+              <hr>
+            `;
+        }
+      }
+
+      return info;
     }).join('')}
     `;
     infoPanel.innerHTML = infoHTML;
@@ -390,6 +348,7 @@ function updateInfoPanel() {
     infoPanel.style.display = 'none';
   }
 };
+
 
 translate.on('translateend', function (event) {
   const features = event.features.getArray();
@@ -415,11 +374,11 @@ function updateCoordinates(featureId, coordinates) {
     body: JSON.stringify(data),
   });
 }
+
 map.addControl(new Control({ element: zoomButtonsContainer }));
 map.addControl(layerSwitcher);
-map.addOverlay(lengthOverlay);
-map.addInteraction(drawLine);
-map.addLayer(drawLayer);
 map.addOverlay(tooltip);
 map.addControl(scaleLineControl);
+map.addLayer(selectLayer);
 animate();
+export { map }
