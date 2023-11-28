@@ -5,81 +5,10 @@ import {
   defaults as defaultInteractions,
 } from 'https://cdn.skypack.dev/ol/interaction.js';
 import { toStringHDMS } from 'https://cdn.skypack.dev/ol/coordinate.js';
-import { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer, pointSource } from './layers.js';
-import { zoomButtonsContainer } from './controls.js';
+import { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer, pointSource, labelLayer } from './layers.js';
+import { zoomButtonsContainer, select, dragBox } from './controls.js';
 import { fieldsLayer } from './fields.js';
 import { VZULayer } from './VZU.js';
-import { platformModifierKeyOnly } from 'https://cdn.skypack.dev/ol/events/condition.js';
-import { getWidth } from 'https://cdn.skypack.dev/ol/extent.js';
-
-
-let select = new ol.interaction.Select();
-// выбор прямоугольником
-
-const selectedFeatures = select.getFeatures();
-
-const dragBox = new ol.interaction.DragBox({
-  condition: platformModifierKeyOnly,
-});
-
-dragBox.on('boxend', function () {
-  const boxExtent = dragBox.getGeometry().getExtent();
-
-  // if the extent crosses the antimeridian process each world separately
-  const worldExtent = map.getView().getProjection().getExtent();
-  const worldWidth = getWidth(worldExtent);
-  const startWorld = Math.floor((boxExtent[0] - worldExtent[0]) / worldWidth);
-  const endWorld = Math.floor((boxExtent[2] - worldExtent[0]) / worldWidth);
-
-  for (let world = startWorld; world <= endWorld; ++world) {
-    const left = Math.max(boxExtent[0] - world * worldWidth, worldExtent[0]);
-    const right = Math.min(boxExtent[2] - world * worldWidth, worldExtent[2]);
-    const extent = [left, boxExtent[1], right, boxExtent[3]];
-
-    const boxFeatures = pointSource
-      .getFeaturesInExtent(extent)
-      .filter(
-        (feature) =>
-          !selectedFeatures.getArray().includes(feature) &&
-          feature.getGeometry().intersectsExtent(extent)
-      );
-
-    // features that intersect the box geometry are added to the
-    // collection of selected features
-
-    // if the view is not obliquely rotated the box geometry and
-    // its extent are equalivalent so intersecting features can
-    // be added directly to the collection
-    const rotation = map.getView().getRotation();
-    const oblique = rotation % (Math.PI / 2) !== 0;
-    // when the view is obliquely rotated the box extent will
-    // exceed its geometry so both the box and the candidate
-    // feature geometries are rotated around a common anchor
-    // to confirm that, with the box geometry aligned with its
-    // extent, the geometries intersect
-    if (oblique) {
-      const anchor = [0, 0];
-      const geometry = dragBox.getGeometry().clone();
-      geometry.translate(-world * worldWidth, 0);
-      geometry.rotate(-rotation, anchor);
-      const extent = geometry.getExtent();
-      boxFeatures.forEach(function (feature) {
-        const geometry = feature.getGeometry().clone();
-        geometry.rotate(-rotation, anchor);
-        if (geometry.intersectsExtent(extent)) {
-          selectedFeatures.push(feature);
-        }
-      });
-    } else {
-      selectedFeatures.extend(boxFeatures);
-    }
-  }
-});
-// clear selection when drawing a new box and when clicking on the map
-dragBox.on('boxstart', function () {
-  selectedFeatures.clear();
-});
-
 
 // обработчки для кнопки рисования линейки
 let measure = false;
@@ -142,14 +71,22 @@ document.getElementById('editButton').addEventListener('click', function () {
   updateEditingState();
 });
 
+// Инструемент для редактирования полигонов (всех)
+const modify = new ol.interaction.Modify({ source: fieldsLayer.getSource() });
+modify.setActive(false);
+// Реакция инструментов на кнопку "Редактировать"
 function updateEditingState() {
   if (editingEnabled) {
     translate.setActive(true);
+    modify.setActive(true);
   } else {
     translate.setActive(false);
+    modify.setActive(false);
     select.getFeatures().clear();
   }
 }
+
+
 
 // инициализация карты
 const map = new Map({
@@ -318,7 +255,7 @@ let tooltip = new ol.Overlay({
 });
 
 map.on('pointermove', function (evt) {
-  if (measure) {
+  if (measure || editingEnabled) {
     return;
   }
 
@@ -447,7 +384,9 @@ function updateCoordinates(featureId, coordinates) {
 map.addControl(new ol.control.Control({ element: zoomButtonsContainer }));
 map.addControl(layerSwitcher);
 map.addOverlay(tooltip);
+map.addInteraction(modify);
 map.addControl(scaleLineControl);
 map.addInteraction(dragBox);
+map.addLayer(labelLayer);
 animate();
-export { map }
+export { map, pointSource }

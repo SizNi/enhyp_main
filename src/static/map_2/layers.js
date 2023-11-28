@@ -1,5 +1,6 @@
 import { Fill, Stroke, Style, Circle as CircleStyle } from 'https://cdn.skypack.dev/ol/style.js';
 import VectorLayer from 'https://cdn.skypack.dev/ol/layer/Vector.js';
+import Text from 'https://cdn.skypack.dev/ol/Text.js';
 
 // Данные с точками
 const pointSource = new ol.source.Vector({
@@ -151,4 +152,9 @@ const otherLayer = new VectorLayer({
     },
 });
 
-export { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer, pointSource };
+// оверлей для отображения номеров скважин
+const labelLayer = new VectorLayer({
+    // source: pointSource,
+});
+
+export { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer, pointSource, labelLayer };
