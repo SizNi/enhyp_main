@@ -45,31 +45,27 @@ class MapView_1(TemplateView):
 @method_decorator([csrf_exempt], name="dispatch")
 class PointsView(View):
     def get(self, request, *args, **kwargs):
-        file_path = (
-            "static/map_2/points.geojson"
-        )
+        file_path = "static/map_2/points.geojson"
         with open(file_path, "rb") as f:
             geojson_data = json.load(f)
 
         return JsonResponse(geojson_data, safe=False)
+
 
 @method_decorator([csrf_exempt], name="dispatch")
 class FieldsView(View):
     def get(self, request, *args, **kwargs):
-        file_path = (
-            "static/map_2/fields.json"
-        )
+        file_path = "static/map_2/fields.json"
         with open(file_path, "rb") as f:
             geojson_data = json.load(f)
 
         return JsonResponse(geojson_data, safe=False)
 
+
 @method_decorator([csrf_exempt], name="dispatch")
 class VZUView(View):
     def get(self, request, *args, **kwargs):
-        file_path = (
-            "static/map_2/VZU.json"
-        )
+        file_path = "static/map_2/VZU.json"
         with open(file_path, "rb") as f:
             geojson_data = json.load(f)
 
@@ -83,4 +79,3 @@ class MapView_2(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         return render(request, self.template_name, context)
-

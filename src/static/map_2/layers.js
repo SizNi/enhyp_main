@@ -151,4 +151,4 @@ const otherLayer = new VectorLayer({
     },
 });
 
-export { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer };
+export { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer, pointSource };

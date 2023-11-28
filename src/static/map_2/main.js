@@ -4,16 +4,81 @@ import { transform } from 'https://cdn.skypack.dev/ol/proj.js';
 import {
   defaults as defaultInteractions,
 } from 'https://cdn.skypack.dev/ol/interaction.js';
-import MousePosition from 'https://cdn.skypack.dev/ol/control/MousePosition.js';
 import { toStringHDMS } from 'https://cdn.skypack.dev/ol/coordinate.js';
-import Overlay from 'https://cdn.skypack.dev/ol/Overlay.js';
-import ScaleLine from 'https://cdn.skypack.dev/ol/control/ScaleLine.js';
-import XYZ from 'https://cdn.skypack.dev/ol/source/XYZ.js';
-import Control from 'https://cdn.skypack.dev/ol/control/Control.js';
-import { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer } from './layers.js';
-import { zoomButtonsContainer, selectLayer, dragBox } from './controls.js';
+import { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer, pointSource } from './layers.js';
+import { zoomButtonsContainer } from './controls.js';
 import { fieldsLayer } from './fields.js';
 import { VZULayer } from './VZU.js';
+import { platformModifierKeyOnly } from 'https://cdn.skypack.dev/ol/events/condition.js';
+import { getWidth } from 'https://cdn.skypack.dev/ol/extent.js';
+
+
+let select = new ol.interaction.Select();
+// выбор прямоугольником
+
+const selectedFeatures = select.getFeatures();
+
+const dragBox = new ol.interaction.DragBox({
+  condition: platformModifierKeyOnly,
+});
+
+dragBox.on('boxend', function () {
+  const boxExtent = dragBox.getGeometry().getExtent();
+
+  // if the extent crosses the antimeridian process each world separately
+  const worldExtent = map.getView().getProjection().getExtent();
+  const worldWidth = getWidth(worldExtent);
+  const startWorld = Math.floor((boxExtent[0] - worldExtent[0]) / worldWidth);
+  const endWorld = Math.floor((boxExtent[2] - worldExtent[0]) / worldWidth);
+
+  for (let world = startWorld; world <= endWorld; ++world) {
+    const left = Math.max(boxExtent[0] - world * worldWidth, worldExtent[0]);
+    const right = Math.min(boxExtent[2] - world * worldWidth, worldExtent[2]);
+    const extent = [left, boxExtent[1], right, boxExtent[3]];
+
+    const boxFeatures = pointSource
+      .getFeaturesInExtent(extent)
+      .filter(
+        (feature) =>
+          !selectedFeatures.getArray().includes(feature) &&
+          feature.getGeometry().intersectsExtent(extent)
+      );
+
+    // features that intersect the box geometry are added to the
+    // collection of selected features
+
+    // if the view is not obliquely rotated the box geometry and
+    // its extent are equalivalent so intersecting features can
+    // be added directly to the collection
+    const rotation = map.getView().getRotation();
+    const oblique = rotation % (Math.PI / 2) !== 0;
+    // when the view is obliquely rotated the box extent will
+    // exceed its geometry so both the box and the candidate
+    // feature geometries are rotated around a common anchor
+    // to confirm that, with the box geometry aligned with its
+    // extent, the geometries intersect
+    if (oblique) {
+      const anchor = [0, 0];
+      const geometry = dragBox.getGeometry().clone();
+      geometry.translate(-world * worldWidth, 0);
+      geometry.rotate(-rotation, anchor);
+      const extent = geometry.getExtent();
+      boxFeatures.forEach(function (feature) {
+        const geometry = feature.getGeometry().clone();
+        geometry.rotate(-rotation, anchor);
+        if (geometry.intersectsExtent(extent)) {
+          selectedFeatures.push(feature);
+        }
+      });
+    } else {
+      selectedFeatures.extend(boxFeatures);
+    }
+  }
+});
+// clear selection when drawing a new box and when clicking on the map
+dragBox.on('boxstart', function () {
+  selectedFeatures.clear();
+});
 
 
 // обработчки для кнопки рисования линейки
@@ -38,7 +103,7 @@ function updateMeasureState() {
 }
 
 // масштабная линейка и анимация карты
-const scaleLineControl = new ScaleLine({
+const scaleLineControl = new ol.control.ScaleLine({
   units: 'metric',
   steps: 1,
   minWidth: 100,
@@ -51,7 +116,7 @@ function animate() {
 }
 
 // настройка отображения координат
-const mousePositionControl = new MousePosition({
+const mousePositionControl = new ol.control.MousePosition({
   coordinateFormat: function (coordinate) {
     return toStringHDMS(coordinate, 4);
   },
@@ -61,7 +126,7 @@ const mousePositionControl = new MousePosition({
 });
 
 // настройка выбора и перетаскивания
-let select = new ol.interaction.Select();
+
 let translate = new ol.interaction.Translate({
   features: select.getFeatures(),
 });
@@ -111,12 +176,13 @@ const map = new Map({
     new ol.layer.Group({
       title: 'Спутниковые снимки',
       visible: false,
+      fold: 'close',
       layers: [
         new ol.layer.Group({
           title: 'ArcGIS',
           layers: [
             new ol.layer.Tile({
-              source: new XYZ({
+              source: new ol.source.XYZ({
                 url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                 maxZoom: 19, // Уровень максимального масштаба
               }),
@@ -127,7 +193,7 @@ const map = new Map({
           title: 'Google',
           layers: [
             new ol.layer.Tile({
-              source: new XYZ({
+              source: new ol.source.XYZ({
                 url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
                 maxZoom: 20,
               }),
@@ -139,6 +205,7 @@ const map = new Map({
     new ol.layer.Group({
       title: 'Дополнительные слои',
       visible: false,
+      fold: 'close',
       layers: [
         new ol.layer.Group({
           title: 'Абсолютные отметки (пока нету)',
@@ -149,6 +216,7 @@ const map = new Map({
     }),
     new ol.layer.Group({
       title: 'Данные',
+      fold: 'open',
       layers: [
         new ol.layer.Group({
           title: 'Месторождения',
@@ -164,6 +232,7 @@ const map = new Map({
         }),        
         new ol.layer.Group({
           title: 'Скважины',
+          fold: 'close',
           layers: [
             new ol.layer.Group({
               title: 'Эксплуатационные',
@@ -240,7 +309,7 @@ var layerSwitcher = new ol.control.LayerSwitcher({
 let tooltipContainer = document.getElementById('tooltip');
 let tooltipContent = document.getElementById('tooltip-content');
 
-let tooltip = new Overlay({
+let tooltip = new ol.Overlay({
   element: tooltipContainer,
   autoPan: false,
   autoPanAnimation: {
@@ -375,10 +444,10 @@ function updateCoordinates(featureId, coordinates) {
   });
 }
 
-map.addControl(new Control({ element: zoomButtonsContainer }));
+map.addControl(new ol.control.Control({ element: zoomButtonsContainer }));
 map.addControl(layerSwitcher);
 map.addOverlay(tooltip);
 map.addControl(scaleLineControl);
-map.addLayer(selectLayer);
+map.addInteraction(dragBox);
 animate();
 export { map }
