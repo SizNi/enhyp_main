@@ -1,19 +1,19 @@
-{% extends 'base.html' %}
 {% load bootstrap4 %}
 {% load i18n %}
 {% bootstrap_css %}
 {% load static %}
 
 {% bootstrap_messages %}
-{% block assets %}
+<head>
   <meta charset="UTF-8" />
   <title>Карта</title>
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon/favicon.ico' %}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
   <link rel="stylesheet" href="https://unpkg.com/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.css" />
   <style>
     .map {
       width: 100%;
-      height: 80%;
+      height: 100%;
     }
     .ol-tooltip {
       position: absolute;
@@ -58,7 +58,7 @@
     }
     #info-panel {
       position: absolute;
-      top: 0;
+      top: 4.5vh;
       right: 0;
       width: 300px; /* Установите нужную ширину */
       height: 100%; /* Установите нужную высоту */
@@ -83,30 +83,6 @@
       border: 1px solid #ccc;
       border-radius: 5px;
     }
-    #legend {
-      background-color: white;
-      padding: 10px;
-      border-radius: 5px;
-      margin-top: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-    
-    .legend-circle {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: currentColor;
-      margin-right: 8px;
-    }
-    
-    .legend-checkbox-container {
-      margin-right: 8px; /* Задайте желаемый отступ между чекбоксом и кружком */
-    }
     #zoom-buttons-container {
       position: absolute;
       top: 10px; /* Задайте нужный отступ сверху */
@@ -114,25 +90,33 @@
       z-index: 1000; /* Задайте значение z-index по вашему усмотрению */
     }
     .layer-switcher {
+      position: absolute;
+      top: 1vh;
+      left: auto; 
+      right: 10px;
       max-width: 300px;
+      font-size: 12px;
+      z-index: 10000;
+    }
+    .custom-mouse-position {
+      position: absolute;
+      top: 95vh; /* регулируйте ваши отступы сверху */
+      right: 176vh; /* регулируйте ваши отступы справа */
+      padding: 2000px;
+      z-index: 1000; /* устанавливайте значение z-index по вашему усмотрению */
+      font-size: 12px;
     }
   </style>
-{% endblock %}
-{% block content %}
+</head>
+<body>
   <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
   <script src="https://unpkg.com/ol-layerswitcher@4.1.1/dist/ol-layerswitcher.js"></script>
   <script type="module" src="{% static 'map_2/main.js' %}"></script>
     <div id="map" class="map"></div>
   <div id="info"></div>
   <div id="point-label"></div>
-  <div id="mouse-position"></div>
-  <button id="editButton" class="btn btn-primary">{{ _('Редактировать') }}</button>
-  <button id="drawLineButton" class="btn btn-primary">{{ _('Линейка') }}</button>
-  <div style="background-color: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); font-size: 14px; cursor: pointer;" onclick="this.style.display='none';">
-  <strong>Подсказка:</strong> Выбор скважин прямоугольником - <kbd>Ctrl + Left Click</kbd>, мультивыбор любых объектов - <kbd>Shift + Left Click</kbd>.
-</div>
   <div id="tooltip" class="ol-tooltip">
     <div id="tooltip-content"></div>
   </div>
   <div id="info-panel" class="info-panel"></div>
-{% endblock %}
+</body>

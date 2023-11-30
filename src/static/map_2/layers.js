@@ -1,7 +1,7 @@
 import { Fill, Stroke, Style, Circle as CircleStyle } from 'https://cdn.skypack.dev/ol/style.js';
 import VectorLayer from 'https://cdn.skypack.dev/ol/layer/Vector.js';
-import Text from 'https://cdn.skypack.dev/ol/Text.js';
 
+const mapboxAccessToken = 'pk.eyJ1Ijoib3ZlY2hrYSIsImEiOiJjbHBqd3B2N2kwM3RnMmlvN3dpbGNraTMxIn0.ofTpuRpIq2Ex47kZ-RC8Ig';
 // Данные с точками
 const pointSource = new ol.source.Vector({
     url: '/map/points',
@@ -156,5 +156,22 @@ const otherLayer = new VectorLayer({
 const labelLayer = new VectorLayer({
     // source: pointSource,
 });
+// карта абсолютных отметок
+const terrainStyle = new Style({
+    fill: new ol.style.Fill({
+        color: 'rgba(66, 100, 251, 0.3)',
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(66, 100, 251, 1)',
+    })
 
-export { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer, pointSource, labelLayer };
+});
+
+const terrainLayer = new ol.layer.Tile({
+    source: new ol.source.XYZ({
+        url: `https://api.mapbox.com/v4/mapbox.mapbox-terrain-v2/{z}/{x}/{y}.pngraw?access_token=${mapboxAccessToken}`,
+        attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a>',
+    }),
+})
+
+export { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer, pointSource, labelLayer, terrainLayer };

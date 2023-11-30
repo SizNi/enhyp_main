@@ -28,7 +28,7 @@ function addPolygonToLayer(item, layer) {
         // Добавление свойств в объект полигона
         feature.setProperties({
             intake_name: item.intake_name,
-            id: item.id,
+            pk: item.id,
         });
         feature.setStyle(polygonStyle);
 

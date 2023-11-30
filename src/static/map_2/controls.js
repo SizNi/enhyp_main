@@ -1,7 +1,17 @@
-import { map, pointSource } from "./main.js";
+import { map, pointSource, updateEditingState } from "./main.js";
 import { platformModifierKeyOnly } from 'https://cdn.skypack.dev/ol/events/condition.js';
 import { getWidth } from 'https://cdn.skypack.dev/ol/extent.js';
 
+// статус кнопки редактирования
+let editingEnabled = false;
+
+// масштабная линейка и анимация карты
+const scaleLineControl = new ol.control.ScaleLine({
+    units: 'metric',
+    steps: 1,
+    minWidth: 100,
+    maxWidth: 150,
+});
 
 // Добавление контролов Zoom
 const zoomInButton = document.createElement("button");
@@ -91,5 +101,28 @@ dragBox.on('boxend', function () {
 dragBox.on('boxstart', function () {
     selectedFeatures.clear();
 });
+// добавление кнопки режим редактирования
+const editbuttonStyle = 'width: 22px; height: 22px; margin: 11px; font-size: 14px; margin-top: 60px; ';
 
-export { zoomButtonsContainer, select, dragBox };
+function updateButtonStyle() {
+    if (editingEnabled) {
+        editButton.style.backgroundColor = 'red'; // Цвет при нажатии
+    } else {
+        editButton.style.backgroundColor = ''; // Цвет по умолчанию
+    }
+}
+
+const editButton = document.createElement('button');
+editButton.innerHTML = 'Р';
+editButton.className = 'btn btn-primary';
+editButton.style = editbuttonStyle;
+editButton.addEventListener('click', function () {
+    editingEnabled = !editingEnabled;
+    updateButtonStyle();
+    updateEditingState();
+});
+const customControls = document.createElement('div');
+customControls.className = 'ol-control custom-controls';
+customControls.appendChild(editButton);
+
+export { zoomButtonsContainer, select, dragBox, customControls, editingEnabled, scaleLineControl };

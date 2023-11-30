@@ -17,6 +17,7 @@ function addPolygonToLayer(item, layer) {
         // Добавление свойств в объект полигона
         feature.setProperties({
             field_name: item.field_name,
+            pk: item.id
             // Другие свойства, если необходимо
         });
 

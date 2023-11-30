@@ -5,54 +5,33 @@ import {
   defaults as defaultInteractions,
 } from 'https://cdn.skypack.dev/ol/interaction.js';
 import { toStringHDMS } from 'https://cdn.skypack.dev/ol/coordinate.js';
-import { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer, pointSource, labelLayer } from './layers.js';
-import { zoomButtonsContainer, select, dragBox } from './controls.js';
+import { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer, pointSource, labelLayer, terrainLayer } from './layers.js';
+import { zoomButtonsContainer, select, dragBox, customControls, editingEnabled, scaleLineControl } from './controls.js';
 import { fieldsLayer } from './fields.js';
 import { VZULayer } from './VZU.js';
 
-// обработчки для кнопки рисования линейки
-let measure = false;
 
-document.getElementById('drawLineButton').addEventListener('click', function () {
-  measure = !measure;
-  document.getElementById('drawLineButton').innerText = measure ? 'Выключить линейку' : 'Линейка';
-  updateMeasureState();
-});
-
-function updateMeasureState() {
-  if (measure) {
-    drawLine.setActive(true);
-    select.setActive(false);
-    translate.setActive(false);
-    document.getElementById('length-display').innerText = '';
-  } else {
-    drawLine.setActive(false);
-    select.setActive(true);
-  }
-}
-
-// масштабная линейка и анимация карты
-const scaleLineControl = new ol.control.ScaleLine({
-  units: 'metric',
-  steps: 1,
-  minWidth: 100,
-  maxWidth: 150,
-});
-
+// анимация карты
 function animate() {
   map.render();
   window.requestAnimationFrame(animate);
 }
 
-// настройка отображения координат
+const coordinatesContainer = document.createElement('div');
+coordinatesContainer.id = 'mouse-position';
+coordinatesContainer.className = 'custom-mouse-position';
+
+// Настройка отображения координат
 const mousePositionControl = new ol.control.MousePosition({
   coordinateFormat: function (coordinate) {
     return toStringHDMS(coordinate, 4);
   },
   projection: 'EPSG:4326',
-  className: 'custom-mouse-position',
-  target: document.getElementById('mouse-position'),
+  target: coordinatesContainer,
 });
+
+// Добавляем контейнер с координатами на страницу
+document.body.appendChild(coordinatesContainer);
 
 // настройка выбора и перетаскивания
 
@@ -63,30 +42,47 @@ let translate = new ol.interaction.Translate({
 select.setActive(true);
 translate.setActive(false);
 
-let editingEnabled = false;
-
-document.getElementById('editButton').addEventListener('click', function () {
-  editingEnabled = !editingEnabled;
-  editButton.innerText = editingEnabled ? 'Выключить редактирование' : 'Редактировать';
-  updateEditingState();
-});
-
 // Инструемент для редактирования полигонов (всех)
-const modify = new ol.interaction.Modify({ source: fieldsLayer.getSource() });
-modify.setActive(false);
+const modifyFields = new ol.interaction.Modify({ source: fieldsLayer.getSource()});
+const modifyVZU = new ol.interaction.Modify({ source: VZULayer.getSource() });
+modifyFields.setActive(false);
+modifyVZU.setActive(false);
 // Реакция инструментов на кнопку "Редактировать"
 function updateEditingState() {
   if (editingEnabled) {
     translate.setActive(true);
-    modify.setActive(true);
+    modifyFields.setActive(true);
+    modifyVZU.setActive(true);
   } else {
     translate.setActive(false);
-    modify.setActive(false);
+    modifyFields.setActive(false);
+    modifyVZU.setActive(false);
     select.getFeatures().clear();
   }
 }
+// ссылки на обработчики для изменения геометрии
+modifyVZU.on('modifyend', function (event) {
+  handleModifyEnd(event, '/base/api/vzus/');
+});
+modifyFields.on('modifyend', function (event) {
+  handleModifyEnd(event, '/base/api/fields/');
+});
+// обработчик изменения геометрии и вызова функции отправки запроса
+function handleModifyEnd(event, coordinates_url) {
+  const features = event.features.getArray();
+  features.forEach(function (feature) {
+    const coordinates = feature.getGeometry().getCoordinates().map(
+      polygon => polygon.map(
+        ring => ring.map(
+          point => transform(point, 'EPSG:3857', 'EPSG:4326')
+        )
+      )
+    );
 
-
+    const featureId = feature.get('pk');
+    updateCoordinates(featureId, coordinates, coordinates_url);
+  });
+}
 
 // инициализация карты
 const map = new Map({
@@ -145,9 +141,8 @@ const map = new Map({
       fold: 'close',
       layers: [
         new ol.layer.Group({
-          title: 'Абсолютные отметки (пока нету)',
-          layers: [
-          ]
+          title: 'Абсолютные отметки',
+          layers: [terrainLayer]
         }),
       ]
     }),
@@ -245,7 +240,6 @@ var layerSwitcher = new ol.control.LayerSwitcher({
 
 let tooltipContainer = document.getElementById('tooltip');
 let tooltipContent = document.getElementById('tooltip-content');
-
 let tooltip = new ol.Overlay({
   element: tooltipContainer,
   autoPan: false,
@@ -255,10 +249,6 @@ let tooltip = new ol.Overlay({
 });
 
 map.on('pointermove', function (evt) {
-  if (measure || editingEnabled) {
-    return;
-  }
-
   let features = map.getFeaturesAtPixel(evt.pixel);
 
   if (features && features.length > 0) {
@@ -268,6 +258,7 @@ map.on('pointermove', function (evt) {
       let coordinates;
       let extra;
       let nameGwk;
+      
 
       if (feature.getGeometry().getType() === 'Point') {
         coordinates = feature.getGeometry().getCoordinates();
@@ -279,7 +270,6 @@ map.on('pointermove', function (evt) {
       } else if (feature.getGeometry().getType() === 'Polygon' || feature.getGeometry().getType() === 'MultiPolygon') {
         coordinates = evt.coordinate;
         const properties = feature.getProperties();
-
         if ('field_name' in properties) {
           tooltipText += '<b>Месторождение:</b> ' + feature.get('field_name') + '<br>';
         } else if ('intake_name' in properties) {
@@ -355,19 +345,53 @@ function updateInfoPanel() {
   }
 };
 
-
+// слушатель для переноса объектов
 translate.on('translateend', function (event) {
+  // обработка получения координат, в зависимости от источника
   const features = event.features.getArray();
   features.forEach(function (feature) {
-    const coordinates = transform(feature.getGeometry().getCoordinates(), 'EPSG:3857', 'EPSG:4326');
-    console.log('Новые координаты точки:', coordinates);
+    let coordinates_url;
+    let coordinates;
+    // для точки
+    if (feature.getGeometry().getType() === 'Point') {
+      coordinates = transform(feature.getGeometry().getCoordinates(), 'EPSG:3857', 'EPSG:4326');
+    } else if (feature.getGeometry().getType() === 'Polygon') {
+      // Для полигона
+      coordinates = feature.getGeometry().getCoordinates().map(
+        ring => ring.map(
+          point => transform(point, 'EPSG:3857', 'EPSG:4326')
+        )
+      );
+    } else if (feature.getGeometry().getType() === 'MultiPolygon') {
+      // Для мультиполигона
+      coordinates = feature.getGeometry().getCoordinates().map(
+        polygon => polygon.map(
+          ring => ring.map(
+            point => transform(point, 'EPSG:3857', 'EPSG:4326')
+          )
+        )
+      );
+    }
+
     const featureId = feature.get('pk');
-    updateCoordinates(featureId, coordinates);
+    // выбор апи для отправки координат
+    if (feature.getGeometry().getType() === 'Point') {
+      coordinates_url = '/base/api/wells/';
+    } else if (feature.getGeometry().getType() === 'Polygon' || feature.getGeometry().getType() === 'MultiPolygon') {
+      const properties = feature.getProperties();
+      if ('field_name' in properties) {
+        coordinates_url = '/base/api/fields/';
+      } else if ('intake_name' in properties) {
+        coordinates_url = '/base/api/vzus/';
+      }
+    }
+
+    updateCoordinates(featureId, coordinates, coordinates_url);
   });
 });
 
-function updateCoordinates(featureId, coordinates) {
-  const url = `/base/api/wells/${featureId}`;
+function updateCoordinates(featureId, coordinates, coordinates_url) {
+  const url = `${coordinates_url}${featureId}`;
   const data = {
     coordinates: coordinates,
   };
@@ -384,9 +408,12 @@ function updateCoordinates(featureId, coordinates) {
 map.addControl(new ol.control.Control({ element: zoomButtonsContainer }));
 map.addControl(layerSwitcher);
 map.addOverlay(tooltip);
-map.addInteraction(modify);
+map.addInteraction(modifyFields);
+map.addInteraction(modifyVZU);
 map.addControl(scaleLineControl);
 map.addInteraction(dragBox);
 map.addLayer(labelLayer);
+map.addControl(mousePositionControl);
+map.addControl(new ol.control.Control({ element: customControls }));
 animate();
-export { map, pointSource }
+export { map, pointSource, updateEditingState }
