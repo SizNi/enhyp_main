@@ -1,6 +1,7 @@
 import { Fill, Stroke, Style, Circle as CircleStyle } from 'https://cdn.skypack.dev/ol/style.js';
 import VectorLayer from 'https://cdn.skypack.dev/ol/layer/Vector.js';
 
+// апи мапбокса
 const mapboxAccessToken = 'pk.eyJ1Ijoib3ZlY2hrYSIsImEiOiJjbHBqd3B2N2kwM3RnMmlvN3dpbGNraTMxIn0.ofTpuRpIq2Ex47kZ-RC8Ig';
 // Данные с точками
 const pointSource = new ol.source.Vector({
@@ -67,7 +68,7 @@ const exploLayer = new VectorLayer({
     style: function (feature) {
         const typo = feature.get('typo');
         if (typo === 'эксплуатационный') {
-            const combinedStyle = new Style({
+            const combinedStyle = new ol.style.Style({
                 stroke: baseStyle.getStroke(),
                 image: exploStyle.getImage(),
             });

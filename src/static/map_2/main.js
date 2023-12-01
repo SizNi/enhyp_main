@@ -5,11 +5,11 @@ import {
   defaults as defaultInteractions,
 } from 'https://cdn.skypack.dev/ol/interaction.js';
 import { toStringHDMS } from 'https://cdn.skypack.dev/ol/coordinate.js';
+import VectorLayer from 'https://cdn.skypack.dev/ol/layer/Vector.js';
 import { exploLayer, razvLayer, regLayer, razvexpLayer, minLayer, otherLayer, pointSource, labelLayer, terrainLayer } from './layers.js';
 import { zoomButtonsContainer, select, dragBox, customControls, editingEnabled, scaleLineControl } from './controls.js';
 import { fieldsLayer } from './fields.js';
 import { VZULayer } from './VZU.js';
-
 
 // анимация карты
 function animate() {
@@ -231,10 +231,11 @@ const map = new Map({
   }),
 });
 
+
 var layerSwitcher = new ol.control.LayerSwitcher({
   collapsed: true,
   groupSelectStyle: 'group',
-  tipLabel: 'Legend', // Optional label for button
+  tipLabel: 'Legend',
 
 });
 
@@ -285,8 +286,6 @@ map.on('pointermove', function (evt) {
   }
 });
 
-
-
 const infoPanel = document.getElementById('info-panel');
 select.getFeatures().on('add', function (event) {
   updateInfoPanel();
@@ -295,7 +294,7 @@ select.getFeatures().on('add', function (event) {
 select.getFeatures().on('remove', function (event) {
   updateInfoPanel();
 });
-
+// обновление и отображение информационной панели
 function updateInfoPanel() {
   const selectedFeatures = select.getFeatures().getArray();
   if (selectedFeatures.length > 0) {
@@ -389,7 +388,7 @@ translate.on('translateend', function (event) {
     updateCoordinates(featureId, coordinates, coordinates_url);
   });
 });
-
+// отправка изменений в координатах пут запросом
 function updateCoordinates(featureId, coordinates, coordinates_url) {
   const url = `${coordinates_url}${featureId}`;
   const data = {
@@ -404,6 +403,46 @@ function updateCoordinates(featureId, coordinates, coordinates_url) {
     body: JSON.stringify(data),
   });
 }
+// отображение подписей в зависимости от уровня масштабирования
+let currentZoom;
+let textLayer;
+
+// Слушатель изменения уровня масштабирования
+map.getView().on('change:resolution', function () {
+  currentZoom = map.getView().getZoom();
+  console.log(currentZoom)
+  // Проверяем условие
+  if (currentZoom > 13) {
+    // Если textLayer уже существует, удаляем его
+    if (textLayer) {
+      map.removeLayer(textLayer);
+    }
+    textLayer = new VectorLayer({
+      source: pointSource,
+      style: function (feature) {
+        const textStyle = new ol.style.Style({
+          text: new ol.style.Text({
+            text: feature.get('name'),
+            offsetY: -10,
+            fill: new ol.style.Fill({
+              color: 'black',
+            }),
+          }),
+        });
+        return textStyle
+      },
+    });
+    // Добавляем новый текстовый слой к карте
+    map.addLayer(textLayer);
+  } else {
+    // Если textLayer существует и уровень масштабирования не соответствует условию, удаляем его
+    if (textLayer) {
+      map.removeLayer(textLayer);
+      textLayer = null;
+    }
+  }
+});
+map.getView().dispatchEvent('change:resolution');
 
 map.addControl(new ol.control.Control({ element: zoomButtonsContainer }));
 map.addControl(layerSwitcher);
