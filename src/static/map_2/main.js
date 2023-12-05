@@ -34,7 +34,6 @@ const mousePositionControl = new ol.control.MousePosition({
 document.body.appendChild(coordinatesContainer);
 
 // настройка выбора и перетаскивания
-
 let translate = new ol.interaction.Translate({
   features: select.getFeatures(),
 });
