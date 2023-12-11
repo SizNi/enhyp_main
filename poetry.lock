@@ -1317,6 +1317,25 @@ files = [
 ]
 
 [[package]]
+name = "lasio"
+version = "0.31"
+description = "Read/write well data from Log ASCII Standard (LAS) files"
+category = "main"
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "lasio-0.31-py2.py3-none-any.whl", hash = "sha256:30204596b0f3eb9118af99a622f177fba2b6c245db0512f9f57c437020599db4"},
+    {file = "lasio-0.31.tar.gz", hash = "sha256:5dd3c4baa3f2c89bc95ca8e052dc37fe86363c687199c93fd0fae80c597e63e5"},
+]
+
+[package.dependencies]
+numpy = "*"
+
+[package.extras]
+all = ["chardet", "openpyxl", "pandas"]
+test = ["black", "chardet", "codecov", "coverage", "openpyxl", "pandas", "pytest (>=3.6)", "pytest-benchmark", "pytest-cov"]
+
+[[package]]
 name = "llvmlite"
 version = "0.40.1"
 description = "lightweight wrapper around basic LLVM functionality"
@@ -3043,4 +3062,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "<3.12,>=3.8"
-content-hash = "a2a572f2bacaaeeb371317e4f6e677d5ae7d517f6a7aac728cd0c9c17eaa26e9"
+content-hash = "c4c05dafc9ea1c159199eae1c53c79b18cd179029bba6614d92c64385312266c"

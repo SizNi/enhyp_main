@@ -39,6 +39,7 @@ django-cache = "^0.3"
 gunicorn = "^21.2.0"
 psycopg2-binary = "^2.9.9"
 xarray = "2022.6.0"
+lasio = "^0.31"
 
 [build-system]
 requires = ["poetry-core"]
