@@ -3,35 +3,32 @@ import matplotlib.pyplot as plt
 import math
 import numpy as np
 
-# массив цветов
-colors = [
-    "None",
-    "blue",
-    "green",
-    "purple",
-    "orange",
-    "black",
-    "brown",
-    "red",
-    "gray",
-    "darkblue",
-    "magenta",
-    "teal",
-    "lime",
-    "indigo",
-    "olive",
-]
 # массив названий
 names = {
     "DEPT": "Глубина, м",
-    "D": "Диаметр, мм",
+    "D": "Кавернометрия КМ, мм",
     "PZ": "Электрокартоаж Пз, Омм",
-    "GZ": "Электрокартоаж Гз, Омм",
-    "PS": "Электрокартоаж Пс, мВ",
+    "GZ": "Электрокаротаж Гз, Омм",
+    "PS": "Электрокаротаж Пс, мВ",
     "GK": "Гамма-каротаж ГК, мкР/ч",
     "TM": "Термометрия ТМ, °С",
     "RM": "Резистивиметрия РМ, Омм",
     "KM": "Кавернометрия КМ, мм",
+}
+
+data_color_dict = {
+    "PZ": "#0000ff",
+    "GZ": "#ff0000",
+    "PS": "#ff00ff",
+    "TM": "#ff0080",
+    "RM": "#800080",
+    "RM_1": "#ff0000",
+    "RM_2": "#ff8040",
+    "RM_3": "#00ff00",
+    "RM_4": "#0080ff",
+    "GK": "#000000",
+    "KM": "#008000",
+    "D": "#008000",
 }
 
 
@@ -40,7 +37,7 @@ def lac_read(way="well_section_counter/1.las"):
     las = lasio.read(way)
     # чтение ключей из файла
     keys = las.keys()
-    print(keys)
+    # print(keys)
 
     # задание размеров рисунка в мм
     width_mm = 100
@@ -54,33 +51,76 @@ def lac_read(way="well_section_counter/1.las"):
     tick_length = 2
     # расстояние между тиком и подписью
     pad = 1
-
     # Конвертация в дюймы
     width_inch = width_mm / 25.4
     height_inch = height_mm / 25.4
-
+    # создание рисунка
     fig, ax1 = plt.subplots(figsize=(width_inch, height_inch))
 
-    # словарь метод:цвет
-    data_dict = dict(zip(keys, colors))
-    # глубина
+    # задание оси глубины
     dept = las["DEPT"]
     ax1_max_y = math.ceil((dept[-1]) / 10) * 10
     ax1.set_ylim(0, ax1_max_y)
     ax1.invert_yaxis()
+    # добавление текста с забоем скважины
+    max_dept_label = f"Забой: {max(dept)} м"
+    ax1.text(
+        0.9,
+        0.008,
+        max_dept_label,
+        ha="center",
+        va="center",
+        fontsize=axis_label_fontsize,
+        color="black",
+        transform=ax1.transAxes,
+    )
+    # отдельный цикл для задания границ горизонтальных осей для всех RM (у них должен быть единый масштаб, так что вынес отдельно)
+    rm_data = []
+    for key in keys:
+        if key.startswith("RM"):
+            data = las[key]
+            valid_data = data[~np.isnan(data)]
+            rm_data.extend(valid_data)
+    if "RM" in keys:
+        # Преобразуем в массив NumPy для удобства работы
+        rm_data = np.array(rm_data)
+        # Получаем среднее для всех RM
+        mean = np.mean(rm_data)
+        # Задаем отклонение в 10% от среднего значения
+        threshold = 0.1 * mean
+        # Фильтруем данные в стороны от среднего
+        filtered_rm_data = rm_data[
+            (rm_data >= mean - threshold) & (rm_data <= mean + threshold)
+        ]
+        # Задаем границы для горизонтальных осей для RM
+        rm_min = 0
+        rm_max = math.ceil(max(filtered_rm_data + 1) / 10) * 10
+        # расчитываем расположение уровня ПВ - пока не работает
+        data = las["RM"]
+        valid_data = data[~np.isnan(data)]
+        target_depth = np.interp(max(valid_data), las["RM"], las["DEPT"])
+        print(max(valid_data))
+        print(target_depth)
     # смещение осей
     offset = 0
-
-    for key, color in data_dict.items():
+    # цикл построения параметров
+    for key in keys:
+        if key == "DEPT":
+            color = "None"
+        else:
+            color = data_color_dict[key]
+        # получаем данные по ключам
         data = las[key]
         valid_data = data[~np.isnan(data)]
         ax = ax1.twiny()
         ax.plot(data, dept, color=color, label=key, linewidth=line)
-        print(key)
         ax_min = min(valid_data)
         ax_max = max(valid_data)
         # выбор границы шкал для параметров
-        if ax_max <= 20:
+        if key.startswith("RM"):
+            ax_max = rm_max
+            ax_min = rm_min
+        elif ax_max <= 20:
             ax_max = math.ceil((ax_max + 1) / 2) * 2
             ax_min = math.floor((ax_min) / 2) * 2
             step = 2
@@ -98,15 +138,15 @@ def lac_read(way="well_section_counter/1.las"):
             step = 6
         elif ax_max <= 200:
             ax_max = math.ceil((ax_max + 2) / 20) * 20
-            ax_min = 0
+            ax_min = math.floor((ax_min - 2) / 20) * 20
             step = 8
         elif ax_max <= 300:
             ax_max = math.ceil((ax_max + 2) / 30) * 30
-            ax_min = 0
+            ax_min = math.floor((ax_min - 2) / 30) * 30
             step = 10
         elif ax_max <= 400:
             ax_max = math.ceil((ax_max + 2) / 40) * 40
-            ax_min = 0
+            ax_min = math.floor((ax_min - 2) / 40) * 40
             step = 12
         elif ax_max <= 500:
             ax_max = math.ceil((ax_max + 2) / 50) * 50
@@ -129,7 +169,6 @@ def lac_read(way="well_section_counter/1.las"):
         ax.set_xlim(ax_min, ax_max)
         # выбор количества тиков по шкалам
         tick_step = (ax_max - ax_min) // num_ticks
-        # print(ax_max, ax_min, tick_step)
         if tick_step == 0:
             tick_step = 1
         ax.xaxis.set_ticks(range(ax_min, ax_max + 1, tick_step))
@@ -142,7 +181,6 @@ def lac_read(way="well_section_counter/1.las"):
                 label_name = names[key]
             elif key.startswith("RM"):
                 label_name = "РМ "
-                print(key[-1])
                 if key[-1].isdigit():
                     label_name += f'{key[-1] + ", Омм"}'
             else:
@@ -163,7 +201,11 @@ def lac_read(way="well_section_counter/1.las"):
         ax.spines["bottom"].set_linewidth(0.5)
         ax.spines["left"].set_linewidth(0.5)
         ax.spines["right"].set_linewidth(0.5)
-        offset += 15
+        # Дополнение к смещеню горизонтальных осей
+        if key == "DEPT":
+            offset += 0
+        else:
+            offset += 15
     # параметры вертикальной оси
     ax.grid(True, linewidth=0.2)
     ax1.grid(True, linewidth=0.2)
@@ -189,7 +231,11 @@ def lac_read(way="well_section_counter/1.las"):
     ax1.spines["right"].set_linewidth(0.5)
     ax1.tick_params(width=0.5)
     # сохранение изображения
-    fig.savefig("well_section_counter/log.png", dpi=600, orientation="portrait")
+    fig.savefig(
+        "well_section_counter/log.png",
+        dpi=600,
+        orientation="portrait",
+    )
 
 
 lac_read()
