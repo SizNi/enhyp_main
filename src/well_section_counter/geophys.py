@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import math
 import numpy as np
 
+
+# распознование и визуализация .las файлов
 # массив названий
 names = {
     "DEPT": "Глубина, м",
@@ -32,13 +34,12 @@ data_color_dict = {
 }
 
 
-def lac_read(way="well_section_counter/1.las"):
+def lac_read(way="well_section_counter/las/1.las"):
     # чтение файла
     las = lasio.read(way)
     # чтение ключей из файла
     keys = las.keys()
     # print(keys)
-
     # задание размеров рисунка в мм
     width_mm = 100
     height_mm = 250
@@ -86,15 +87,19 @@ def lac_read(way="well_section_counter/1.las"):
         rm_data = np.array(rm_data)
         # Получаем среднее для всех RM
         mean = np.mean(rm_data)
-        # Задаем отклонение в 10% от среднего значения
-        threshold = 0.1 * mean
-        # Фильтруем данные в стороны от среднего
-        filtered_rm_data = rm_data[
-            (rm_data >= mean - threshold) & (rm_data <= mean + threshold)
-        ]
-        # Задаем границы для горизонтальных осей для RM
-        rm_min = 0
-        rm_max = math.ceil(max(filtered_rm_data + 1) / 10) * 10
+        if mean >= 25:
+            # Задаем отклонение в 10% от среднего значения
+            threshold = 0.1 * mean
+            # Фильтруем данные в стороны от среднего
+            filtered_rm_data = rm_data[
+                (rm_data >= mean - threshold) & (rm_data <= mean + threshold)
+            ]
+            # Задаем границы для горизонтальных осей для RM
+            rm_min = 0
+            rm_max = math.ceil(max(filtered_rm_data + 1) / 10) * 10
+        else:
+            rm_min = 0
+            rm_max = 32
         # расчитываем расположение уровня ПВ - пока не работает
         data = las["RM"]
         valid_data = data[~np.isnan(data)]
@@ -132,28 +137,12 @@ def lac_read(way="well_section_counter/1.las"):
             ax_max = math.ceil((ax_max + 2) / 10) * 10
             ax_min = 0
             step = 4
-        elif ax_max <= 150:
-            ax_max = math.ceil((ax_max + 2) / 15) * 15
-            ax_min = 0
-            step = 6
-        elif ax_max <= 200:
-            ax_max = math.ceil((ax_max + 2) / 20) * 20
-            ax_min = math.floor((ax_min - 2) / 20) * 20
-            step = 8
-        elif ax_max <= 300:
-            ax_max = math.ceil((ax_max + 2) / 30) * 30
-            ax_min = math.floor((ax_min - 2) / 30) * 30
-            step = 10
         elif ax_max <= 400:
-            ax_max = math.ceil((ax_max + 2) / 40) * 40
-            ax_min = math.floor((ax_min - 2) / 40) * 40
-            step = 12
-        elif ax_max <= 500:
-            ax_max = math.ceil((ax_max + 2) / 50) * 50
+            ax_max = 400
             ax_min = 0
-            step = 14
+            step = 12
         elif ax_max <= 800:
-            ax_max = math.ceil((ax_max + 2) / 80) * 80
+            ax_max = 800
             ax_min = 0
             step = 20
         elif ax_max <= 1000:
