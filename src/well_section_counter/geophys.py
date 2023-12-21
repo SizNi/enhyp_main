@@ -16,6 +16,8 @@ names = {
     "TM": "Термометрия ТМ, °С",
     "RM": "Резистивиметрия РМ, Омм",
     "KM": "Кавернометрия КМ, мм",
+    "ML": "Магнитная локация МЛ, у.е.",
+    "RASH": "Расходометрия РАСХ, об/мин",
 }
 
 data_color_dict = {
@@ -31,10 +33,12 @@ data_color_dict = {
     "GK": "#000000",
     "KM": "#008000",
     "D": "#008000",
+    "ML": "#ffa500",
+    "RASH": "#5e2f0d",
 }
 
 
-def lac_read(way="well_section_counter/las/1.las"):
+def lac_read(way="well_section_counter/las/22.las"):
     # чтение файла
     las = lasio.read(way)
     # чтение ключей из файла
@@ -78,9 +82,18 @@ def lac_read(way="well_section_counter/las/1.las"):
     # отдельный цикл для задания границ горизонтальных осей для всех RM (у них должен быть единый масштаб, так что вынес отдельно)
     rm_data = []
     for key in keys:
+        #if key.startswith("RASH"):
+            #data = las[key]
+            #valid_data = data[~np.isnan(data)]
+            #print(valid_data)
+            #print(type(valid_data[0]))
+            #print(len(data))
         if key.startswith("RM"):
             data = las[key]
             valid_data = data[~np.isnan(data)]
+            #print(valid_data)
+            #print(type(valid_data[0]))
+            #print(len(data))
             rm_data.extend(valid_data)
     if "RM" in keys:
         # Преобразуем в массив NumPy для удобства работы
@@ -100,12 +113,6 @@ def lac_read(way="well_section_counter/las/1.las"):
         else:
             rm_min = 0
             rm_max = 32
-        # расчитываем расположение уровня ПВ - пока не работает
-        data = las["RM"]
-        valid_data = data[~np.isnan(data)]
-        target_depth = np.interp(max(valid_data), las["RM"], las["DEPT"])
-        print(max(valid_data))
-        print(target_depth)
     # смещение осей
     offset = 0
     # цикл построения параметров
@@ -125,6 +132,19 @@ def lac_read(way="well_section_counter/las/1.las"):
         if key.startswith("RM"):
             ax_max = rm_max
             ax_min = rm_min
+        if key.startswith("ML"):
+            if max(valid_data) < 400:
+                ax_max = 400
+                ax_min = -400
+            elif max(valid_data) < 800:
+                ax_max = 800
+                ax_min = -800
+            elif max(valid_data) < 1000:
+                ax_max = 1000
+                ax_min = -1000
+            else:
+                ax_max = 2000
+                ax_min = -2000
         elif ax_max <= 20:
             ax_max = math.ceil((ax_max + 1) / 2) * 2
             ax_min = math.floor((ax_min) / 2) * 2
@@ -149,6 +169,10 @@ def lac_read(way="well_section_counter/las/1.las"):
             ax_max = math.ceil((ax_max + 2) / 1000) * 1000
             ax_min = 0
             step = 20
+        else:
+            ax_max = math.ceil((ax_max + 2) / 1000) * 1000
+            ax_min = 0
+            step = 20
         # количество тиков и подгонка значения для кратности на количество тиков
         num_ticks = 8
         remainder = (ax_max - ax_min) % 8
@@ -161,7 +185,7 @@ def lac_read(way="well_section_counter/las/1.las"):
         if tick_step == 0:
             tick_step = 1
         ax.xaxis.set_ticks(range(ax_min, ax_max + 1, tick_step))
-        ax.invert_yaxis()
+        # ax.invert_yaxis()
         ax.spines["top"].set_position(("outward", offset))
         ax.spines["top"].set_color(color)
         # подписи осей
