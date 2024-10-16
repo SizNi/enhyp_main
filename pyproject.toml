@@ -41,6 +41,8 @@ psycopg2-binary = "^2.9.9"
 xarray = "2022.6.0"
 lasio = "^0.31"
 welly = "^0.5.2"
+plotly = "^5.18.0"
+plotly-express = "^0.4.1"
 
 [build-system]
 requires = ["poetry-core"]
