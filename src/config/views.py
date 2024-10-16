@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+# from well_section_counter.regime import regime
 import json
 import os
 
@@ -78,4 +79,13 @@ class MapView_2(TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
+        return render(request, self.template_name, context)
+
+# вьюха для отображения динамического графика режимных наблюдений
+@method_decorator([csrf_exempt], name="dispatch")
+class RegimeView(TemplateView):
+    template_name = "regime.html"
+    def get(self, request, *args, **kwargs):
+        plot_div = regime(way="well_section_counter/regime.json", well_number="3")
+        context = {'plot_div': plot_div}
         return render(request, self.template_name, context)

@@ -70,6 +70,7 @@ class WellSectionResultView(TemplateView):
             "layers": json.loads(ws.layers),
             "well_data": json.loads(ws.well_data),
         }
+        print(ws_data)
         context = {"image": main(ws_data)}
         messages.success(self.request, "Разрез скважины успешно построен")
         return render(request, "well_section/result.html", context)

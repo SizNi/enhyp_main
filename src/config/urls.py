@@ -27,6 +27,7 @@ urlpatterns = (
             name="passport_example",
         ),
         path("crm/", include("apps.crm.urls"), name="crm_home"),
+        path("regime_test/", views.RegimeView.as_view(), name="regime_test"),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
