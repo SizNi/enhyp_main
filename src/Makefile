@@ -10,7 +10,7 @@ start:
 new_app:
 	#django-admin startapp app_name
 
-# линтеры
+# линтеры и прочее
 lint:
 	poetry run flake8
 
